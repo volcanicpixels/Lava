@@ -35,6 +35,8 @@ class lavaPlugin
      */
     function __construct( $pluginFile, $pluginName, $pluginVersion )
     {
+        //CBT - load branding and configuration
+        
         $this->pluginFile = $pluginFile;
         $this->pluginName = $pluginName;
         $this->pluginVersion = $pluginVersion;

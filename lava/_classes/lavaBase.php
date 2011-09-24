@@ -103,9 +103,23 @@ class lavaBase
     }
     
     /**
-     * remember function.
+     * lavaContext function.
      * 
-     * The remember function stores data as a key>value pair as a protected property to a class
+     * Resets the chain (prevents unexpected chaining to occur)
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    final function lavaContext( $context = "", $handle = "current" )
+    {
+        $this->chain[ $handle ] = $context;
+    }
+    
+    /**
+     * lavaRemember function.
+     * 
+     * The lavaRemember function stores data as a key>value pair as a protected property to a class
      * 
      * @magic
      * @param string $key
@@ -114,7 +128,7 @@ class lavaBase
      * 
      * @since 1.0.0
      */
-    function remember( $key, $value = null )
+    function lavaRemember( $key, $value = null )
     {
         if( isset( $value ) )
         {//value has been given - so lets set it
