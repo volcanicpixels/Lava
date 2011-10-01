@@ -65,7 +65,6 @@ class lavaBase
      */
     function __call( $methodName, $arguments )
     {
-        
         // lavaPlugin chainable methods start with "_" - so this is checking to see whether we should try a lavaPlugin method
         if( substr( $methodName, 0, 1 ) == "_" )
         {
@@ -75,7 +74,7 @@ class lavaBase
                 return call_user_func_array( $callback, $arguments );
             }
         }
-        else
+        elseif( isset( $this->chain[ "current" ] ) )
         {
             //lets see if the class that is the current context has this method
             $callback = array( $this->chain[ "current" ], $methodName );
@@ -83,6 +82,10 @@ class lavaBase
             {
                 return call_user_func_array( $callback, $arguments );
             }
+        }
+        if( isset( $this->lavaCallReturn ) )
+        {
+            return $this->lavaCallReturn;
         }
         return $this;//couldn't find anything to call so return this object so chaining doesn't break
     }

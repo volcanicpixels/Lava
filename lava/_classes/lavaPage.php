@@ -1,11 +1,11 @@
 <?php
 /**
- * The lava page class
+ * The lavaPage class
  * 
- * This class is the main plugin class and the only class that doesn't extend lavaBase
+ * This class is the base class for all admin pages
  * 
  * @package Lava
- * @subpackage lavaPlugin
+ * @subpackage lavaPage
  * 
  * @author Daniel Chatfield
  * @copyright 2011
@@ -13,7 +13,7 @@
  */
  
 /**
- * lavaPlugin
+ * lavaPage
  * 
  * @package Lava
  * @subpackage LavaPlugin
@@ -23,23 +23,22 @@
  */
 class lavaPage extends lavaBase
 {
-    protected $menu_slug, $menu_title, $page_title, $capability, $callback, $displayCallback, $page;
+    public $multisiteSupport = false;//Whether the page should appear in the network page
     
-    function lavaConstruct()
+    
+    /**
+    * lavaPage::lavaConstruct()
+    * 
+    * @return void
+    *
+    * @since 1.0.0
+    */
+    function lavaConstruct( $slug )
     {
-        $this->menu_slug = "undefined";
-        $this->menu_title = "undefined";
-        $this->page_title = "undefined";
-        $this->capability = "manage_options";
-        
-        $this->displayCallback = array( $this, "displayPage" );
-        //register hooks
-        if( $this->_settings()->config( "PAGE_REGISTRATION" ) != "CLOSED" )//this page is being defined either at or after the menu is being defined
-        {
-            $callback = array( $this, "registerSubpage" );
-            remove_action( "admin_menu", $callback );
-            add_action( "admin_menu", $callback );
-        }
+        $this->slug( $slug, false );
+        $this->title( $slug );
+        $this->capability( "manage_options" );
+        $this->lavaCallReturn = $this->_pages( false );
     }
     
     function promote()
@@ -65,79 +64,60 @@ class lavaPage extends lavaBase
     
     function slug( $slug, $slugify = true )
     {
+        $this->slug = $slug;
+
         if( $slugify == true )
         {
-            $this->menu_slug = $this->_slug( $slug );
+            $this->slug = $this->_slug( $slug );
         }
         return $this->_pages( false );
     }
     
     function title( $title )
     {
-        $this->menu_title = $title;
-        $this->page_title = $title;
+        $this->title = $title;
         return $this->_pages( false );
     }
     
-    function registerSubpage()
+    function registerPage( $parentSlug )
     {
-        if( $this->config( "DONT_REGISTER_PAGE" ) == true )
-        {//used for silent pages and the about page (it is registered as top level page
-            return false;
-        }
-        $this->page = add_submenu_page( 
-            $this->_pages()->parentSlug(), 
-            $this->page_title, 
-            $this->menu_title, 
-            $this->capability, 
-            $this->menu_slug, 
-            $this->get( "displayCallback" ) 
+        $this->pageHook = add_submenu_page( 
+            $parentSlug,
+            $this->get( "title" ), 
+            $this->get( "title" ), 
+            $this->get( "capability" ),  
+            $this->get( "slug" ), 
+            array( $this, "doPage") 
         );
-        $hook_suffix = $this->page;
-        add_action( "admin_print_styles-$hook_suffix", array( $this, "enqueueScripts" ) );
+        $hook_suffix = $this->pageHook;
+        add_action( "admin_print_styles-$hook_suffix", array( $this, "enqueueIncludes" ) );
     }
+
+
     
-    function registerPage()
+    function enqueueIncludes()
     {
-        if( $this->config( "DONT_REGISTER_PAGE" ) == true )
-        {//used for silent pages and the about page (it is registered as top level page
-            return false;
-        }
-        $this->page = add_menu_page( 
-            $this->page_title, 
-            $this->menu_title, 
-            $this->capability, 
-            $this->menu_slug, 
-            $this->get( "displayCallback" ) 
-        );
-        $hook_suffix = $this->page;
-        add_action( "admin_print_styles-$hook_suffix", array( $this, "enqueueScripts" ) );
-        return $this->menu_slug;
-    }
-    
-    function enqueueScripts()
-    {
-        foreach( $this->_pages()->pluginStyles as $name => $notNeeded )
+        foreach( $this->_pages()->styles as $name => $notNeeded )
         {
             wp_enqueue_style( $name );
         }
-        foreach( $this->_pages()->pluginScripts as $name => $notNeeded )
+        foreach( $this->_pages()->scripts as $name => $notNeeded )
         {
             wp_enqueue_script( $name );
         }
-        foreach( $this->_pages()->pluginExternalStyles as $name => $notNeeded )
+        foreach( $this->_pages()->externalStyles as $name => $notNeeded )
         {
             wp_enqueue_style( $name );
         }
-        foreach( $this->_pages()->pluginExternalScripts as $name => $notNeeded )
+        foreach( $this->_pages()->externalScripts as $name => $notNeeded )
         {
             wp_enqueue_script( $name );
         }
     }
     
-    function displayPage()
+    function doPage()
     {
-        if( $this->config( "SUPPRESS_HEADER" ) != true )
+        if( true !== $this->config( "SUPPRESS_HEADER" ) )
         {
             $this->displayHeader();
         }
@@ -145,26 +125,32 @@ class lavaPage extends lavaBase
     
     function displayHeader()
     {
+        $pluginSlug = $this->_slug();
+        $pluginName = $this->_name();
+        $pluginVersion = $this->_version();
+
+        $page_hook = $_GET['page'];
+        $lavaPageClass = apply_filters( "_admin_page_class-{$pluginSlug}", "" );
+        $lavaPageClass = apply_filters( "admin_page_class-{$pluginSlug}-{$page_hook}", $lavaPageClass );
         ?>
-        
-        <div id="cutout">
-            <h2>[Plugin Name] <span class="versions-pre">ver.</span> <span class="versions-post">[version]</span></h2>
-            <div class="window loading">
-                <div class="loading"></div>
-                <div class="licensed">
-                    <div class="status">Premium features unlocked</div>
-                    <div class="usage">Unique ID can be used on <span class="remaining">0</span> more sites. Please contact support or make another donation for more.</div>
-                    <div class="unique">Unique ID: <span>ABCDE</span></div>
+        <div id="lava-page" class="<?php echo $lavaPageClass;?>">
+            <div id="lava-header">
+                <div class="texture texture-lt-red">
+                    <div class="lava-cntr lava-cntr-fw">
+                        <h1 class="lobster-heading"><?php echo $pluginName; ?><span class="version"><?php echo $pluginVersion; ?></span></h1>
+                        <?php do_action( "post_heading-{$pluginSlug}" ) ?>
+                    </div>
                 </div>
-                <div class="unlicensed">
-                    <div class="status">Premium features locked</div>
-                    <div class="message">Please make a contribution to unlock premium features.</div>
-                    <div class="unique">Unique ID: <span>ABCDE</span></div>
+                <div class="texture texture-drk-red">
+                    <div class="lava-cntr lava-cntr-fw">
+                        <ul class="nav nav-awning">
+                            <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
+                                <li class="<?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><?php echo $page->get( "title" ); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="clearfix"></div>
-            <div class="top-edge"></div>
-            <div class="bottom-edge"></div>
         </div>
         
         <?php

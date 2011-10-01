@@ -42,12 +42,11 @@ class lavaSetting extends lavaBase
      * 
      * @since 1.0.0
      */
-    function lavaConstruct( $name, $who )
+    function lavaConstruct( $key, $who )
     {
         $this->type = "text";
         $this->who = $who;
-        $this->key = str_replace( " ", "_", strtolower( $name ) );
-        $this->name = $name;
+        $this->key = $key;
         
         $this->properties = array();
         $this->validation = array();
@@ -76,7 +75,7 @@ class lavaSetting extends lavaBase
      * 
      * @param $type 
      * 
-     * @return void
+     * @return chainable object
      * 
      * @since 1.0.0
      */
@@ -90,13 +89,8 @@ class lavaSetting extends lavaBase
                 break;
             case "color"://bloody American spelling - polluting the world
             case "colour"://that's more like it
-                $colour = array(
-                    "r" => 255,
-                    "g" => 255,
-                    "b" => 255
-                );
                 //no support for alpha channels at this time
-                $this->defaultValue( $colour, false );
+                $this->defaultValue( "#FFFFFF", false );
                 break;
             case "password":
                 $this->defaultValue( "password" );

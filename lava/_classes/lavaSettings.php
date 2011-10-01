@@ -51,18 +51,17 @@ class lavaSettings extends lavaBase
      *      "theme" - This is a theme setting
      *      "keyholder" - This is a licensing setting (usually used to prevent file tamper)
      * 
-     * @return void
+     * @return lavaSetting
      * 
      * @since 1.0.0
      */
-    function addSetting( $name, $who = "plugin" )
+    function addSetting( $key, $who = "plugin" )
     {
-        $key = str_replace( " ", "_", strtolower( $name ) );
         
         if( !isset( $this->settings[ $who ][ $key ] ) )
         {
             $arguments = array(
-                $name,
+                $key,
                 $who
             );
             $this->settings[ $who ][ $key ] = $this->_new( "lavaSetting", $arguments );
@@ -93,7 +92,7 @@ class lavaSettings extends lavaBase
     }
     
     /**
-     * lavaSettings::settingEists( $key )
+     * lavaSettings::settingExists( $key )
      * 
      * This method determines whether a setting exists
      * 
@@ -112,18 +111,14 @@ class lavaSettings extends lavaBase
         return false;
     }
     
-    function config( $key, $value = null )
+    function config( $key, $default = null )
     {
-        if( $value != null )
-        {
-            $this->config[ $key ] = $value;
-            return $this;
-        }
+
         if( isset( $this->config[ $key ] ) )
         {
             return $this->config[ $key ];
         }
-        return false;
+        return $default;
     }
 }
 ?>

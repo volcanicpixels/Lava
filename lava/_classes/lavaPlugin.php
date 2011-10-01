@@ -90,7 +90,7 @@ class lavaPlugin
      */
     function _slug( $append = null )
     {
-        $append = isset( $append )? "_{$append}" : "";
+        $append = empty( $append )? "" : "_{$append}";
         return $this->pluginSlug . $append;
     }
     
