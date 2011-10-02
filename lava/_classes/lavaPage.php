@@ -40,20 +40,40 @@ class lavaPage extends lavaBase
         $this->capability( "manage_options" );
         $this->lavaCallReturn = $this->_pages( false );
     }
-    
-    function promote()
+
+    function sidebar( $enable = true )
     {
-        $callback = array( $this, "registerSubpage" );
-        remove_action( "admin_menu", $callback );
-        
-        $this->_settings()->config( "PARENT_ADDED", true );
-        $callback = array( $this, "registerPage" );
-        $this->_pages()->parentCallback = $callback;
+        remove_filter( "admin_page_class-{$pluginSlug}-{$page_hook}", array( $this, "sidebarCallback") );
+        if( true == $enable )
+        {
+            $pluginSlug = $this->_slug();
+            $page_hook = $this->get( "slug" );
+            add_filter( "admin_page_class-{$page_hook}", array( $this, "sidebarCallback") );
+        }
+
+        return $this->_pages( false );
+    }
+
+    function sidebarCallback( $classes )
+    {
+        return "{$classes} sidebar";
     }
     
     function get( $what )
     {
         return $this->$what;
+    }
+
+    
+    function url()
+    {
+        $slug = $this->get( "slug" );
+        if( defined( 'WP_NETWORK_ADMIN' ) and WP_NETWORK_ADMIN == true )
+        {
+            //if we are in the network admin then make sure it is a network link
+            return network_admin_url( "admin.php?page={$slug}");
+        }
+        return admin_url( "admin.php?page={$slug}");
     }
     
     function capability( $capability )
@@ -117,10 +137,10 @@ class lavaPage extends lavaBase
     
     function doPage()
     {
-        if( true !== $this->config( "SUPPRESS_HEADER" ) )
-        {
-            $this->displayHeader();
-        }
+        $this->displayHeader();
+        $this->displayNotifications();
+        $this->displayPage();
+        $this->displayFooter();
     }
     
     function displayHeader()
@@ -130,29 +150,83 @@ class lavaPage extends lavaBase
         $pluginVersion = $this->_version();
 
         $page_hook = $_GET['page'];
-        $lavaPageClass = apply_filters( "_admin_page_class-{$pluginSlug}", "" );
-        $lavaPageClass = apply_filters( "admin_page_class-{$pluginSlug}-{$page_hook}", $lavaPageClass );
+        $lavaPageClass = apply_filters( "admin_page_class-{$pluginSlug}", "" );
+        $lavaPageClass = apply_filters( "admin_page_class-{$page_hook}", $lavaPageClass );
         ?>
         <div id="lava-page" class="<?php echo $lavaPageClass;?>">
             <div id="lava-header">
-                <div class="texture texture-lt-red">
+                <div class="texture texture-lt-red stitch-btm">
                     <div class="lava-cntr lava-cntr-fw">
-                        <h1 class="lobster-heading"><?php echo $pluginName; ?><span class="version"><?php echo $pluginVersion; ?></span></h1>
+                        <h1 class="lobster-heading"><?php echo $pluginName; ?><span style="margin-left:20px;" class="version"><?php echo $pluginVersion; ?></span></h1>
                         <?php do_action( "post_heading-{$pluginSlug}" ) ?>
                     </div>
                 </div>
-                <div class="texture texture-drk-red">
-                    <div class="lava-cntr lava-cntr-fw">
-                        <ul class="nav nav-awning">
+                <div class="texture texture-drk-red stitch-top">
+                    <div class="lava-cntr lava-cntr-fw clearfix">
+                        <ul class="nav nav-awning clearfix stitch-left-x stitch-right-x">
                             <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
-                                <li class="<?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><?php echo $page->get( "title" ); ?></li>
+                                <li class="stitch-left stitch-right <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->url(); ?>"><?php echo $page->get( "title" ); ?></a></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
                 </div>
+                <div class="bunting"></div>
+            </div>
+            
+            <div class="lava-content lava-cntr">
+                <div class="top"></div>
+                    <div class="content">
+                
+                    
+        
+        <?php
+    }
+
+    function displayFooter()
+    {
+        ?>
+                    </div>
+                <div class="bottom"></div>
             </div>
         </div>
+        <?php
+    }
+
+    function displayNotifications()
+    {
+        $notifications = array();
+        if( isset( $_GET[ 'messagesnonce' ] ) )
+        {
+            $storedNotifications = get_option( "lavaNotifications" );
+
+            if( is_array( $storedNotifications ) and isset( $storedNotifications[ $_GET[ 'messagesnonce' ] ] ) )
+            {
+                $storedNotifications = $storedNotifications[ $_GET[ 'messagesnonce' ] ];
+    
+                if( is_array( $storedNotifications ) )
+                {
+                    foreach( $storedNotifications as $notification )
+                    {
+                        $notifications[] = $notification;
+                    }
+                }
+            }
+        }
+
+        $notifications = apply_filters( "lava_notifications-{$page_hook}", $notifications );
         
+        foreach( $notifications as $notification )
+        {
+            ?>
+            <div class="lava-notification lava-notification-"><?php echo $notification['message'];?></div>
+            <?php
+        }
+    }
+
+    function displayPage()
+    {
+        ?>
+        <div class="lava-notification lava-notification-error"><?php _e( "It looks like this page has gone walk-abouts.", $this->_framework() ) ?></div>
         <?php
     }
 }

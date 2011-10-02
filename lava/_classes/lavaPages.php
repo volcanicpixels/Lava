@@ -38,6 +38,8 @@ class lavaPages extends lavaBase
     {
         $this->addStyle( $this->_slug( "lavaStyles" ), "lava/_static/styles.css" );
         $this->addScript( $this->_slug( "lavaScripts" ), "lava/_static/scripts.js" );
+
+        $this->addStyle( "lobster", "http://fonts.googleapis.com/css?family=Lobster", true );
         
         add_action( "admin_enqueue_scripts", array( $this, "registerIncludes" ) );
 
@@ -101,9 +103,21 @@ class lavaPages extends lavaBase
         return $this;
     }
 
-    function adminPages()
+    function adminPages( $filter = true )
     {
-        return apply_filters( "admin_pages_order-".$this->_slug(), $this->adminPages );
+        $adminPages = $this->adminPages;
+        if( true == $filter and defined( 'WP_NETWORK_ADMIN') and WP_NETWORK_ADMIN == true )
+        {
+            $adminPages = array();
+            foreach( $this->adminPages as $slug=>$page )
+            {
+                if( true == $page->multisiteSupport )
+                {
+                    $adminPages[$slug] = $page;
+                }
+            }
+        }
+        return apply_filters( "admin_pages_order-".$this->_slug(), $adminPages );
     }
     
     
@@ -317,6 +331,9 @@ class lavaPages extends lavaBase
             }
         }
     }
+
+
+
 
     function blank()
     {
