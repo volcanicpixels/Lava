@@ -204,7 +204,7 @@ class lavaPlugin
      * 
      * @since 1.0.0
      */
-    function _pages()
+    function _pages( $reset = true)
     {
         return $this->_handle( "Pages", $reset );
     }
@@ -216,9 +216,14 @@ class lavaPlugin
      * 
      * @since 1.0.0
      */
-    function _tables()
+    function _tables( $reset = true)
     {
         return $this->_handle( "Tables", $reset );
+    }
+
+    function _misc( $reset = true )
+    {
+        return $this->_handle( "MiscFunctions", $reset);
     }
     
 }

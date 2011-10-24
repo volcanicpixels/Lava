@@ -100,7 +100,26 @@ class lavaPages extends lavaBase
         {
             $this->chain[ "current" ] = $this->adminPages[ $slug ];
         }
+        $slug = $this->_slug( $slug );
+        if( isset( $this->adminPages[ $slug ] ) )
+        {
+            $this->chain[ "current" ] = $this->adminPages[ $slug ];
+        }
         return $this;
+    }
+
+    function pageExists( $slug )
+    {
+        if( isset( $this->adminPages[ $slug ] ) )
+        {
+            return true;
+        }
+        $slug = $this->_slug( $slug );
+        if( isset( $this->adminPages[ $slug ] ) )
+        {
+            return true;
+        }
+        return false;
     }
 
     function adminPages( $filter = true )
@@ -270,6 +289,7 @@ class lavaPages extends lavaBase
         {
             $this->styles[ $name ] = $path;
         }
+        return $this;
     }
 
     function addScript( $name, $path = "", $external = false )
@@ -282,6 +302,7 @@ class lavaPages extends lavaBase
         {
             $this->scripts[ $name ] = $path;
         }
+        return $this;
     }
 
     //@deprecated

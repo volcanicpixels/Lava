@@ -39,6 +39,11 @@ class lavaPage extends lavaBase
         $this->title( $slug );
         $this->capability( "manage_options" );
         $this->lavaCallReturn = $this->_pages( false );
+
+        if( is_callable( array( $this, "registerActions" ) ) )
+        {
+            $this->registerActions();
+        }
     }
 
     function sidebar( $enable = true )

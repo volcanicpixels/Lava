@@ -47,15 +47,15 @@ class lavaSettings extends lavaBase
      * 
      * @param $name The name of the setting - should be unique within the section
      * @param $who - Who is adding the setting:
-     *      "plugin" - This is a plugin setting like "enabled"
-     *      "theme" - This is a theme setting
+     *      "settings" - This is a plugin setting like "enabled"
+     *      "skins" - This is a skin setting
      *      "keyholder" - This is a licensing setting (usually used to prevent file tamper)
      * 
      * @return lavaSetting
      * 
      * @since 1.0.0
      */
-    function addSetting( $key, $who = "plugin" )
+    function addSetting( $key, $who = "settings" )
     {
         
         if( !isset( $this->settings[ $who ][ $key ] ) )

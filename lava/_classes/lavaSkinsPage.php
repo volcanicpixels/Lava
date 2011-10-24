@@ -1,5 +1,5 @@
 <?php
-class lavaSkinsPage extends lavaPage
+class lavaSkinsPage extends lavaSettingsPage
 {
     public $multisiteSupport = true;
 }
