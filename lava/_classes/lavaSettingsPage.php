@@ -6,7 +6,6 @@ class lavaSettingsPage extends lavaPage
     function registerActions()
     {
 
-        add_filter(  )
     }
 
     function loadPage()
@@ -23,7 +22,6 @@ class lavaSettingsPage extends lavaPage
         else
             $this->siteChecks();
         
-        $settings = apply_filters(  )
     }
 
     function siteChecks()
