@@ -74,10 +74,10 @@ class lavaBase
                 return call_user_func_array( $callback, $arguments );
             }
         }
-        elseif( isset( $this->chain[ "current" ] ) )
+        elseif( !is_null( $this->lavaContext() ) )
         {
             //lets see if the class that is the current context has this method
-            $callback = array( $this->chain[ "current" ], $methodName );
+            $callback = array( $this->lavaContext(), $methodName );
             if( is_callable( $callback ) )
             {
                 return call_user_func_array( $callback, $arguments );
@@ -108,15 +108,33 @@ class lavaBase
     /**
      * lavaContext function.
      * 
-     * Resets the chain (prevents unexpected chaining to occur)
+     * adds/removes context
      * 
      * @return $this
      * 
      * @since 1.0.0
      */
-    final function lavaContext( $context = "", $handle = "current" )
+    final function lavaContext( $context = null, $handle = "current" )
     {
-        $this->chain[ $handle ] = $context;
+        if( null != $context)
+        {
+            $this->chain[ $handle ] = $context;
+        }
+        return $this->chain[ $handle ];
+    }
+
+    /**
+     * clearLavaContext function.
+     * 
+     * adds/removes context
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    final function clearLavaContext( $handle = "current" )
+    {
+        $this->chain[ $handle ] = null;
     }
     
     /**

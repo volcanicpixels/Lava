@@ -81,14 +81,62 @@ class lavaSettings extends lavaBase
      * 
      * @since 1.0.0
      */
-    function fetchSetting( $key )
+    function fetchSetting( $key, $who = "settings" )
     {
         unset( $this->chain[ "current" ] );//unset it so if the fetch fails then any subsequent chained actions aren't accidentally applied to another setting
-        if( isset( $this->settings[ $key] ) )
+        if( isset( $this->settings[ $who ][ $key] ) )
         {
-            $this->lavaContext( $this->settings[ $key] );
+            $this->lavaContext( $this->settings[ $who ][ $key] );
         }
         return $this;
+    }
+
+    /**
+     * lavaSettings::fetchSettings( $who = "settings" )
+     * 
+     * This method fetches a plugin setting.
+     * 
+     * @param $who 
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    function fetchSettings( $who = "settings" )
+    {
+        return $this->settings[ $who ];
+    }
+
+    /**
+     * lavaSettings::addTag( $tag)
+     * 
+     * This method tags a setting.
+     * 
+     * @param $tag
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    function _addTag( $tag, $key, $who )
+    {
+        $this->settingsIndexes[ $who ][ "tags" ][ $tag ][ $key ] = $this->settings[ $who ][ $key ];
+    }
+
+    /**
+     * lavaSettings::removeTag( $tag)
+     * 
+     * This method removes a tag from a setting.
+     * 
+     * @param $tag
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    function _removeTag( $tag, $key, $who )
+    {
+        unset( $this->settingsIndexes[ $who ][ "tags" ][ $tag ][ $key ]);
     }
     
     /**

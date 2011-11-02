@@ -335,6 +335,7 @@ class lavaPages extends lavaBase
                 wp_register_style( $name, plugins_url( $path, $this->_file() ) );
             }
         }
+        //exit;
         
         //do external includes
         foreach( $this->externalScripts as $name => $path )

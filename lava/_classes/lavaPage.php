@@ -157,42 +157,33 @@ class lavaPage extends lavaBase
         $page_hook = $_GET['page'];
         $lavaPageClass = apply_filters( "admin_page_class-{$pluginSlug}", "" );
         $lavaPageClass = apply_filters( "admin_page_class-{$page_hook}", $lavaPageClass );
-        ?>
-        <div id="lava-page" class="<?php echo $lavaPageClass;?>">
-            <div id="lava-header">
-                <div class="texture texture-lt-red stitch-btm">
-                    <div class="lava-cntr lava-cntr-fw">
-                        <h1 class="lobster-heading"><?php echo $pluginName; ?><span style="margin-left:20px;" class="version"><?php echo $pluginVersion; ?></span></h1>
-                        <?php do_action( "post_heading-{$pluginSlug}" ) ?>
-                    </div>
-                </div>
-                <div class="texture texture-drk-red stitch-top">
-                    <div class="lava-cntr lava-cntr-fw clearfix">
-                        <ul class="nav nav-awning clearfix stitch-left-x stitch-right-x">
-                            <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
-                                <li class="stitch-left stitch-right <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->url(); ?>"><?php echo $page->get( "title" ); ?></a></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
-                <div class="bunting"></div>
-            </div>
-            
-            <div class="lava-content lava-cntr">
-                <div class="top"></div>
-                    <div class="content">
-                
-                    
         
+        ?>
+        <div class="wrap">
+            <div class="lava-header">
+                <div id="icon-options-general" class="icon32"></div>
+                <h2><?php echo $pluginName; ?> <span class="version"><?php echo $pluginVersion; ?></span></h2>
+                <div class="ajax-checks">
+                    <!-- When no-update is implemented wrap this in an "if" or better implement a hook -->
+                    <div class="js-only loader" data-name="update-available"></div>
+                 <!--.ajax-checks END-->
+                </div>
+            <!--.lava-header END-->
+            </div>
+            <div class="lava-nav texture-drk-red bleed-l-19 bleed-r-15" style="height:40px;">
+                <ul class="nav nav-horizontal clearfix stitch-left-x stitch-right-x">
+                    <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
+                   <li class="stitch-left stitch-right clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->url(); ?>"><?php echo $page->get( "title" ); ?></a></li>
+                   <?php endforeach; ?>
+                </ul>
+            </div>
         <?php
     }
 
     function displayFooter()
     {
         ?>
-                    </div>
-                <div class="bottom"></div>
-            </div>
+        <!--.wrap END-->
         </div>
         <?php
     }

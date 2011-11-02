@@ -2,6 +2,7 @@
 class lavaSettingsPage extends lavaPage
 {
     public $multisiteSupport = true;
+    public $who = "settings";
 
     function registerActions()
     {
@@ -22,6 +23,30 @@ class lavaSettingsPage extends lavaPage
         else
             $this->siteChecks();
         
+        $settings = $this->_settings()->fetchSettings();
+
+        //display heading
+        //start settings wrap
+        $this->doSettings( $settings );
+        //do save dialog
+        //close wrap
+    }
+
+    function doSettings( $settings )
+    {
+        $settings = apply_filters( $this->_slug( $this->who . "settingsOrder" ), $settings );
+
+        foreach( $settings as $setting )
+        {
+            $array = array(
+                "key" => $setting->key,
+                "default" => $setting->properties["default"],
+                "type" => $setting->type,
+                "tags" => $setting->tags
+            );
+            print_r($array);
+            echo("<br/>");
+        }
     }
 
     function siteChecks()

@@ -50,6 +50,7 @@ class lavaSetting extends lavaBase
         
         $this->properties = array();
         $this->validation = array();
+        $this->tags = array();
     }
     
     /**
@@ -64,6 +65,7 @@ class lavaSetting extends lavaBase
      */
     function defaultValue( $value, $overwrite = true )
     {
+        die("asd");
         $this->properties[ "default" ] = $value;
         
         //To allow chaining return the lavaSettings instance and don't reset any current chain
@@ -97,6 +99,25 @@ class lavaSetting extends lavaBase
                 break;
         }
         return $this->_settings( false );
+    }
+
+    function addTag( $tag )
+    {
+        die("yeh");
+        if( !empty( $tag ) )
+        {
+            $this->tags[ $tag ] = true;
+
+            $this->_settings( false )->_addTag( $tag, $this->key, $this->who );
+        }
+        return $this->_settings( false );
+    }
+
+    function removeTag( $tag )
+    {
+        unset( $this->tags[ $tag ] );
+
+        return $this->_settings( false )->_removeTag( $tag, $this->key, $this->who );
     }
     
 
