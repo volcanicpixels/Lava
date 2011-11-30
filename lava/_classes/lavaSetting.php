@@ -47,6 +47,7 @@ class lavaSetting extends lavaBase
         $this->type = "text";
         $this->who = $who;
         $this->key = $key;
+        $this->status = "default";
         
         $this->properties = array();
         $this->validation = array();
@@ -65,7 +66,6 @@ class lavaSetting extends lavaBase
      */
     function defaultValue( $value, $overwrite = true )
     {
-        die("asd");
         $this->properties[ "default" ] = $value;
         
         //To allow chaining return the lavaSettings instance and don't reset any current chain
@@ -74,6 +74,7 @@ class lavaSetting extends lavaBase
     
     /**
      * lavaSetting::type( $type )
+     *  Sets the type of the setting (text, password, timeperiod etc.)
      * 
      * @param $type 
      * 
@@ -101,18 +102,37 @@ class lavaSetting extends lavaBase
         return $this->_settings( false );
     }
 
+    /**
+     * lavaSetting::addTag( $tag )
+     *  Adds a tag to the setting that is used for hooks and printed in the html to allow easy customizations
+     * 
+     * @param $tag - The name of the tag to add to the setting. Should be lowercase letters and hyphen only
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
     function addTag( $tag )
     {
-        die("yeh");
         if( !empty( $tag ) )
         {
-            $this->tags[ $tag ] = true;
+            $this->tags[ $tag ] = $tag;
 
             $this->_settings( false )->_addTag( $tag, $this->key, $this->who );
         }
         return $this->_settings( false );
     }
 
+    /**
+     * lavaSetting::removeTag( $tag )
+     *  Removes a previously added tag
+     * 
+     * @param $tag - The name of the tag to remove to the setting. 
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
     function removeTag( $tag )
     {
         unset( $this->tags[ $tag ] );
@@ -123,6 +143,7 @@ class lavaSetting extends lavaBase
 
     /**
      * lavaSetting::addValidation( $validation )
+     *  Adds client side and server side validation to the data
      * 
      * @param $validation - the slug of the validation function to apply
      * 
@@ -138,7 +159,7 @@ class lavaSetting extends lavaBase
         
         if( null != $callback )
         {
-            $this->validationp[ $validation ] = $callback;
+            $this->validation[ $validation ] = $callback;
         }
         
         
@@ -147,6 +168,7 @@ class lavaSetting extends lavaBase
     
     /**
      * lavaSetting::multisite()
+     *  Makes the setting only appear to network admins
      * 
      * @return chain
      * 
@@ -154,13 +176,14 @@ class lavaSetting extends lavaBase
      */
     function multiSite()
     {
-        $this->hidden();
+        $this->addTag( "multisite" );
         
         return $this->_settings( false );
     }
     
     /**
      * lavaSetting::hidden( $hidden )
+     *  Hides the HTML from view (still printed though)
      * 
      * @param $hidden - boolean value of whether to hide or unhide the setting
      * 
@@ -170,45 +193,407 @@ class lavaSetting extends lavaBase
      */
     function hidden( $hidden = true )
     {
-        //hides the setting from the admin panel
-        
+        //hides the setting from the admin panel (still deciding whether it should generate HTML and just hide it or not generate at all)
+        if( $hidden == true )
+        {
+            $this->addTag( "hidden" );
+        }
+        else
+        {
+            $this->removeTag( "hidden" );
+        }
         return $this->_settings( false );
     }
-    
+
+    /**
+     * lavaSetting::help( $help )
+     *  Sets the contextual help
+     * 
+     * @param $help - translated help
+     * 
+     * @return chain
+     * 
+     * @since 1.0.0
+     */    
     function help( $help )
     {
         $this->help = $help;
         return $this->_settings( false );
     }
     
+
+    /**
+     * lavaSetting::help( $help )
+     *  Sets the contextual help
+     * 
+     * @param $help - translated help
+     * 
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
     function name( $name )
     {
         $this->name = $name;
         return $this->_settings( false );
     }
     
-    function value( $value = null )
-    {//verification of change should have already been carried out
-        if( isset( $value ) )
-        {
-            $settings = get_option( $this->_slug( "settings" ) );
-            $this->value = $settings[ $this->key ] = $value;
-
-            return $this->_settings( false );
-        }
-        if( isset( $this->value ) )
-        {
-            return $this->value;
-        }
-        $nakedValue = $this->nakedValue();
+    function settingValue()
+    {
         
-        if( $nakedValue == "%default%" )
-        {
-            $nakedValue = apply_filters( $this->_slug( "settingDefault" ), $this->get( "default" ), $this->key, $this->type );
-            $nakedValue = apply_filters( $this->_slug( "settingDefault_{$this->key}" ), $nakedValue );
-        }
-        
+        return $this->settingDefaultValue();
     }
+
+    /**
+     * lavaSetting::setProperty( $property, $value )
+     * 
+     * @param $property
+     * @param $value
+     * 
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function setProperty( $property, $value)
+    {
+        $this->properties[ $property ] = $value;
+        return $this->_settings( false );
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * lavaSetting::settingClasses( $format )
+     *  Gets the classes for the setting and either returns them as a formatted string or as an array
+     * 
+     * @param $format
+     * 
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingClasses( $format = false )
+    {
+        $classes = array();
+
+        $classes[] = "setting";
+        $classes[] = "clearfix";
+
+        foreach( $this->tags as $tag )
+        {
+            $classes[] = "tag-{$tag}";
+        }
+
+        $type = $this->settingType();
+        $classes[] = "type-{$type}";
+
+        $classes = $this->runFilters( "settingClasses", $classes );
+
+        if( $format == false )
+        {
+            return $classes;
+        }
+
+        $classesFormatted = "";
+        foreach( $classes as $class)
+        {
+            $classesFormatted .= " $class";
+        }
+
+        return $classesFormatted;
+    }
+
+
+    /**
+     * lavaSetting::settingTags( $format )
+     *  Gets the tags for the setting and either returns them as a formatted string or as an array
+     * 
+     * @param $format
+     * 
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingTags( $format = false )
+    {
+
+        if( $format == false )
+        {
+            return $this->tags;
+        }
+
+        $formatted = "";
+        foreach( $this->tags as $tag)
+        {
+            $formatted .= " $tag";
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * lavaSetting::settingType()
+     *
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * lavaSetting::settingName()
+     *
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * lavaSetting::settingKey()
+     *
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * lavaSetting::settingStatus()
+     *
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * lavaSetting::settingDefaultValue()
+     *
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function settingDefaultValue()
+    {
+        return $this->properties['default'];
+    }
+
+
+
+
+    /**
+     * lavaSetting::doSetting()
+     *  echos the setting HTML
+     *
+     * @return chain
+     * 
+     * @since 1.0.0
+     */
+    function doSetting()
+    {
+        if( array_key_exists( "no-display", $this->tags ) )
+        {
+            return;
+        }
+        $classes = $this->settingClasses( true );
+        $tags = $this->settingTags( true );
+        $type = $this->settingType();
+        $name = $this->settingName();
+        $key = $this->settingKey();
+        $status = $this->settingStatus();
+        $defaultValue = $this->settingDefaultValue();
+
+        $settingStart = "<div class=\"{$classes}\" data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-key=\"{$key}\" data-default-value=\"{$defaultValue}\">";
+            $statusIndicator = '<span class="status-indicator"></span>';
+            $preSettingStart = '<div class="pre-setting">';
+                $settingName = "<span class=\"setting-name\">$name</span>";
+            $preSettingEnd = '</div>';
+
+            $settingInnerStart = '<div class="setting-inner clearfix">';
+                $settingControlStart = '<div class="setting-control">';
+                    $settingControl = $this->settingControl();
+                $settingControlEnd = '</div>';
+                $settingActionsStart = '<div class="setting-actions clearfix">';
+                    $settingActions = $this->settingActions();
+                $settingActionsEnd = '</div>';
+            $settingInnerEnd ='</div>';
+
+            $postSettingStart = '<div class="post-setting clearfix">';
+            $postSettingEnd ='</div>';
+        $settingEnd = '</div>';
+
+        $settingFull = 
+            "
+            $settingStart
+                $statusIndicator
+            
+                $preSettingStart
+                    $settingName
+                $preSettingEnd
+            
+                $settingInnerStart
+                    $settingControlStart
+                        $settingControl
+                    $settingControlEnd
+                    $settingActionsStart
+                        $settingActions
+                    $settingActionsEnd
+                $settingInnerEnd
+
+                $postSettingStart
+                $postSettingEnd
+            $settingEnd
+            ";
+        $settingFull = $this->runFilters( "settingFull", $settingFull );
+
+        return $settingFull;
+    }
+
+    /**
+     * lavaSetting::settingActions()
+     *  Returns the actions for the setting
+     *
+     * @return HTML string of actions
+     * 
+     * @since 1.0.0
+     */
+    function settingActions()
+    {
+        $settingActions = $this->runFilters( "settingActions" );
+
+        return $settingActions;
+    }
+
+    /**
+     * lavaSetting::settingControl()
+     *  Returns the setting control HTML
+     *
+     * @return HTML string of actions
+     * 
+     * @since 1.0.0
+     */
+    function settingControl( $type = "default" )
+    {
+        $settingKey = $this->settingKey();
+        $settingWho = $this->who;
+        $pluginSlug =  $this->_slug();
+        $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
+        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}]";
+        $settingValue = $this->settingDefaultValue();
+        $settingPlaceholder = $this->properties['placeholder'];
+
+        if( "default" == $type )
+        {
+            $type = $this->settingType();
+        }
+
+        switch( $type )
+        {
+            case "checkbox":
+                if( "on" == $settingValue )
+                {
+                    $checked = 'checked="checked"';
+                }
+                $settingControl .= "<input id='{$settingInputID}-backup' type='hidden' name='{$settingInputName}' value='off' />";
+                $settingControl .= "<input data-actual='true' {$checked} id='{$settingInputID}' type='checkbox' name='{$settingInputName}' value='on' />";
+            break;
+
+            case "password":
+                $settingControl .= "<input placeholder='{$settingPlaceholder}' data-actual='true' id='{$settingInputID}' type='password' name='{$settingInputName}' value='{$settingValue}' />";
+            break;
+
+            case "timeperiod":
+                $settingControl = "<input data-actual='true' id='{$settingInputID}' type='text' name='{$settingInputName}' value='{$settingValue}' />";
+            case "text":
+            default:
+                $settingControl = "<input data-actual='true' id='{$settingInputID}' type='text' name='{$settingInputName}' value='{$settingValue}' />";
+        }
+
+        $settingControl = $this->runFilters( "settingControl", $settingControl );
+
+        return $settingControl;
+    }
+
+
+    /**
+     * lavaSetting::runFilters()
+     *  Runs all combinations of filters
+     *
+     * @return subject after all filters have been applied
+     * 
+     * @since 1.0.0
+     */
+    function runFilters( $hookTag, $subject = "")
+    {
+        $settingWho = $this->who;
+        $settingKey = $this->key;
+        $settingType = $this->type;
+
+        $subject = apply_filters( $this->_slug( "{$hookTag}Pre" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-who/{$settingWho}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-type/{$settingType}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-key/{$settingKey}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-who/{$settingWho}-key/{$settingKey}" ), $subject, $this );
+
+        foreach( $this->tags as $tag)
+        {
+            $subject = apply_filters( $this->_slug( "{$hookTag}Pre-tag/{$tag}" ), $subject, $settingWho, $settingKey, $this );
+        }
+
+        $subject = apply_filters( $this->_slug( "{$hookTag}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}-who/{$settingWho}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}-type/{$settingType}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}-key/{$settingKey}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}-who/{$settingWho}-key/{$settingKey}" ), $subject, $this );
+
+        foreach( $this->tags as $tag)
+        {
+            $subject = apply_filters( $this->_slug( "{$hookTag}-tag/{$tag}" ), $subject, $settingWho, $settingKey, $this );
+        }
+
+        $subject = apply_filters( $this->_slug( "{$hookTag}Post" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Post-who/{$settingWho}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Post-type/{$settingType}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Post-key/{$settingKey}" ), $subject, $this );
+        $subject = apply_filters( $this->_slug( "{$hookTag}Post-who/{$settingWho}-key/{$settingKey}" ), $subject, $this );
+
+        foreach( $this->tags as $tag)
+        {
+            $subject = apply_filters( $this->_slug( "{$hookTag}Post-tag/{$tag}" ), $subject, $settingWho, $settingKey, $this );
+        }
+
+        return $subject;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 }
 ?>

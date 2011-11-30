@@ -37,7 +37,12 @@ class lavaPages extends lavaBase
     function lavaConstruct()
     {
         $this->addStyle( $this->_slug( "lavaStyles" ), "lava/_static/styles.css" );
+        $this->addStyle( $this->_slug( "dropkick" ), "lava/_static/dropkick.css" );
+
         $this->addScript( $this->_slug( "lavaScripts" ), "lava/_static/scripts.js" );
+        $this->addScript( $this->_slug( "dropkick" ), "lava/_static/dropkick.js" );
+        $this->addScript( $this->_slug( "modernizr" ), "lava/_static/modernizr.js" );
+        $this->addScript( $this->_slug( "tiptip" ), "lava/_static/tiptip.js" );
 
         $this->addStyle( "lobster", "http://fonts.googleapis.com/css?family=Lobster", true );
         
@@ -357,9 +362,16 @@ class lavaPages extends lavaBase
 
 
 
-    function blank()
+    function addCustomStyles()
     {
-    
+        $this->addStyle( $this->_slug( "styles" ), "_static/styles.css" );
+        return $this;
+    }
+
+    function addCustomScripts()
+    {
+        $this->addScript($this->_slug( "scripts" ), "_static/styles.css");
+        return $this;
     }
 
 }

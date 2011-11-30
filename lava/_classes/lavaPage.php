@@ -24,6 +24,7 @@
 class lavaPage extends lavaBase
 {
     public $multisiteSupport = false;//Whether the page should appear in the network page
+    public $displayToolbar = false;
     
     
     /**
@@ -160,7 +161,7 @@ class lavaPage extends lavaBase
         
         ?>
         <div class="wrap">
-            <div class="lava-header">
+            <div class="lava-header" style="margin-bottom:10px;">
                 <div id="icon-options-general" class="icon32"></div>
                 <h2><?php echo $pluginName; ?> <span class="version"><?php echo $pluginVersion; ?></span></h2>
                 <div class="ajax-checks">
@@ -170,13 +171,24 @@ class lavaPage extends lavaBase
                 </div>
             <!--.lava-header END-->
             </div>
-            <div class="lava-nav texture-drk-red bleed-l-19 bleed-r-15" style="height:40px;">
+            <div id="lava-nav" class="lava-nav texture texture-drk-red bleed-l-19 bleed-r-15 lava-sticky" style="height:40px;">
                 <ul class="nav nav-horizontal clearfix stitch-left-x stitch-right-x">
                     <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
                    <li class="stitch-left stitch-right clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->url(); ?>"><?php echo $page->get( "title" ); ?></a></li>
                    <?php endforeach; ?>
                 </ul>
+                <?php
+                if($this->displayToolbar) $this->doToolbar();
+                ?>
             </div>
+            <?php if($this->displayToolbar): ?>
+            <div class="toolbar-padder"></div>
+            <?php endif; ?>
+            <noscript>
+                <div class="lava-message warning">
+                    <span class="message"><?php _e( "You don't have JavaScript enabled. Some features will not work without JavaScript.", $this->_framework()) ?></span>
+                </div>
+            </noscript>
         <?php
     }
 
@@ -224,6 +236,63 @@ class lavaPage extends lavaBase
         ?>
         <div class="lava-notification lava-notification-error"><?php _e( "It looks like this page has gone walk-abouts.", $this->_framework() ) ?></div>
         <?php
+    }
+
+    function doToolbar()
+    {
+        $leftActions = $this->_leftActions();
+        $rightActions = $this->_rightActions();
+
+        echo '<div class="lava-toolbar">';
+            echo '<div class="actions-left">';
+                foreach($leftActions as $action)
+                {
+                    echo '<div class="action">';
+                        echo $action;
+                    echo '</div>';
+                }
+            echo '</div>';
+            echo '<div class="actions-right">';
+                foreach($rightActions as $action)
+                {
+                    echo '<div class="action">';
+                        echo $action;
+                    echo '</div>';
+                }
+            echo '</div>';
+        echo '</div>';
+    }
+
+    function _leftActions()
+    {
+        $actions = array();
+        if( method_exists($this, "leftActions") )
+        {
+            $actions = $this->leftActions();
+        }
+
+        $actions = apply_filters( $this->_slug( "leftActions" ), $actions );
+        $actions = apply_filters( $this->_slug( "leftActions-page/{$this->slug}" ), $actions );
+
+        
+        
+
+        return $actions;
+    }
+
+    function _rightActions()
+    {
+        $actions = array();
+        if( method_exists($this, "rightActions") )
+        {
+            $actions = $this->rightActions();
+        }
+
+        $actions = apply_filters( $this->_slug( "rightActions" ), $actions );
+        $actions = apply_filters( $this->_slug( "rightActions-page/{$this->slug}" ), $actions );
+
+
+        return $actions;
     }
 }
 ?>

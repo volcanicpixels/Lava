@@ -37,6 +37,7 @@ class lavaSettings extends lavaBase
      */
     function lavaConstruct()
     {
+        $callbacks = $this->_new( "lavaSettingsCallback" );
         add_option( $this->_slug( "settings" ), array() );//add the option if it doesn't exist
     }
    
@@ -66,7 +67,7 @@ class lavaSettings extends lavaBase
             );
             $this->settings[ $who ][ $key ] = $this->_new( "lavaSetting", $arguments );
         }
-        $this->lavaContext( $this->settings[ $key ] );
+        $this->lavaContext( $this->settings[ $who ][ $key ] );
         return $this;
     }
     

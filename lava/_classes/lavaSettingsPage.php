@@ -2,6 +2,7 @@
 class lavaSettingsPage extends lavaPage
 {
     public $multisiteSupport = true;
+    public $displayToolbar = true;
     public $who = "settings";
 
     function registerActions()
@@ -12,8 +13,8 @@ class lavaSettingsPage extends lavaPage
     function loadPage()
     {
         //do settings save
-        //do redirect
         //queue notifications
+        //do redirect
     }
 
     function displayPage()
@@ -31,22 +32,21 @@ class lavaSettingsPage extends lavaPage
         //do save dialog
         //close wrap
     }
-
+    
     function doSettings( $settings )
     {
         $settings = apply_filters( $this->_slug( $this->who . "settingsOrder" ), $settings );
 
+        echo '<form class="settings-wrap" method="post">';
+
+
         foreach( $settings as $setting )
         {
-            $array = array(
-                "key" => $setting->key,
-                "default" => $setting->properties["default"],
-                "type" => $setting->type,
-                "tags" => $setting->tags
-            );
-            print_r($array);
-            echo("<br/>");
+            //action hook
+            echo $setting->doSetting();
+            //action hook
         }
+        echo '</form>';
     }
 
     function siteChecks()
@@ -57,6 +57,16 @@ class lavaSettingsPage extends lavaPage
     function networkChecks()
     {
         
+    }
+
+    function leftActions()
+    {
+        $actions[] = '<a class="js-only subtle-button">'. __( "Export Settings", $this->_framework() ) .'</a>';
+        $actions[] = '<a class="js-only subtle-button">'. __( "Import Settings", $this->_framework() ) .'</a>';
+        $actions[] = '<a class="js-only subtle-button">'. __( "Reset All Settings", $this->_framework() ) .'</a>';
+        $actions[] = '<a class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-yellow">'. __( "Save Settings", $this->_framework() ) .'</a>';
+
+        return $actions;
     }
 }
 ?>
