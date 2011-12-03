@@ -7,7 +7,6 @@ jQuery(document).ready(function(){
     prettifyTimePeriods();
     addResetSettings();
     makeSticky();
-    jQuery( '.tiptip' ).tipTip({'delay':0});
 });
 
 
@@ -163,8 +162,8 @@ function changeSettingValue(settingSelector, settingValue)
 function makeSticky()
 {
     var stickyVars = Object;
-    stickyVars.topPadding = jQuery('#wpbody').offset();
-    stickyVars.topPadding = stickyVars.topPadding.top;
+    stickyVars.topPadding = jQuery('#wpadminbar').height();
+    console.log(stickyVars.topPadding);
     stickyVars.scrollingDistance = jQuery('#lava-nav').offset();
     stickyVars.nudge = stickyVars.scrollingDistance.top - stickyVars.topPadding
     stickyVars.stuck = false;

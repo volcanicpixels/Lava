@@ -26,6 +26,7 @@ class lavaBase
     protected $pluginInstance;
     protected $chain = array();
     protected $memory = array();
+    public $suffixes = array( "/pre", "", "/post" );
     
     
     /**
@@ -142,7 +143,6 @@ class lavaBase
      * 
      * The lavaRemember function stores data as a key>value pair as a protected property to a class
      * 
-     * @magic
      * @param string $key
      * @param $value (default: null)
      * @return $this || $value || false
@@ -161,6 +161,78 @@ class lavaBase
             return $this->memory[ $key ];
         }
         return false;
+    }
+
+    /**
+     * runActions function.
+     * 
+     * Runs the actions with all the parameters
+     *
+     * @param string $key
+     * @param $value (default: null)
+     * 
+     * @since 1.0.0
+     */
+    function runActions( $hookTag )
+    {
+        $hooks = array_unique( $this->hookTags() );
+        $suffixes = array_unique( $this->suffixes );
+
+        foreach( $suffixes as $suffix)
+        {
+            foreach( $hooks as $hook )
+            {
+                if( !empty($hook) )
+                {
+                    $hook = "-".$hook;
+                }
+                do_action( $this->_slug( "{$hookTag}{$hook}{$suffix}" ), $this );
+            }
+        }
+    }
+
+     /**
+     * runActions function.
+     * 
+     * Runs the filters with all the parameters
+     * 
+     * @param string $hookTag
+     * @param $args (default: null)
+     * 
+     * @since 1.0.0
+     */
+    function runFilters( $hookTag, $argument = "" )
+    {
+        
+        $hooks = array_unique( $this->hookTags() );
+        $suffixes = array_unique( $this->suffixes );
+
+        foreach( $suffixes as $suffix)
+        {
+            foreach( $hooks as $hook )
+            {
+                if( $hook == " " )
+                {
+                    $hook = "";
+                    
+                }
+                else
+                {
+                    $hook = "-".$hook;
+                }
+                //echo( $this->_slug( "{$hookTag}{$hook}{$suffix}" ). "<br/>" );
+                $theHook = $this->_slug( "{$hookTag}{$hook}{$suffix}" );
+
+                $argument = apply_filters( $theHook, $argument, $this );
+            }
+        }
+
+        return $argument;
+    }
+
+    function hookTags()
+    {
+        return array("");
     }
 }
 ?>

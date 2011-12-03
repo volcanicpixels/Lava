@@ -44,6 +44,10 @@ class lavaSettingsCallback extends lavaBase
         add_filter( $this->_slug( "{$hookTag}-type/timeperiod" ), array( $this, "addTimePeriodSelector" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/password" ), array( $this, "addPasswordWrapper" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/checkbox" ), array( $this, "addCheckboxUx" ), 10, 2 );
+
+        //settingsHiddenInputs
+        $hookTag = "settingsHiddenInputs";
+        add_action( $this->_slug( "{$hookTag}"), array( $this, "nonces") );
     }
 
 
@@ -166,5 +170,45 @@ class lavaSettingsCallback extends lavaBase
         $settingControl .=  '<div title ="' . __( /* In context of a checkbox slider */"Click to enable/disable ", $this->_framework() ) . '" class="js-only tiptip checkbox-ux '.$checked.'"></div>';
         return $settingControl;
     }
+
+    /**
+     * lavaSettingsCallback::nonces()
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
+    function nonces()
+    {
+        wp_nonce_field();//set the referrer field
+        $capabilities = array(
+            "manage_options" => "setting-nonce"
+        );
+        if( is_network_admin() )
+        {
+            $capabilities["manage_network_options"] = "network-setting-nonce";
+        }
+        foreach( $capabilities as $capability => $name )
+        {
+            if( current_user_can( $capability ) )
+            {
+                $action = $this->_slug( $name );
+                wp_nonce_field( $action, $name, false );
+            }
+        }
+    }
+
+    
+    /**
+     * lavaSettingsCallback::()
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     *
+    function (  )
+    {
+        
+    }*/
 }
 ?>

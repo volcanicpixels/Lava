@@ -414,6 +414,7 @@ class lavaSetting extends lavaBase
         {
             return;
         }
+        
         $classes = $this->settingClasses( true );
         $tags = $this->settingTags( true );
         $type = $this->settingType();
@@ -497,10 +498,9 @@ class lavaSetting extends lavaBase
         $settingWho = $this->who;
         $pluginSlug =  $this->_slug();
         $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
-        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}]";
+        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
         $settingValue = $this->settingDefaultValue();
         $settingPlaceholder = $this->properties['placeholder'];
-
         if( "default" == $type )
         {
             $type = $this->settingType();
@@ -534,66 +534,24 @@ class lavaSetting extends lavaBase
     }
 
 
-    /**
-     * lavaSetting::runFilters()
-     *  Runs all combinations of filters
-     *
-     * @return subject after all filters have been applied
-     * 
-     * @since 1.0.0
-     */
-    function runFilters( $hookTag, $subject = "")
+    function hookTags()
     {
         $settingWho = $this->who;
         $settingKey = $this->key;
         $settingType = $this->type;
 
-        $subject = apply_filters( $this->_slug( "{$hookTag}Pre" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-who/{$settingWho}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-type/{$settingType}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-key/{$settingKey}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Pre-who/{$settingWho}-key/{$settingKey}" ), $subject, $this );
+        $hooks = array( " ");
+        $hooks[] = "who/{$settingWho}";
+        $hooks[] = "type/{$settingType}";
+        $hooks[] = "key/{$settingKey}";
+        $hooks[] = "who/{$settingWho}-key/{$settingKey}";
 
         foreach( $this->tags as $tag)
         {
-            $subject = apply_filters( $this->_slug( "{$hookTag}Pre-tag/{$tag}" ), $subject, $settingWho, $settingKey, $this );
+            $hooks[] = "tag/{$tag}";
         }
 
-        $subject = apply_filters( $this->_slug( "{$hookTag}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}-who/{$settingWho}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}-type/{$settingType}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}-key/{$settingKey}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}-who/{$settingWho}-key/{$settingKey}" ), $subject, $this );
-
-        foreach( $this->tags as $tag)
-        {
-            $subject = apply_filters( $this->_slug( "{$hookTag}-tag/{$tag}" ), $subject, $settingWho, $settingKey, $this );
-        }
-
-        $subject = apply_filters( $this->_slug( "{$hookTag}Post" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Post-who/{$settingWho}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Post-type/{$settingType}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Post-key/{$settingKey}" ), $subject, $this );
-        $subject = apply_filters( $this->_slug( "{$hookTag}Post-who/{$settingWho}-key/{$settingKey}" ), $subject, $this );
-
-        foreach( $this->tags as $tag)
-        {
-            $subject = apply_filters( $this->_slug( "{$hookTag}Post-tag/{$tag}" ), $subject, $settingWho, $settingKey, $this );
-        }
-
-        return $subject;
+        return $hooks;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
 ?>

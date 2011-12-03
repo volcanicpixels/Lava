@@ -13,6 +13,7 @@
 /* One container to bind them... */
 .dk_container {
   font:12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-user-select: none;
   color:#888;
   line-height: 14px;
   margin-left:15px;

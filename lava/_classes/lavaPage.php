@@ -41,9 +41,19 @@ class lavaPage extends lavaBase
         $this->capability( "manage_options" );
         $this->lavaCallReturn = $this->_pages( false );
 
+        add_action( "admin_init", array($this, "_registerActions") );
         if( is_callable( array( $this, "registerActions" ) ) )
         {
-            $this->registerActions();
+            add_action( "admin_init", array($this, "registerActions") );
+        }
+    }
+
+    function _registerActions()
+    {
+        $pageHook = $this->pageHook;
+        if( is_callable( array( $this, "loadPage" ) ) )
+        {
+            add_action( "load-{$pageHook}", array( $this, "loadPage" ) );
         }
     }
 
@@ -293,6 +303,18 @@ class lavaPage extends lavaBase
 
 
         return $actions;
+    }
+
+    function hookTags()
+    {
+        $hooks = array(
+            "",
+            "slug/{$this->slug}",
+            "multisiteSupport/{$this->multisiteSupport}",
+            "toolbar/{$this->displayToolbar}",
+            "class/{$class}",
+        );
+        return $hooks;
     }
 }
 ?>
