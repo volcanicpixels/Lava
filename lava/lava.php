@@ -24,7 +24,8 @@ if( !class_exists( "lava" ) ):
 class lava
 {
     
-    private static  $instances = array();
+    private static $instances = array();
+    private static $currentPlugin;
     
     /**
      * newPlugin function.
@@ -102,6 +103,16 @@ class lava
         }
         
         return false;
+    }
+
+    static function currentPlugin( $thePlugin = null )
+    {
+        if( !is_null( $thePlugin ) )
+        {
+            self::$currentPlugin = $thePlugin;
+        }
+
+        return self::$currentPlugin;
     }
 }
 

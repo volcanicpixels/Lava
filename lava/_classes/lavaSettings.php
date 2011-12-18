@@ -25,6 +25,9 @@ class lavaSettings extends lavaBase
 {
     protected $settings = array();
     protected $settingsIndexes = array();
+
+    protected $settingCache = array();
+    protected $useGlobals = false;
     
     /**
      * lavaSettings::lavaConstruct()
@@ -39,6 +42,16 @@ class lavaSettings extends lavaBase
     {
         $callbacks = $this->_new( "lavaSettingsCallback" );
         add_option( $this->_slug( "settings" ), array() );//add the option if it doesn't exist
+
+        $default = array(
+            "use_globals" => false
+        );
+        $networkOptions = get_site_option( "config", $default , $use_cache );
+
+        if( $networkOptions['use_globals'] == true)
+        {
+            $this->useGlobals = true;
+        }
     }
    
     /**
@@ -105,6 +118,10 @@ class lavaSettings extends lavaBase
      */
     function fetchSettings( $who = "settings" )
     {
+        if( !array_key_exists( $who, $this->settings ) )
+        {
+            return array();
+        }
         return $this->settings[ $who ];
     }
 
@@ -159,6 +176,35 @@ class lavaSettings extends lavaBase
         }
         return false;
     }
+
+    function getCache( $who )
+    {
+        if( !isset( $this->settingCache[ $who ] ) )
+        {
+            $this->settingCache[ $who ] = $this->getOption( $this->_slug( $who ) );
+        }
+
+        
+        return $this->settingCache[ $who ];
+    }
+
+    function putCache( $who, $cache)
+    {
+        $this->settingCache[ $who ] = $cache;
+    }
+
+    function updateCache( $who = "*" )
+    {
+                
+        if( $who == "*" )
+        {
+            foreach( $this->settingCache as $who => $cache)
+            {
+                $this->updateOption( $this->_slug( $who ), $cache );
+            }
+        }
+        $this->updateOption( $this->_slug( $who ), $this->settingCache[ $who ] );
+    }
     
     function config( $key, $default = null )
     {
@@ -168,6 +214,24 @@ class lavaSettings extends lavaBase
             return $this->config[ $key ];
         }
         return $default;
+    }
+
+    function getOption( $option, $default = null )
+    {
+        if( $this->useGlobals )
+        {
+            return get_site_option( $option, $default );
+        }
+        return get_option( $option, $default );
+    }
+
+    function updateOption( $option, $value )
+    {
+        if( $this->useGlobals )
+        {
+            return update_site_option( $option, $value );
+        }
+        return update_option( $option, $value );
     }
 }
 ?>

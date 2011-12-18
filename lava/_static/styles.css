@@ -87,23 +87,23 @@ ul.nav li.active::after {
   content: "" !important;
   position: absolute;
   bottom: 4px;
-  border: 11px solid transparent;
+  border: 6px solid transparent;
   border-top-width: 0px;
   border-bottom-color: rgba(0, 0, 0, 0.3);
   left: 50%;
-  margin-left: -11px;
+  margin-left: -9px;
   z-index: 21;
 }
 ul.nav li:hover::after, ul.nav li.active::after {
   visibility: visible;
   bottom: 0px;
-  border: 10px solid transparent;
+  border: 5px solid transparent;
   border-bottom-color: #fefefe;
   -webkit-border-bottom-image: url(images/bg.png);
   -moz-border-bottom-image: url(images/bg.png);
   -o-border-bottom-image: url(images/bg.png);
   -ms-border-bottom-image: url(images/bg.png);
-  margin-left: -10px;
+  margin-left: -8px;
 }
 ul.nav:hover li.active a {
   color: #efc6bc;
@@ -437,10 +437,35 @@ ul.nav:hover li.active:hover::before, ul.nav:hover li.active:hover::after {
   width: 5px;
   background: #e6e6e6;
 }
+.setting .pre-setting {
+  line-height: 25px;
+}
 .setting .pre-setting .setting-name {
   font-size: 16px;
   font-weight: bold;
-  line-height: 25px;
+}
+.setting .pre-setting .help {
+  -webkit-user-select: none;
+  text-decoration: none;
+  display: inline-block;
+  background: #40454D;
+  padding: 1px 5px;
+  text-align: center;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: white;
+  margin: 0 2px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 2px;
+  border-radius: 8px;
+  opacity: 0.2;
+  -webkit-transition: all 250ms ease-in-out;
+  -moz-transition: all 250ms ease-in-out;
+  -o-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
+  cursor: default;
+  line-height: 15px;
+  margin-left: 10px;
 }
 .setting .setting-inner {
   padding-bottom: 5px;
@@ -461,6 +486,7 @@ ul.nav:hover li.active:hover::before, ul.nav:hover li.active:hover::after {
   -webkit-box-shadow: inset 0 1px 1px #f2f2f2;
   box-shadow: inset 0 1px 1px #f2f2f2;
   position: relative;
+  overflow: hidden;
 }
 .setting .setting-inner .setting-control .input-cntr:hover, .setting .setting-inner .setting-control .input-cntr.focus {
   border-color: #A4A4A4;
@@ -540,6 +566,12 @@ ul.nav:hover li.active:hover::before, ul.nav:hover li.active:hover::after {
 }
 .setting[data-type="timeperiod"] .setting-inner .setting-control .input-cntr {
   width: 80px;
+}
+.setting[data-status="refresh-blink"] .status-indicator {
+  background: #fdeeab;
+}
+.setting[data-status="refresh-blink"] .setting-inner .setting-control .show-status {
+  background: #fdeeab;
 }
 .setting.tag-hidden {
   display: none;

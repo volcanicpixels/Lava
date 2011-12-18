@@ -94,7 +94,7 @@ class lavaSettingsCallback extends lavaBase
      */
     function addTimePeriodSelector( $settingControl, $theSetting )
     {
-        $seconds = $theSetting->settingValue();
+        $seconds = $theSetting->settingValue( true );
 
         $selectedAttr = 'selected="selected"';
 
@@ -119,16 +119,16 @@ class lavaSettingsCallback extends lavaBase
             $minutesSelected = $selectedAttr;
             $theValue = round( $seconds / 60 );
         }
-        $settingControl .=  '<div class="input-cntr clearfix js-only">'.
+        $settingControl .=  '<div class="input-cntr show-status clearfix js-only">'.
                                 '<div class="validation" data-state="not-invoked"></div>'.
                                 '<input class="time-period-ux" type="text" value="' . $theValue . '"/>'.
                             '</div>'.
                             
                             '<select class="scale-selector js-only">'.
                                 '<option ' . $minutesSelected . ' value="' . 60 . '" >' . __( "Minutes"/* used as part of an input "[input] Minutes" */, $this->_framework() ) . '</option>'.
-                                '<option ' . $hoursSelected . ' value="' . 60 * 60 . '" >' . __( "Hours"/* used as part of an input "[input] Minutes" */, $this->_framework() ) . '</option>'.
-                                '<option ' . $daysSelected . ' value="' . 60 * 60 * 24 . '" >' . __( "Days"/* used as part of an input "[input] Minutes" */, $this->_framework() ) . '</option>'.
-                                '<option ' . $weeksSelected . ' value="' . 60 * 60 * 24 * 7 . '" >' . __( "Weeks"/* used as part of an input "[input] Minutes" */, $this->_framework() ) . '</option>'.
+                                '<option ' . $hoursSelected . ' value="' . 60 * 60 . '" >' . __( "Hours"/* used as part of an input "[input] Hours" */, $this->_framework() ) . '</option>'.
+                                '<option ' . $daysSelected . ' value="' . 60 * 60 * 24 . '" >' . __( "Days"/* used as part of an input "[input] Days" */, $this->_framework() ) . '</option>'.
+                                '<option ' . $weeksSelected . ' value="' . 60 * 60 * 24 * 7 . '" >' . __( "Weeks"/* used as part of an input "[input] Weeks" */, $this->_framework() ) . '</option>'.
                             '</select>';
         return $settingControl;
     }
@@ -145,9 +145,9 @@ class lavaSettingsCallback extends lavaBase
     function addPasswordWrapper( $settingControl, $theSetting )
     {
         $placeholder = 'placeholder="'. $theSetting->properties['placeholder'] .'"';
-        $settingControl =  '<div class="input-cntr clearfix" data-show="password">'.
+        $settingControl =  '<div class="input-cntr show-status clearfix" data-show="password">'.
                                 '<div class="validation" data-state="not-invoked"></div>'.
-                                '<input '.$placeholder.' type="text" class="password-show" value="' . $theSetting->settingValue() . '"/>'.
+                                '<input '.$placeholder.' type="text" class="password-show" value="' . $theSetting->settingValue( true ) . '"/>'.
                                 $settingControl.
                             '</div>';
         return $settingControl;
@@ -163,7 +163,7 @@ class lavaSettingsCallback extends lavaBase
     function addCheckboxUx( $settingControl, $theSetting )
     {
         $checked = "unchecked";
-        if( $theSetting->settingValue() == "on")
+        if( $theSetting->settingValue( true ) == "on")
         {
             $checked = 'checked';
         }
@@ -184,6 +184,7 @@ class lavaSettingsCallback extends lavaBase
         $capabilities = array(
             "manage_options" => "setting-nonce"
         );
+        $otherNonces = array();
         if( is_network_admin() )
         {
             $capabilities["manage_network_options"] = "network-setting-nonce";

@@ -14,15 +14,27 @@ function prettifyCheckboxes()
 {
     jQuery('.setting[data-type="checkbox"]').each(function(){
         var checked = jQuery(this).find('input[type="checkbox"]').addClass( "invisible" ).hasAttr( "checked" );
-        jQuery(this).find('.checkbox-ux').click(function(){
+        jQuery(this).find('input[type="checkbox"]').change(function(){
+            var checked = jQuery(this).hasAttr( "checked" );
+            var checkboxUx = jQuery(this).parents( '.setting' ).find( '.checkbox-ux' );
+            if( checked )
+            {
+                jQuery( checkboxUx ).removeClass( "unchecked" ).addClass("checked");
+            }
+            else
+            {
+                jQuery( checkboxUx ).removeClass( "checked" ).addClass("unchecked");
+            }
+        });
+        jQuery(this).find('.checkbox-ux' ).click(function(){
             if( jQuery(this).siblings('input[type="checkbox"]').hasAttr( "checked" ) )
             {
-                jQuery(this).siblings('input[type="checkbox"]').removeAttr( "checked" );
+                jQuery(this).siblings('input[type="checkbox"]').removeAttr( "checked" ).change();
                 jQuery(this).removeClass("checked").addClass("unchecked");
             }
             else
             {
-                jQuery(this).siblings('input[type="checkbox"]').attr( "checked", "checked" );
+                jQuery(this).siblings('input[type="checkbox"]').attr( "checked", "checked" ).change();
                 jQuery(this).removeClass("unchecked").addClass("checked");
             }
         });
@@ -78,7 +90,32 @@ function prettifyTexts()
 function prettifyTimePeriods()
 {
     jQuery('.setting[data-type="timeperiod"]').each(function(){
-        jQuery(this).find('input[data-actual="true"]').addClass("invisible");
+        jQuery(this).find('input[data-actual="true"]').addClass("invisible").change(function(){
+            var newValue = jQuery( this ).val();
+            newValue = Math.round( newValue / 60 ) * 60;
+            jQuery( this ).val( newValue );//make sure it is a multiple of 60
+            if( newValue % ( 60 * 60 * 24 * 7 ) == 0 )
+            {
+                jQuery( this ).parents( '.setting' ).find( '.time-period-ux' ).val( newValue / (60*60*24*7) );
+                jQuery( this ).parents( '.setting' ).find( 'a[data-dk-dropdown-value="' + 60*60*24*7  + '"]' ).click();
+            }
+            else if( newValue % ( 60 * 60 * 24  ) == 0 )
+            {
+                jQuery( this ).parents( '.setting' ).find( '.time-period-ux' ).val( newValue / (60*60*24) );
+                jQuery( this ).parents( '.setting' ).find( 'a[data-dk-dropdown-value="' + 60*60*24  + '"]' ).click();
+            }
+            else if( newValue % ( 60 * 60  ) == 0 )
+            {
+                jQuery( this ).parents( '.setting' ).find( '.time-period-ux' ).val( newValue / (60*60) );
+                jQuery( this ).parents( '.setting' ).find( 'a[data-dk-dropdown-value="' + 60*60  + '"]' ).click();
+            }
+            else
+            {
+                jQuery( this ).parents( '.setting' ).find( '.time-period-ux' ).val( newValue / (60) );
+                jQuery( this ).parents( '.setting' ).find( 'a[data-dk-dropdown-value="' + 60  + '"]' ).click();
+            }
+        });
+
         jQuery(this).find('select').change(function(){
             var quantity = jQuery(this).siblings('.input-cntr').find('.time-period-ux').val();
             var multiplier = jQuery(this).val();
@@ -106,6 +143,18 @@ function addResetSettings()
             {
                 jQuery(this).siblings('.undo-reset-setting').show();
                 jQuery(this).hide();
+                jQuery(settingParent).find('.show-status').each(function(){
+                    var originalColor = jQuery(this).css("backgroundColor");
+                    var newColor = '#FDEEAB';
+                    jQuery(this)
+                        .css({'background-image': 'none'})
+                        .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100)
+                        .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100)
+                        .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100)
+                        .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100, function(){
+                            jQuery(this).css({'background-image': ''});
+                        });
+                });
             }
         });
         jQuery(this).find( '.undo-reset-setting' ).click(function(){
@@ -114,56 +163,65 @@ function addResetSettings()
             var valueChanged = changeSettingValue(settingParent, newValue);
             jQuery(this).siblings('.reset-setting').show();
             jQuery(this).hide();
+            jQuery(settingParent).find('.show-status').each(function(){
+                var originalColor = jQuery(this).css("backgroundColor");
+                var originalImage = jQuery(this).css("backgroundImage");
+                var newColor = '#FDEEAB';
+                jQuery(this)
+                    .css({'background-image': 'none'})
+                    .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100)
+                    .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100)
+                    .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100)
+                    .animate({backgroundColor: newColor}, 100).animate({backgroundColor: originalColor }, 100, function(){
+                        jQuery(this).css({'background-image': ''});
+                    });
+            });
+            
         });
     });
 }
 
 function changeSettingValue(settingSelector, settingValue)
 {
+    
+    var settingCurrent = jQuery(settingSelector).find('*[data-actual="true"]').val();
     var settingType = jQuery(settingSelector).attr("data-type");
+    var doDefault = true;
+    var isChanged = false;
+
     if(settingType == 'checkbox')
     {
-        jQuery(settingSelector).attr('data-default-undo', 'off');
+        settingCurrent = "off";
         if(jQuery(settingSelector).find('.checkbox-ux').hasClass('checked'))
         {
-            jQuery(settingSelector).attr('data-default-undo', 'on');
+            settingCurrent = "on";
         }
-        if(settingValue == 'on' && jQuery(settingSelector).find('.checkbox-ux').hasClass('unchecked') )
+        if( settingValue == "on" )
         {
-            jQuery(settingSelector).attr('data-default-undo', 'off');
-            jQuery(settingSelector).find('.checkbox-ux').click();
-            return true;
+            jQuery(settingSelector).find('input[type="checkbox"]').attr("checked", "checked").change();
         }
-        else if(settingValue == 'off' && jQuery(settingSelector).find('.checkbox-ux').hasClass('checked'))
+        else
         {
-            jQuery(settingSelector).attr('data-default-undo', 'on');
-            jQuery(settingSelector).find('.checkbox-ux').click();
-            return true;
+            jQuery(settingSelector).find('input[type="checkbox"]').removeAttr("checked").change();
         }
-        return false;
     }
-    else if(settingType == 'password')
+    jQuery(settingSelector).attr('data-default-undo', settingCurrent);
+
+    if( settingCurrent != settingValue)
     {
-        var currentValue = jQuery(settingSelector).find('input[type="password"]').val();
-        jQuery(settingSelector).attr('data-default-undo', currentValue);
-        if(currentValue == settingValue)
-        {
-            return false;
-        }
-        jQuery(settingSelector).find('input[type="password"]').val(settingValue).blur();
-        return true;
+        isChanged = true;
     }
-    else
+    if( doDefault )
     {
-        alert('Couldn\'t reset to default as there is no definition for setting of type "' + settingType + '". Please contact plugin author.');
+        jQuery(settingSelector).find('*[data-actual="true"]').val( settingValue ).change().blur();
     }
+    return isChanged;
 }
 
 function makeSticky()
 {
     var stickyVars = Object;
     stickyVars.topPadding = jQuery('#wpadminbar').height();
-    console.log(stickyVars.topPadding);
     stickyVars.scrollingDistance = jQuery('#lava-nav').offset();
     stickyVars.nudge = stickyVars.scrollingDistance.top - stickyVars.topPadding
     stickyVars.stuck = false;

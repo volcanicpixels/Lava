@@ -38,7 +38,7 @@
     // HTML template for the dropdowns
     dropdownTemplate = [
       '<div class="dk_container" id="dk_container_{{ id }}" tabindex="{{ tabindex }}">',
-        '<a class="dk_toggle">',
+        '<a class="dk_toggle show-status">',
           '<span class="dk_label">{{ label }}</span>',
         '</a>',
         '<div class="dk_options">',

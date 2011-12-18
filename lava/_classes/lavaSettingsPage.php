@@ -19,7 +19,7 @@ class lavaSettingsPage extends lavaPage
         else
             $this->siteChecks();
         
-        $settings = $this->_settings()->fetchSettings();
+        $settings = $this->_settings()->fetchSettings( $this->who );
 
         //display heading
         //start settings wrap
@@ -65,13 +65,34 @@ class lavaSettingsPage extends lavaPage
         {
             //Queue access denied message
             
-            
-            
         }
-        if( is_admin() and !current_user_can( "manage_options") )
+        else if( is_admin() and !current_user_can( "manage_options") )
         {
             //Queue access denied message
             
+        }
+        else
+        {//user is authorized to do something
+
+            if( is_network_admin() )
+            {
+                
+            }
+            elseif( is_admin() )
+            {
+                $theSettings = $_POST[ $this->_slug() ];
+                foreach( $theSettings as $setting => $value )
+                {
+                    $value = stripslashes( $value );
+                    $settingArray = explode( "/", $setting );
+                    $this->_settings()
+                            ->fetchSetting( $settingArray[1], $settingArray[0] )
+                                ->updateValue( $value )
+                    ;
+                }
+                $this->_settings()->updateCache();
+            }
+        
         }
         wp_redirect( $redirect );
         exit;
@@ -79,10 +100,10 @@ class lavaSettingsPage extends lavaPage
 
     function leftActions()
     {
-        $actions[] = '<div class="js-only subtle-button">'. __( "Export Settings", $this->_framework() ) .'</div>';
-        $actions[] = '<div class="js-only subtle-button">'. __( "Import Settings", $this->_framework() ) .'</div>';
-        $actions[] = '<div class="js-only subtle-button">'. __( "Reset All Settings", $this->_framework() ) .'</div>';
-        $actions[] = '<div class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-yellow">'. __( "Save Settings", $this->_framework() ) .'</div>';
+        //$actions[] = '<div class="js-only subtle-button">'. __( "Export Settings", $this->_framework() ) .'</div>';
+        //$actions[] = '<div class="js-only subtle-button">'. __( "Import Settings", $this->_framework() ) .'</div>';
+        //$actions[] = '<div class="js-only subtle-button">'. __( "Reset All Settings", $this->_framework() ) .'</div>';
+        $actions[] = '<div class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-yellow" onclick="jQuery(\'.settings-wrap\').submit()">'. __( "Save Settings", $this->_framework() ) .'</div>';
 
         return $actions;
     }

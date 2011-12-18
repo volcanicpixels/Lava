@@ -52,55 +52,142 @@ class lavaSetting extends lavaBase
         $this->properties = array();
         $this->validation = array();
         $this->tags = array();
+        $this->dataTags = array();
     }
-    
+
     /**
-     * lavaSetting::defaultValue( $value, $overwrite )
-     * 
-     * @param $value - The value to be used as the default
-     * @param $overwrite (default:true) - should we overwrite an existing value (false when used internally)
-     * 
-     * @return void
-     * 
-     * @since 1.0.0
-     */
-    function defaultValue( $value, $overwrite = true )
-    {
-        $this->properties[ "default" ] = $value;
-        
-        //To allow chaining return the lavaSettings instance and don't reset any current chain
-        return $this->_settings( false );
-    }
-    
-    /**
-     * lavaSetting::type( $type )
+     * lavaSetting::setType( $type )
      *  Sets the type of the setting (text, password, timeperiod etc.)
      * 
      * @param $type 
      * 
-     * @return chainable object
+     * @return #chain
      * 
      * @since 1.0.0
      */
-    function type( $type )
+    function setType( $type )
     {
         $this->type = $type;
         switch( $type )
         {
             case "checkbox":
-                $this->defaultValue( "on" , false );
+                $this->setDefault( "on" , false );
                 break;
             case "color"://bloody American spelling - polluting the world
             case "colour"://that's more like it
                 //no support for alpha channels at this time
-                $this->defaultValue( "#FFFFFF", false );
+                $this->setDefault( "#FFFFFF", false );
                 break;
             case "password":
-                $this->defaultValue( "password" );
+                $this->setDefault( "password" );
                 break;
         }
         return $this->_settings( false );
     }
+
+    
+
+    /**
+     * lavaSetting::setName( $name )
+     *  Sets the name that appears to the user
+     * 
+     * @param $name - translated name
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function setName( $name )
+    {
+        $this->name = $name;
+        return $this->_settings( false );
+    }
+
+    /**
+     * lavaSetting::setDefault( $value, $overwrite )
+     * 
+     * @param $value - The value to be used as the default value for the setting
+     * @param $overwrite (default:true) - should we overwrite an existing value (false when used internally)
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function setDefault( $value, $overwrite = true )
+    {
+        $old = $this->getProperty( "default" );
+        if( $overwrite == true )
+        {
+            $this->setProperty( "default", $value );
+        }
+        else if( is_null( $old ) )
+        {
+            $this->setProperty( "default", $value );
+        }
+        
+        //To allow chaining return the lavaSettings instance and don't reset the chain
+        return $this->_settings( false );
+    }
+
+    
+    /**
+     * lavaSetting::setHelp( $help )
+     *  Sets the contextual help
+     * 
+     * @param $help - translated help
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */    
+    function setHelp( $help )
+    {
+        $this->help = $help;
+        return $this->_settings( false );
+    }
+
+    /**
+     * lavaSetting::setVisibility( $visibility )
+     *  Hides the HTML from view (still printed though)
+     * 
+     * @param $visibility - boolean value of whether to show or hide the setting
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function setVisibility( $visibility = true )
+    {
+        //hides the setting from the admin panel (still deciding whether it should generate HTML and just hide it or not generate at all)
+        if( $visibility == false )
+        {
+            $this->addTag( "hidden" );
+        }
+        else
+        {
+            $this->removeTag( "hidden" );
+        }
+        return $this->_settings( false );
+    }
+
+    
+    /**
+     * lavaSetting::setProperty( $property, $value )
+     * 
+     * @param $property
+     * @param $value
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function setProperty( $property, $value)
+    {
+        $this->properties[ $property ] = $value;
+        return $this->_settings( false );
+    }
+    
+    
 
     /**
      * lavaSetting::addTag( $tag )
@@ -108,7 +195,7 @@ class lavaSetting extends lavaBase
      * 
      * @param $tag - The name of the tag to add to the setting. Should be lowercase letters and hyphen only
      * 
-     * @return void
+     * @return #chain
      * 
      * @since 1.0.0
      */
@@ -129,7 +216,7 @@ class lavaSetting extends lavaBase
      * 
      * @param $tag - The name of the tag to remove to the setting. 
      * 
-     * @return void
+     * @return #chain
      * 
      * @since 1.0.0
      */
@@ -167,109 +254,118 @@ class lavaSetting extends lavaBase
     }
     
     /**
-     * lavaSetting::multisite()
+     * lavaSetting::multisiteOnly()
      *  Makes the setting only appear to network admins
      * 
-     * @return chain
+     * @return #chain
      * 
      * @since 1.0.0
      */
-    function multiSite()
+    function multisiteOnly()
     {
-        $this->addTag( "multisite" );
+        $this->addTag( "multisite-only" );
         
         return $this->_settings( false );
     }
     
-    /**
-     * lavaSetting::hidden( $hidden )
-     *  Hides the HTML from view (still printed though)
-     * 
-     * @param $hidden - boolean value of whether to hide or unhide the setting
-     * 
-     * @return chain
-     * 
-     * @since 1.0.0
-     */
-    function hidden( $hidden = true )
-    {
-        //hides the setting from the admin panel (still deciding whether it should generate HTML and just hide it or not generate at all)
-        if( $hidden == true )
-        {
-            $this->addTag( "hidden" );
-        }
-        else
-        {
-            $this->removeTag( "hidden" );
-        }
-        return $this->_settings( false );
-    }
-
-    /**
-     * lavaSetting::help( $help )
-     *  Sets the contextual help
-     * 
-     * @param $help - translated help
-     * 
-     * @return chain
-     * 
-     * @since 1.0.0
-     */    
-    function help( $help )
-    {
-        $this->help = $help;
-        return $this->_settings( false );
-    }
     
 
-    /**
-     * lavaSetting::help( $help )
-     *  Sets the contextual help
-     * 
-     * @param $help - translated help
-     * 
-     * @return chain
-     * 
-     * @since 1.0.0
-     */
-    function name( $name )
-    {
-        $this->name = $name;
-        return $this->_settings( false );
-    }
     
-    function settingValue()
-    {
-        
-        return $this->settingDefaultValue();
-    }
+
 
     /**
-     * lavaSetting::setProperty( $property, $value )
+     * lavaSetting::bindData( $key, $value )
+     *  Binds a data tag to the setting
      * 
-     * @param $property
+     * @param $key
      * @param $value
      * 
-     * @return chain
+     * @return #chain
      * 
      * @since 1.0.0
      */
-    function setProperty( $property, $value)
+    function bindData( $key, $value )
     {
-        $this->properties[ $property ] = $value;
+        $this->dataTags[ $key ] = $value;
+
         return $this->_settings( false );
+    }
+
+    /**
+     * lavaSetting::updateValue( $value, $doStatus = false, $suppressSave = false )
+     *  Updates the setting value
+     * 
+     * @param $value - what to update to
+     * @param $doStatus (false) - whether to check if changed and update the status
+     * @param $suppressSave (false) - whether to supporess the saving of the option (to prevent unneccessary database calls) - this is used during a loop of multiple calls and then the save is called after
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function updateValue( $value, $doStatus = false, $suppressSave = false )
+    {
+        
+        $value = htmlentities($value, ENT_QUOTES);
+        $cache = $this->getCache();
+
+        
+        if( $doStatus )
+        {
+            
+        }
+        $cache[ $this->key ] = $value;
+
+        $this->_settings( false )->putCache( $this->who, $cache );
+        if( !$suppressSave )
+        {
+            $this->_settings( false )->updateCache( $this->who );
+        }
+        return $this->_settings( false );
+    }
+    
+    /**
+     * lavaSetting::getValue( $format = false )
+     *  Retrieves the value of the setting
+     * 
+     * @param $format - whether to format as HTML entitity so it can be used as input value
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function getValue( $format = false)
+    {
+        $cache = $this->getCache();
+        $value = $cache[ $this->key ];
+        if( $format == false)
+        {
+            $value = html_entity_decode( $value );
+            return $value;
+        }
+        return $value;
+    }
+
+
+    /**
+     * lavaSetting::getCache()
+     *  Retrieves the setting cache from the singleton instance
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function getCache()
+    {
+        return $cache = $this->_settings( false )->getCache( $this->who );
     }
 
 
 
 
 
-
-
-
-
     /**
-     * lavaSetting::settingClasses( $format )
+     * lavaSetting::getClasses( $format )
      *  Gets the classes for the setting and either returns them as a formatted string or as an array
      * 
      * @param $format
@@ -278,7 +374,7 @@ class lavaSetting extends lavaBase
      * 
      * @since 1.0.0
      */
-    function settingClasses( $format = false )
+    function getClasses( $format = false )
     {
         $classes = array();
 
@@ -290,7 +386,7 @@ class lavaSetting extends lavaBase
             $classes[] = "tag-{$tag}";
         }
 
-        $type = $this->settingType();
+        $type = $this->getType();
         $classes[] = "type-{$type}";
 
         $classes = $this->runFilters( "settingClasses", $classes );
@@ -311,7 +407,7 @@ class lavaSetting extends lavaBase
 
 
     /**
-     * lavaSetting::settingTags( $format )
+     * lavaSetting::getTags( $format )
      *  Gets the tags for the setting and either returns them as a formatted string or as an array
      * 
      * @param $format
@@ -320,7 +416,7 @@ class lavaSetting extends lavaBase
      * 
      * @since 1.0.0
      */
-    function settingTags( $format = false )
+    function getTags( $format = false )
     {
 
         if( $format == false )
@@ -338,63 +434,91 @@ class lavaSetting extends lavaBase
     }
 
     /**
-     * lavaSetting::settingType()
+     * lavaSetting::getType()
      *
-     * @return chain
-     * 
+     * @return #chain
+     *
      * @since 1.0.0
      */
-    function settingType()
+    function getType()
     {
         return $this->type;
     }
 
     /**
-     * lavaSetting::settingName()
+     * lavaSetting::getName()
      *
-     * @return chain
-     * 
+     * @return #chain
+     *
      * @since 1.0.0
      */
-    function settingName()
+    function getName()
     {
         return $this->name;
     }
-
+    
     /**
-     * lavaSetting::settingKey()
+     * lavaSetting::getHelp()
      *
-     * @return chain
-     * 
+     * @return #chain
+     *
      * @since 1.0.0
      */
-    function settingKey()
+    function getHelp()
+    {
+        return $this->help;
+    }
+
+    /**
+     * lavaSetting::getKey()
+     *
+     * @return #chain
+     *
+     * @since 1.0.0
+     */
+    function getKey()
     {
         return $this->key;
     }
 
     /**
-     * lavaSetting::settingStatus()
+     * lavaSetting::getStatus()
      *
-     * @return chain
+     * @return #chain
      * 
      * @since 1.0.0
      */
-    function settingStatus()
+    function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * lavaSetting::settingDefaultValue()
+     * lavaSetting::getDefault()
      *
-     * @return chain
+     * @return #chain
      * 
      * @since 1.0.0
      */
-    function settingDefaultValue()
+    function getDefault()
     {
-        return $this->properties['default'];
+        return $this->getProperty( "default" );
+    }
+
+    /**
+     * lavaSetting::getProperty( $key )
+     *
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function getProperty( $key )
+    {
+        if( !array_key_exists( $key, $this->properties ) )
+        {
+            return null;
+        }
+        return $this->properties[ $key ];
     }
 
 
@@ -402,7 +526,7 @@ class lavaSetting extends lavaBase
 
     /**
      * lavaSetting::doSetting()
-     *  echos the setting HTML
+     *  prints the setting HTML
      *
      * @return chain
      * 
@@ -410,32 +534,49 @@ class lavaSetting extends lavaBase
      */
     function doSetting()
     {
-        if( array_key_exists( "no-display", $this->tags ) )
+        if( array_key_exists( "no-display", $this->tags ) )//This setting shouldn't be displayed
         {
             return;
         }
-        
-        $classes = $this->settingClasses( true );
-        $tags = $this->settingTags( true );
-        $type = $this->settingType();
-        $name = $this->settingName();
-        $key = $this->settingKey();
-        $status = $this->settingStatus();
-        $defaultValue = $this->settingDefaultValue();
 
-        $settingStart = "<div class=\"{$classes}\" data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-key=\"{$key}\" data-default-value=\"{$defaultValue}\">";
-            $statusIndicator = '<span class="status-indicator"></span>';
+        $dataTags = "";
+        foreach( $this->dataTags as $tag => $value )
+        {
+            $dataTags .= " data-{$tag}=\"{$value}\"";
+        }
+
+        $settingKey = $this->getKey();
+        $settingWho = $this->who;
+        $pluginSlug =  $this->_slug();
+        $classes = $this->getClasses( true );
+        $tags = $this->getTags( true );
+        $type = $this->getType();
+        $name = $this->getName();
+        $key = $this->getKey();
+        $help = $this->getHelp();
+        if( !empty( $help ) )
+        {
+            $help = "<span class=\"tiptip-right help\" title=\"$help\" >&#63;</span>";
+        }
+        $status = $this->getStatus();
+        $defaultValue = $this->getDefault();
+        $settingID = "setting-cntr_{$pluginSlug}-{$settingWho}-{$settingKey}";
+
+        $settingStart = "<div class=\"{$classes}\" $dataTags data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-key=\"{$key}\" data-default-value=\"{$defaultValue}\" id=\"$settingID\" >";
+            $statusIndicator = '<span class="status-indicator show-status"></span>';
             $preSettingStart = '<div class="pre-setting">';
-                $settingName = "<span class=\"setting-name\">$name</span>";
+                $settingName = "<span class=\"setting-name\">$name</span>$help";
             $preSettingEnd = '</div>';
 
             $settingInnerStart = '<div class="setting-inner clearfix">';
+                $settingInnerPre = $this->runFilters( "settingInnerPre", '' );
                 $settingControlStart = '<div class="setting-control">';
-                    $settingControl = $this->settingControl();
+                    $settingControl = $this->doSettingControl();
                 $settingControlEnd = '</div>';
                 $settingActionsStart = '<div class="setting-actions clearfix">';
-                    $settingActions = $this->settingActions();
+                    $settingActions = $this->getActions();
                 $settingActionsEnd = '</div>';
+                $settingInnerPost = $this->runFilters( "settingInnerPost", '' );
             $settingInnerEnd ='</div>';
 
             $postSettingStart = '<div class="post-setting clearfix">';
@@ -452,12 +593,14 @@ class lavaSetting extends lavaBase
                 $preSettingEnd
             
                 $settingInnerStart
+                    $settingInnerPre
                     $settingControlStart
                         $settingControl
                     $settingControlEnd
                     $settingActionsStart
                         $settingActions
                     $settingActionsEnd
+                    $settingInnerPost
                 $settingInnerEnd
 
                 $postSettingStart
@@ -470,14 +613,14 @@ class lavaSetting extends lavaBase
     }
 
     /**
-     * lavaSetting::settingActions()
+     * lavaSetting::getActions()
      *  Returns the actions for the setting
      *
      * @return HTML string of actions
      * 
      * @since 1.0.0
      */
-    function settingActions()
+    function getActions()
     {
         $settingActions = $this->runFilters( "settingActions" );
 
@@ -485,25 +628,25 @@ class lavaSetting extends lavaBase
     }
 
     /**
-     * lavaSetting::settingControl()
+     * lavaSetting::doSettingControl()
      *  Returns the setting control HTML
      *
      * @return HTML string of actions
      * 
      * @since 1.0.0
      */
-    function settingControl( $type = "default" )
+    function doSettingControl( $type = "default" )
     {
-        $settingKey = $this->settingKey();
+        $settingKey = $this->getKey();
         $settingWho = $this->who;
         $pluginSlug =  $this->_slug();
         $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
         $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
-        $settingValue = $this->settingDefaultValue();
-        $settingPlaceholder = $this->properties['placeholder'];
+        $settingValue = $this->getValue( true );
+        $settingPlaceholder = $this->getProperty( "placeholder" );
         if( "default" == $type )
         {
-            $type = $this->settingType();
+            $type = $this->getType();
         }
 
         switch( $type )
@@ -537,8 +680,8 @@ class lavaSetting extends lavaBase
     function hookTags()
     {
         $settingWho = $this->who;
-        $settingKey = $this->key;
-        $settingType = $this->type;
+        $settingKey = $this->getKey();
+        $settingType = $this->getType();
 
         $hooks = array( " ");
         $hooks[] = "who/{$settingWho}";

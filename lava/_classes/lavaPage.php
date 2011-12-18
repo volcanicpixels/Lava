@@ -25,6 +25,7 @@ class lavaPage extends lavaBase
 {
     public $multisiteSupport = false;//Whether the page should appear in the network page
     public $displayToolbar = false;
+    public $toolbarClasses = "";
     
     
     /**
@@ -36,10 +37,10 @@ class lavaPage extends lavaBase
     */
     function lavaConstruct( $slug )
     {
-        $this->slug( $slug, false );
-        $this->title( $slug );
-        $this->capability( "manage_options" );
-        $this->lavaCallReturn = $this->_pages( false );
+        $this->setSlug( $slug, false );
+        $this->setTitle( $slug );
+        $this->setCapability( "manage_options" );
+        $this->lavaCallReturn = $this->_pages( false );//prevents the parent losing control
 
         add_action( "admin_init", array($this, "_registerActions") );
         if( is_callable( array( $this, "registerActions" ) ) )
@@ -56,24 +57,6 @@ class lavaPage extends lavaBase
             add_action( "load-{$pageHook}", array( $this, "loadPage" ) );
         }
     }
-
-    function sidebar( $enable = true )
-    {
-        remove_filter( "admin_page_class-{$pluginSlug}-{$page_hook}", array( $this, "sidebarCallback") );
-        if( true == $enable )
-        {
-            $pluginSlug = $this->_slug();
-            $page_hook = $this->get( "slug" );
-            add_filter( "admin_page_class-{$page_hook}", array( $this, "sidebarCallback") );
-        }
-
-        return $this->_pages( false );
-    }
-
-    function sidebarCallback( $classes )
-    {
-        return "{$classes} sidebar";
-    }
     
     function get( $what )
     {
@@ -81,7 +64,7 @@ class lavaPage extends lavaBase
     }
 
     
-    function url()
+    function getUrl()
     {
         $slug = $this->get( "slug" );
         if( defined( 'WP_NETWORK_ADMIN' ) and WP_NETWORK_ADMIN == true )
@@ -92,13 +75,13 @@ class lavaPage extends lavaBase
         return admin_url( "admin.php?page={$slug}");
     }
     
-    function capability( $capability )
+    function setCapability( $capability )
     {
         $this->capability = $capability;
         return $this->_pages( false );
     }
     
-    function slug( $slug, $slugify = true )
+    function setSlug( $slug, $slugify = true )
     {
         $this->slug = $slug;
 
@@ -109,7 +92,7 @@ class lavaPage extends lavaBase
         return $this->_pages( false );
     }
     
-    function title( $title )
+    function setTitle( $title )
     {
         $this->title = $title;
         return $this->_pages( false );
@@ -184,7 +167,7 @@ class lavaPage extends lavaBase
             <div id="lava-nav" class="lava-nav texture texture-drk-red bleed-l-19 bleed-r-15 lava-sticky" style="height:40px;">
                 <ul class="nav nav-horizontal clearfix stitch-left-x stitch-right-x">
                     <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
-                   <li class="stitch-left stitch-right clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->url(); ?>"><?php echo $page->get( "title" ); ?></a></li>
+                   <li class="stitch-left stitch-right clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->getUrl(); ?>"><?php echo $page->get( "title" ); ?></a></li>
                    <?php endforeach; ?>
                 </ul>
                 <?php
@@ -253,7 +236,9 @@ class lavaPage extends lavaBase
         $leftActions = $this->_leftActions();
         $rightActions = $this->_rightActions();
 
-        echo '<div class="lava-toolbar">';
+        $toolbarClasses = $this->toolbarClasses;
+
+        echo '<div class="lava-toolbar '.$toolbarClasses.'">';
             echo '<div class="actions-left">';
                 foreach($leftActions as $action)
                 {

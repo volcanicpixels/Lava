@@ -43,6 +43,13 @@ class lavaPlugin
         $this->pluginSlug = strtolower( str_replace( " ", "_", $pluginName ) );
         
         spl_autoload_register( array( $this, "__autoload" ) );
+        $filename = dirname( $pluginFile ).'/pluginCallbacks.php';
+        if( file_exists( $filename ) )
+        {
+            include( $filename );
+            $className = $this->_slug( "callbacks" );
+            $this->pluginCallbacks = $this->_new( $className );
+        }
     }
     
     /**
@@ -79,6 +86,18 @@ class lavaPlugin
     function _name()
     {
         return $this->pluginName;
+    }
+
+    /**
+     * _this function.
+     * 
+     * @return lavaPlugin
+     * 
+     * @since 1.0.0
+     */
+    function _this()
+    {
+        return $this;
     }
     
     /**
@@ -196,6 +215,18 @@ class lavaPlugin
     {
         return $this->_handle( "Settings", $reset );
     }
+
+    /**
+     * _skins function.
+     * 
+     * @return lavaSkins
+     * 
+     * @since 1.0.0
+     */
+    function _skins( $reset = true )
+    {
+        return $this->_handle( "Skins", $reset );
+    }
     
     /**
      * _pages function.
@@ -207,6 +238,18 @@ class lavaPlugin
     function _pages( $reset = true)
     {
         return $this->_handle( "Pages", $reset );
+    }
+    
+    /**
+     * _messages function.
+     * 
+     * @return lavaPages
+     * 
+     * @since 1.0.0
+     */
+    function _messages( $reset = true)
+    {
+        return $this->_handle( "Messages", $reset );
     }
     
     /**
