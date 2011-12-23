@@ -161,7 +161,7 @@ class lavaPages extends lavaBase
     function addAboutPage( $slug = "about" )
     {
         $this   ->addPage( $slug, "About" )
-                    ->title( sprintf( __( "About %s", $this->_framework() ), $this->_name() ) );
+                    ->setTitle( sprintf( __( "About %s", $this->_framework() ), $this->_name() ) );
         return $this;
     }
 
@@ -175,7 +175,7 @@ class lavaPages extends lavaBase
     {
         $this   ->addPage( $slug, "Settings" )
                     /* translators: This is the title of the settings page */
-                    ->title( __( "Plugin Settings", $this->_framework() ) );
+                    ->setTitle( __( "Plugin Settings", $this->_framework() ) );
                     
         return $this;
     }
@@ -192,7 +192,7 @@ class lavaPages extends lavaBase
 
         $this   ->addPage( $slug, "Skins" )
                     /* translators: This is the title of the settings page */
-                    ->title( __( "Skins", $this->_framework() ) )
+                    ->setTitle( __( "Skins", $this->_framework() ) )
         ;
                     
         return $this;
@@ -210,7 +210,7 @@ class lavaPages extends lavaBase
     function addTablePage( $slug = "table" )
     {
         $this   ->addPage( $slug, "Table" )
-                    ->title( __( "Table", $this->_framework() ) )
+                    ->setTitle( __( "Table", $this->_framework() ) )
         ;
         return $this;
     }
@@ -247,7 +247,7 @@ class lavaPages extends lavaBase
     {
         $defaultPage = $this->defaultPage;
         //register the main page
-        add_menu_page( $defaultPage->get( "title" ),  $this->_name(), $defaultPage->get( "capability" ), $defaultPage->get( "slug" ), array( $this, "blank" ) );
+        add_menu_page( $defaultPage->get( "title" ),  $this->_name(), $defaultPage->get( "capability" ), $defaultPage->get( "slug" ), array( $defaultPage, "doPage" ) );
 
         $parentSlug = $defaultPage->get( "slug" );
 
@@ -256,6 +256,7 @@ class lavaPages extends lavaBase
         {
             $page->registerPage( $parentSlug );
         }
+        
     }
 
     /**

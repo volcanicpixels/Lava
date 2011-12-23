@@ -43,7 +43,7 @@ class lavaPage extends lavaBase
         $this->lavaCallReturn = $this->_pages( false );//prevents the parent losing control
 
         add_action( "admin_init", array($this, "_registerActions") );
-        if( is_callable( array( $this, "registerActions" ) ) )
+        if( method_exists( $this, "registerActions" ) )
         {
             add_action( "admin_init", array($this, "registerActions") );
         }

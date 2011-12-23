@@ -37,7 +37,11 @@ class lavaSkins extends lavaBase
     {
         $callbacks = $this->_new( "lavaSkinsCallback" );
 
-        $this->parseSkins();
+        //add the setting that holds which skin is selected
+        $this->_settings()
+            ->addSetting( "skin", "skins" )
+                ->setType( "skins" )
+                ->setName( __( "Select a skin", $this->_framework() ) );
     }
 
 
@@ -55,7 +59,6 @@ class lavaSkins extends lavaBase
                 $dir = explode( "/", $dir );
                 $dir = end( $dir );
                 $this->currentSkinSlug = $dir;
-
                 include_once( $includePath );
             }
         }
@@ -71,6 +74,10 @@ class lavaSkins extends lavaBase
         $theSkin = $this->_new( "lavaSkin", $arguments );
 
         $skins[ $skinSlug ] = $theSkin;
+
+        $this->_settings( false )
+            ->fetchSetting( "skin", "skins" )
+                ->addPropertyValue( "radio-values", $theSkin );
 
         return $theSkin;
     }

@@ -85,7 +85,7 @@ class lavaSettings extends lavaBase
     }
     
     /**
-     * lavaSettings::fetchSetting( $key)
+     * lavaSettings::fetchSetting( $key, $who )
      * 
      * This method fetches a plugin setting.
      * 
@@ -103,6 +103,20 @@ class lavaSettings extends lavaBase
             $this->lavaContext( $this->settings[ $who ][ $key] );
         }
         return $this;
+    }
+
+    /**
+     * lavaSettings::returnSetting()
+     * 
+     * This method returns what is in lavaContext
+     * 
+     * @return lavaSetting
+     * 
+     * @since 1.0.0
+     */
+    function returnSetting()
+    {
+        return $this->lavaContext();
     }
 
     /**
@@ -181,7 +195,7 @@ class lavaSettings extends lavaBase
     {
         if( !isset( $this->settingCache[ $who ] ) )
         {
-            $this->settingCache[ $who ] = $this->getOption( $this->_slug( $who ) );
+            $this->settingCache[ $who ] = $this->getOption( $this->_slug( $who ), array() );
         }
 
         
@@ -195,7 +209,7 @@ class lavaSettings extends lavaBase
 
     function updateCache( $who = "*" )
     {
-                
+        
         if( $who == "*" )
         {
             foreach( $this->settingCache as $who => $cache)
@@ -203,7 +217,10 @@ class lavaSettings extends lavaBase
                 $this->updateOption( $this->_slug( $who ), $cache );
             }
         }
-        $this->updateOption( $this->_slug( $who ), $this->settingCache[ $who ] );
+        else
+        {
+            $this->updateOption( $this->_slug( $who ), $this->settingCache[ $who ] );
+        }
     }
     
     function config( $key, $default = null )
@@ -231,6 +248,7 @@ class lavaSettings extends lavaBase
         {
             return update_site_option( $option, $value );
         }
+        update_option( "test", "bob" );
         return update_option( $option, $value );
     }
 }

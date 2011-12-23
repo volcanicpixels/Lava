@@ -44,6 +44,7 @@ class lavaSettingsCallback extends lavaBase
         add_filter( $this->_slug( "{$hookTag}-type/timeperiod" ), array( $this, "addTimePeriodSelector" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/password" ), array( $this, "addPasswordWrapper" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/checkbox" ), array( $this, "addCheckboxUx" ), 10, 2 );
+        add_filter( $this->_slug( "{$hookTag}-type/text" ), array( $this, "addTextWrapper" ), 10, 2 );
 
         //settingsHiddenInputs
         $hookTag = "settingsHiddenInputs";
@@ -94,7 +95,7 @@ class lavaSettingsCallback extends lavaBase
      */
     function addTimePeriodSelector( $settingControl, $theSetting )
     {
-        $seconds = $theSetting->settingValue( true );
+        $seconds = $theSetting->getValue( true );
 
         $selectedAttr = 'selected="selected"';
 
@@ -147,8 +148,33 @@ class lavaSettingsCallback extends lavaBase
         $placeholder = 'placeholder="'. $theSetting->properties['placeholder'] .'"';
         $settingControl =  '<div class="input-cntr show-status clearfix" data-show="password">'.
                                 '<div class="validation" data-state="not-invoked"></div>'.
-                                '<input '.$placeholder.' type="text" class="password-show" value="' . $theSetting->settingValue( true ) . '"/>'.
+                                '<input '.$placeholder.' type="text" class="password-show" value="' . $theSetting->getValue( true ) . '"/>'.
                                 $settingControl.
+                            '</div>';
+        return $settingControl;
+    }
+
+    /**
+     * lavaSettingsCallback::addTextWrapper()
+     * 
+     * Adds the wrapping html to the text input
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
+    function addTextWrapper( $settingControl, $theSetting )
+    {
+        $settingKey = $theSetting->getKey();
+        $settingWho = $theSetting->who;
+        $pluginSlug =  $this->_slug();
+        $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
+        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
+
+        $placeholder = 'placeholder="'. $theSetting->properties['placeholder'] .'"';
+        $settingControl =  '<div class="input-cntr show-status clearfix">'.
+                                '<div class="validation" data-state="not-invoked"></div>'.
+                                '<input id="' . $settingInputID . '" name="' . $settingInputName . '"  '.$placeholder.' type="text" value="' . $theSetting->getValue( true ) . '"/>'.
                             '</div>';
         return $settingControl;
     }
@@ -163,7 +189,7 @@ class lavaSettingsCallback extends lavaBase
     function addCheckboxUx( $settingControl, $theSetting )
     {
         $checked = "unchecked";
-        if( $theSetting->settingValue( true ) == "on")
+        if( $theSetting->getValue( true ) == "on")
         {
             $checked = 'checked';
         }
@@ -184,7 +210,10 @@ class lavaSettingsCallback extends lavaBase
         $capabilities = array(
             "manage_options" => "setting-nonce"
         );
-        $otherNonces = array();
+        $otherNonces = array(
+            "purpose" => "save",
+            "reset-scope" => "total"
+        );
         if( is_network_admin() )
         {
             $capabilities["manage_network_options"] = "network-setting-nonce";
@@ -197,6 +226,23 @@ class lavaSettingsCallback extends lavaBase
                 wp_nonce_field( $action, $name, false );
             }
         }
+        foreach( $otherNonces as $name => $value )
+        {
+            echo "<input class=\"lava-form-$name\" type=\"hidden\" name=\"$name\" value=\"$value\" />";
+        }
+    }
+
+    /**
+     * lavaSettingsCallback::removeActions()
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
+    function removeActions( $settingActions, $theSetting )
+    {
+        $settingActions = "";
+        return $settingActions;
     }
 
     

@@ -1,10 +1,15 @@
 <?php
 class lavaTablePage extends lavaPage
 {
-    function dataSource( $dataSource )
+    function setDataSource( $dataSource )
     {
         //$this->dataSource = $this->_tables()->fetchTable( $dataSource );
-        return $this;
+        return $this->_pages( false );
+    }
+
+    function setDisplayOrder( $displayString )
+    {
+        return $this->_pages( false );
     }
 }
 ?>

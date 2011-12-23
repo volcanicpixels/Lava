@@ -186,6 +186,35 @@ class lavaSetting extends lavaBase
         $this->properties[ $property ] = $value;
         return $this->_settings( false );
     }
+
+    /**
+     * lavaSetting::addPropertyValue( $property, $value, $duplicate )
+     *  Adds value as element in array to property. if duplicate is false then only adds if doesn't exist
+     *
+     * @param $property
+     * @param $value
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function addPropertyValue( $property, $value, $duplicate = false )
+    {
+        $current = $this->getProperty( $property );
+        if( !is_array( $current ) )
+        {
+            $current = array();
+        }
+        if( $duplicate == false and in_array( $value, $current ) )
+        {
+            exit( "ETF");
+            return $this->_settings( false );
+        }
+        $current[] = $value;
+        $this->setProperty( $property, $current );
+
+        return $this->_settings( false );
+    }
     
     
 
@@ -308,7 +337,6 @@ class lavaSetting extends lavaBase
         
         $value = htmlentities($value, ENT_QUOTES);
         $cache = $this->getCache();
-
         
         if( $doStatus )
         {
@@ -337,6 +365,10 @@ class lavaSetting extends lavaBase
     function getValue( $format = false)
     {
         $cache = $this->getCache();
+        if( !array_key_exists( $this->key, $cache ) )
+        {
+            return $this->getDefault();
+        }
         $value = $cache[ $this->key ];
         if( $format == false)
         {
@@ -534,6 +566,7 @@ class lavaSetting extends lavaBase
      */
     function doSetting()
     {
+        
         if( array_key_exists( "no-display", $this->tags ) )//This setting shouldn't be displayed
         {
             return;
@@ -582,7 +615,7 @@ class lavaSetting extends lavaBase
             $postSettingStart = '<div class="post-setting clearfix">';
             $postSettingEnd ='</div>';
         $settingEnd = '</div>';
-
+        
         $settingFull = 
             "
             $settingStart
@@ -648,9 +681,36 @@ class lavaSetting extends lavaBase
         {
             $type = $this->getType();
         }
-
+        
         switch( $type )
         {
+            case "skins":
+                $theOptions = $this->getProperty( "radio-values" );
+                if( !is_array( $theOptions ) )
+                {
+                    $theOptions = array();
+                }
+                $settingControl = "";
+                foreach( $theOptions as $option )
+                {
+                    $slug = $option->slug;
+                    $name = $option->name;
+                    $settingControl .= "<label><input type='radio' name='{$settingInputName}' value='{$slug}' />$name</label>";
+                }
+            break;
+            case "radio":
+                $theOptions = $this->getProperty( "radio-values" );
+                if( !is_array( $theOptions ) )
+                {
+                    $theOptions = array();
+                }
+                $settingControl = "";
+                foreach( $theOptions as $option )
+                {
+                    $settingControl .= "<input type='radio' name='{$settingInputName}' value='{$option}' />";
+                }
+            break;
+
             case "checkbox":
                 if( "on" == $settingValue )
                 {

@@ -50,6 +50,7 @@ class lavaPlugin
             $className = $this->_slug( "callbacks" );
             $this->pluginCallbacks = $this->_new( $className );
         }
+        $this->_skins()->parseSkins();//load skins
     }
     
     /**

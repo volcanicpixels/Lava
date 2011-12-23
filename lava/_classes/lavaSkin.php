@@ -21,12 +21,13 @@
  */
 class lavaSkin extends lavaBase
 {
-    protected $slug;
-    protected $author;
-    protected $templates = array();
+    public $slug;
+    public $author;
+    public $name;
+    public $templates = array();
     
     /**
-     * lavaSkin::lavaConstruct()
+     * lavaSkin::lavaConstruct( $slug )
      * 
      * This method is called by the __construct method of lavaBase and handles the construction
      * 
@@ -36,9 +37,70 @@ class lavaSkin extends lavaBase
      */
     function lavaConstruct( $slug )
     {
-        $this->slug = $slug;
+        $this->name = $this->slug = $slug;
     }
 
-    function _setName(  )
+
+    /**
+     * lavaSkin::parent_setName( $name )
+     * 
+     * It is correct to call this method with setName() - lavaBase handles the rest
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function parent_setName( $name )
+    {
+
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * lavaSkin::parent_setAuthor( $author )
+     * 
+     * It is correct to call this method with setAuthor() - lavaBase handles the rest
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function parent_setAuthor( $author )
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * lavaSkin::addTemplate( $slug )
+     * 
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function addTemplate( $slug )
+    {
+        return $this;
+    }
+
+    /**
+     * lavaSkin::addSkinSetting( $slug )
+     * 
+     * 
+     * @return #chain
+     * 
+     * @since 1.0.0
+     */
+    function addSkinSetting( $slug )
+    {
+        $slug = $this->slug . "-" . $slug;
+        $theSetting = $this->_settings()->withinContext( $this )->addSetting( $slug, "skins" );
+
+        return $theSetting;//put it in context of lavaSettings with lavaSetting as child and lavaSkin as parent
+    }
 }
 ?>

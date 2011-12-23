@@ -69,21 +69,46 @@ class lavaBase
         // lavaPlugin chainable methods start with "_" - so this is checking to see whether we should try a lavaPlugin method
         if( substr( $methodName, 0, 1 ) == "_" )
         {
-            $callback = array( $this->pluginInstance, $methodName );
-            if( is_callable( $callback ) )
+            if( method_exists( $this->pluginInstance, $methodName ) )
             {
+                $callback = array( $this->pluginInstance, $methodName );
                 return call_user_func_array( $callback, $arguments );
             }
         }
         elseif( !is_null( $this->lavaContext() ) )
         {
             //lets see if the class that is the current context has this method
-            $callback = array( $this->lavaContext(), $methodName );
-            if( is_callable( $callback ) )
+            if( method_exists( $this->lavaContext(), $methodName ) )
             {
+                $callback = array( $this->lavaContext(), $methodName );
                 return call_user_func_array( $callback, $arguments );
             }
         }
+
+        $parent = $this->getContext( "parent" );
+        if( !is_null( $parent ) )
+        {
+            $object = $this->lavaContext( null, "parent" );
+            if( method_exists( $object, $methodName ) )
+            {
+                $callback = array( $object, $methodName );
+                return call_user_func_array( $callback, $arguments );
+            }
+        }
+        //some classes have methods with same name on parent and child. To get around this the parent method is prepended "parent_". Since no child exists with this method we should now check to see if parent has this method.
+
+        if( method_exists( $this, "parent_$methodName" ) )
+        {
+            $callback = array( $this, "parent_$methodName" );
+            return call_user_func_array( $callback, $arguments );
+        }
+
+        if( 1 == 1)
+        {
+            echo $methodName;
+            exit;
+        }
+        //to prevent a dummy method call from returning a child parents set an "if lost return to" property on the children - we should check to see if it exists
         if( isset( $this->lavaCallReturn ) )
         {
             return $this->lavaCallReturn;
@@ -122,6 +147,54 @@ class lavaBase
             $this->chain[ $handle ] = $context;
         }
         return $this->chain[ $handle ];
+    }
+
+    /**
+     * lavaContext function.
+     * 
+     * adds/removes context
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    final function setContext( $context = null, $handle = "current" )
+    {
+        $this->chain[ $handle ] = $context;
+    }
+
+    /**
+     * lavaContext function.
+     * 
+     * adds/removes context
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    final function getContext( $handle = "current" )
+    {
+        if( array_key_exists( $handle, $this->chain ) )
+        {
+            return $this->chain[ $handle ];
+        }
+        return null;
+    }
+
+    /**
+     * lavaContext function.
+     * 
+     * adds/removes context
+     * 
+     * @return $this
+     * 
+     * @since 1.0.0
+     */
+    final function withinContext( $context )
+    {
+        $this->setContext( $context, "parent" );
+
+        return $this;
     }
 
     /**

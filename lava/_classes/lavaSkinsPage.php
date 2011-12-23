@@ -5,5 +5,7 @@ class lavaSkinsPage extends lavaSettingsPage
     public $who = "skins";
     public $displayToolbar = true;
     public $toolbarClasses = "toolbar-skins";
+
+
 }
 ?>

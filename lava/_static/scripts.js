@@ -5,10 +5,26 @@ jQuery(document).ready(function(){
     prettifyPasswords();
     prettifyTexts();
     prettifyTimePeriods();
+    prettifySkins();
     addResetSettings();
     makeSticky();
 });
 
+
+function prettifySkins()
+{
+    jQuery('.setting.type-skins .lava-skin').each(function(){
+        jQuery(this).find("input").addClass( 'invisible' );
+        jQuery(this).find(".select-button").click(function(){
+            //reset all skins
+            var parent = jQuery(this).parents('.setting');
+            jQuery(parent).find('.lava-skin').removeClass('skin-selected');
+            jQuery(parent).find('input').removeAttr('checked');
+            //now lets select the current skin
+            jQuery(this).parents('.lava-skin').addClass('skin-selected').find('input').attr('checked', 'checked');
+        });
+    });
+}
 
 function prettifyCheckboxes()
 {
@@ -25,7 +41,7 @@ function prettifyCheckboxes()
             {
                 jQuery( checkboxUx ).removeClass( "checked" ).addClass("unchecked");
             }
-        });
+        }).change();
         jQuery(this).find('.checkbox-ux' ).click(function(){
             if( jQuery(this).siblings('input[type="checkbox"]').hasAttr( "checked" ) )
             {
@@ -79,11 +95,6 @@ function prettifyPasswords()
 function prettifyTexts()
 {
     jQuery('.setting[data-type="text"]').each(function(){
-        var currentValue = jQuery(this).find( 'input[type="text"]' ).val();
-        var settingHtml =   '<div class="input-cntr clearfix">'+
-                                '<div class="validation" data-state="not-invoked"></div>'+
-                            '</div>';
-        jQuery(this).find(".setting-control").append( settingHtml );
     });
 }
 

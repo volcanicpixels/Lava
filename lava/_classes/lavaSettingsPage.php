@@ -8,17 +8,13 @@ class lavaSettingsPage extends lavaPage
     function loadPage()
     {
         $this->saveSettings();
+        $this->resetSettings();
         //queue notifications
         //do redirect
     }
 
     function displayPage()
     {
-        if( is_multisite() and defined( "WP_NETWORK_ADMIN" ) and WP_NETWORK_ADMIN == true)
-            $this->networkChecks();
-        else
-            $this->siteChecks();
-        
         $settings = $this->_settings()->fetchSettings( $this->who );
 
         //display heading
@@ -36,6 +32,7 @@ class lavaSettingsPage extends lavaPage
 
         $this->runActions( "settingsHiddenInputs" );
 
+        $this->runActions( "settingsPre" );
 
         foreach( $settings as $setting )
         {
@@ -57,6 +54,11 @@ class lavaSettingsPage extends lavaPage
         {//nothing being submitted
             return;
         }
+        if( $_REQUEST['purpose'] != "save" )
+        {
+            //not saving
+            return;
+        }
         $referrer = wp_referer_field( false );
         $messageNonce = rand( 1000, 9999);
         $redirect = add_query_arg( "message_nonce", $messageNonce );
@@ -73,10 +75,10 @@ class lavaSettingsPage extends lavaPage
         }
         else
         {//user is authorized to do something
-
+            $redirect = add_query_arg( "action_done", "saved", $redirect );
             if( is_network_admin() )
             {
-                
+                //do network save
             }
             elseif( is_admin() )
             {
@@ -87,10 +89,62 @@ class lavaSettingsPage extends lavaPage
                     $settingArray = explode( "/", $setting );
                     $this->_settings()
                             ->fetchSetting( $settingArray[1], $settingArray[0] )
-                                ->updateValue( $value )
+                                ->updateValue( $value, true, true )
                     ;
                 }
                 $this->_settings()->updateCache();
+            }
+        
+        }
+        wp_redirect( $redirect );
+        exit;
+    }
+
+    function resetSettings()
+    {
+        if( !isset( $_REQUEST['setting-nonce'] ) )
+        {//nothing being submitted
+            return;
+        }
+        if( $_REQUEST['purpose'] != "reset" )
+        {
+            //not resetting
+            return;
+        }
+        $referrer = wp_referer_field( false );
+        $messageNonce = rand( 1000, 9999);
+        $redirect = add_query_arg( "message_nonce", $messageNonce );
+        $redirect = add_query_arg( "action_done", "reset", $redirect );
+
+        if( is_network_admin() and !current_user_can( "manage_network_options") )
+        {
+            //Queue access denied message
+            
+        }
+        else if( is_admin() and !current_user_can( "manage_options") )
+        {
+            //Queue access denied message
+            
+        }
+        else
+        {//user is authorized to do something
+
+            if( is_network_admin() )
+            {
+                //do network reset
+            }
+            elseif( is_admin() )
+            {
+                $resetScope = $_REQUEST[ 'reset-scope' ];
+
+                switch( $resetScope )
+                {
+                    case "total":
+                        //delete everything and run the plugin activated hook
+                        delete_option( $this->_slug( "settings" ) );
+                        delete_option( $this->_slug( "config" ) );
+                        delete_option( $this->_slug( "messages" ) );
+                }
             }
         
         }
@@ -104,6 +158,7 @@ class lavaSettingsPage extends lavaPage
         //$actions[] = '<div class="js-only subtle-button">'. __( "Import Settings", $this->_framework() ) .'</div>';
         //$actions[] = '<div class="js-only subtle-button">'. __( "Reset All Settings", $this->_framework() ) .'</div>';
         $actions[] = '<div class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-yellow" onclick="jQuery(\'.settings-wrap\').submit()">'. __( "Save Settings", $this->_framework() ) .'</div>';
+        $actions[] = '<div class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-white" onclick="jQuery(\'.lava-form-purpose\').val(\'reset\');jQuery(\'.settings-wrap\').submit()">'. __( "Reset Settings", $this->_framework() ) .'</div>';
 
         return $actions;
     }
