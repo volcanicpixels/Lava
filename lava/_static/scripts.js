@@ -18,10 +18,13 @@ function prettifySkins()
         jQuery(this).find(".select-button").click(function(){
             //reset all skins
             var parent = jQuery(this).parents('.setting');
+            var slug = jQuery(this).parents('.lava-skin').attr('data-skin');
             jQuery(parent).find('.lava-skin').removeClass('skin-selected');
             jQuery(parent).find('input').removeAttr('checked');
             //now lets select the current skin
             jQuery(this).parents('.lava-skin').addClass('skin-selected').find('input').attr('checked', 'checked');
+            jQuery('.setting[data-skin-toggle="true"]').hide();
+            jQuery('.setting[data-skin="' + slug + '"]').show();
         });
     });
 }

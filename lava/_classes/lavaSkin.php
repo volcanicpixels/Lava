@@ -98,7 +98,7 @@ class lavaSkin extends lavaBase
     function addSkinSetting( $slug )
     {
         $slug = $this->slug . "-" . $slug;
-        $theSetting = $this->_settings()->withinContext( $this )->addSetting( $slug, "skins" );
+        $theSetting = $this->_settings()->withinContext( $this )->addSetting( $slug, "skins" )->bindData( "skin", $this->slug )->bindData( "skin-toggle", "true" );
 
         return $theSetting;//put it in context of lavaSettings with lavaSetting as child and lavaSkin as parent
     }

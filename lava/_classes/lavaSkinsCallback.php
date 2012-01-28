@@ -62,7 +62,7 @@ class lavaSkinsCallback extends lavaSettingsCallback
             $slug = $option->slug;
             $name = $option->name;
             $settingControl .= 
-                "<div class='lava-skin' >". 
+                "<div class='lava-skin' data-skin='$slug' >". 
                     "<div class='skin-ux js-only'>".
                         "<img alt='Thumbnail of the skin' src='http://dummyimage.com/180x130/E8117F/fff.png&text=Skin+image+test' class='lava-thumb' />".
                         "<div class='lava-actions'>".
