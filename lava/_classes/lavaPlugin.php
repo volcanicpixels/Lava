@@ -35,8 +35,6 @@ class lavaPlugin
      */
     function __construct( $pluginFile, $pluginName, $pluginVersion )
     {
-        //CBT - load branding and configuration
-        
         $this->pluginFile = $pluginFile;
         $this->pluginName = $pluginName;
         $this->pluginVersion = $pluginVersion;
@@ -50,7 +48,9 @@ class lavaPlugin
             $className = $this->_slug( "callbacks" );
             $this->pluginCallbacks = $this->_new( $className );
         }
-        $this->_skins()->parseSkins();//load skins
+
+		$callback = array( $this->_skins(), "parseSkins" );
+		add_action( 'init', $callback );
     }
     
     /**
@@ -99,6 +99,26 @@ class lavaPlugin
     function _this()
     {
         return $this;
+    }
+
+	/**
+     * _request function.
+	 *	Determines whether the current request matches the argument
+     * 
+     * @return lavaPlugin
+     * 
+     * @since 1.0.0
+     */
+    function _request( $request )
+    {
+		switch( $request )
+		{
+			case "admin":
+				return is_admin();
+			break;
+			default:
+				return true;
+		}
     }
     
     /**

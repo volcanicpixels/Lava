@@ -35,13 +35,13 @@ class lavaSkins extends lavaBase
      */
     function lavaConstruct()
     {
-        $callbacks = $this->_new( "lavaSkinsCallback" );
+        $callbacks = $this->_new( 'lavaSkinsCallback' );
 
         //add the setting that holds which skin is selected
         $this->_settings()
-            ->addSetting( "skin", "skins" )
-                ->setType( "skins" )
-                ->setName( __( "Select a skin", $this->_framework() ) );
+            ->addSetting( 'skin', 'skins' )
+                ->setType( 'skins' )
+                ->setName( __( 'Current skin', $this->_framework() ) );
     }
 
 
@@ -52,13 +52,62 @@ class lavaSkins extends lavaBase
 
         foreach( $skinPaths as $skinPath )
         {
-            $includePath = $skinPath . "/index.php";
+            $includePath = $skinPath . '/skin.php';
             if( file_exists( $includePath ) )
             {
-                $dir = str_replace(  "\\" , "/" , $skinPath );
-                $dir = explode( "/", $dir );
+                $dir = str_replace(  '\\' , '/' , $skinPath );
+                $dir = explode( '/', $dir );
                 $dir = end( $dir );
                 $this->currentSkinSlug = $dir;
+
+				$skinName = $dir;
+				$skinAuthor = "Undefined";
+
+				if( $this->_request( "admin" ) )://only parse file headers on admin requests
+
+					$skinHeader = file_get_contents( $includePath );
+
+					if( strpos( substr( $skinHeader, 0, 20 ) , '/*' ) === false ) { //the substr prevents the search incorrectly matching the string in code (like on this line) by only searching the top of the file (where the header should be)
+						//File has no header so leave defaults
+					} else {
+						$skinHeader = explode( '/*', $skinHeader );
+						$skinHeader = $skinHeader[1];
+						$skinHeader = explode( '*/', $skinHeader );
+						$skinHeader = $skinHeader[0];
+						$skinHeader = explode( "\n", $skinHeader );
+
+						foreach( $skinHeader as $head )
+						{
+							$head = trim( $head );
+							if( !empty( $head ) )
+							{
+								$head = explode( ":", $head );
+								if( count( $head == 2 ) )
+								{
+									$property = strtoupper( $head[0] );
+									$value = trim( $head[1] );
+
+									switch( $property )
+									{
+										case 'NAME':
+										case 'TITLE':
+											$skinName = $value;
+										break;
+										case 'AUTHOR':
+											$skinAuthor = $value;
+										break;
+									}
+								}
+							}
+						}
+					}
+				endif;
+
+				$this->registerSkin()
+					->setName( $skinName )
+					->setAuthor( $skinAuthor )
+				;
+
                 include_once( $includePath );
             }
         }
@@ -73,13 +122,35 @@ class lavaSkins extends lavaBase
         );
         $theSkin = $this->_new( "lavaSkin", $arguments );
 
-        $skins[ $skinSlug ] = $theSkin;
+        $this->skins[ $skinSlug ] = $theSkin;
 
-        $this->_settings( false )
-            ->fetchSetting( "skin", "skins" )
+		$this->_settings( false )
+				->fetchSetting( "skin", "skins" )
                 ->addPropertyValue( "radio-values", $theSkin );
 
         return $theSkin;
     }
+
+	function getSkin( $handle )
+	{
+		if( array_key_exists( $handle, $this->skins ) )
+		{
+			return $this->skins[$handle];
+		}
+		$dir = str_replace(  '\\' , '/' , $handle );
+		$dir = explode( '/', $dir );
+		$dir = end( $dir );
+		if( array_key_exists( $dir, $this->skins ) )
+		{
+			return $this->skins[$dir];
+		}
+		$dir = str_replace(  '\\' , '/' , dirname($handle) );
+		$dir = explode( '/', $dir );
+		$dir = end( $dir );
+		if( array_key_exists( $dir, $this->skins ) )
+		{
+			return $this->skins[$dir];
+		}
+	}
 }
 ?>

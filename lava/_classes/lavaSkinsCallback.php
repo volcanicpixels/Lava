@@ -35,14 +35,38 @@ class lavaSkinsCallback extends lavaSettingsCallback
     {
         //settingActions
         $hookTag = "settingActions";
-        add_filter( $this->_slug( "{$hookTag}-type/skins" ), array( $this, "removeActions" ), 20, 2 );
+        add_filter( $this->_slug( "{$hookTag}-type/skin" ), array( $this, "removeActions" ), 20, 2 );
 
         //settingControl
         $hookTag = "settingControl";
         add_filter( $this->_slug( "{$hookTag}-type/skins" ), array( $this, "addSkinsUx" ), 10, 2 );
     }
 
-    function addSkinsUx( $settingControl, $theSetting )
+	function addSkinsUx( $settingControl, $theSetting )
+    {
+        $settingKey = $theSetting->getKey();
+        $settingWho = $theSetting->who;
+        $pluginSlug =  $theSetting->_slug();
+        $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
+        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
+        $settingValue = $theSetting->getValue( true );
+        $settingPlaceholder = $theSetting->getProperty( "placeholder" );
+        $theOptions = $theSetting->getProperty( "radio-values" );
+        if( !is_array( $theOptions ) )
+        {
+            $theOptions = array();
+        }
+        $settingControl = '<div class="">' . $settingControl . ' </div>';
+        foreach( $theOptions as $option )
+        {
+            
+        }
+        //add ux cntr, put in the labels, js will handle the rest
+        
+        return $settingControl;
+    }
+
+    function addSkinsUx2( $settingControl, $theSetting )
     {
         $settingKey = $theSetting->getKey();
         $settingWho = $theSetting->who;

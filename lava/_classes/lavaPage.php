@@ -164,7 +164,7 @@ class lavaPage extends lavaBase
                 </div>
             <!--.lava-header END-->
             </div>
-            <div id="lava-nav" class="lava-nav texture texture-drk-red bleed-l-19 bleed-r-15 lava-sticky" style="height:40px;">
+            <div id="lava-nav" class="lava-nav texture texture-drk-red bleed-left bleed-right with-padding lava-sticky" style="height:40px;">
                 <ul class="nav nav-horizontal clearfix stitch-left-x stitch-right-x">
                     <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
                    <li class="stitch-left stitch-right clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->getUrl(); ?>"><?php echo $page->get( "title" ); ?></a></li>
@@ -182,12 +182,29 @@ class lavaPage extends lavaBase
                     <span class="message"><?php _e( "You don't have JavaScript enabled. Some features will not work without JavaScript.", $this->_framework()) ?></span>
                 </div>
             </noscript>
+			<div class="lava-content-cntr bleed-left bleed-right with-padding">
+				<div class="lava-underground bleed-left bleed-right with-padding">
+				<?php
+					$this->displayUnderground();
+				?>
+				</div>
+				<div class="lava-overground">
+					<div class="torn-paper bleed-left bleed-right bleed-abs"></div>
         <?php
     }
+
+	function displayUnderground()
+	{
+		//sub classes should overload this method or rely on js to move things around (if have to)
+	}
 
     function displayFooter()
     {
         ?>
+				<!--.lava-overground END-->
+				</div>
+			<!--.lava-content-cntr END-->
+			</div>
         <!--.wrap END-->
         </div>
         <?php

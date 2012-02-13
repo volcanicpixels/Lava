@@ -45,9 +45,10 @@ class lavaBase
     {
         $this->pluginInstance = $pluginInstance;
         
-        $callback = array( $this, "lavaConstruct" );//call the sub classes construct argument
-        if( is_callable( $callback ) )
+        
+        if( method_exists( $this, "lavaConstruct" ) )//call the sub classes construct argument
         {
+			$callback = array( $this, "lavaConstruct" );
             call_user_func_array( $callback, $arguments );
         }
     }
@@ -305,7 +306,7 @@ class lavaBase
 
     function hookTags()
     {
-        return array("");
+        return array();
     }
 }
 ?>

@@ -2,7 +2,6 @@
 class lavaSettingsPage extends lavaPage
 {
     public $multisiteSupport = true;
-    public $displayToolbar = true;
     public $who = "settings";
 
     function loadPage()
@@ -41,8 +40,8 @@ class lavaSettingsPage extends lavaPage
             //action hook
         }
         ?>
-        <div style="margin-left:30px; margin-top:20px;">
-            <input type="submit" class="lava-btn lava-btn-chunk lava-btn-chunk-yellow" name="action" value="<?php _e( "Save Settings", $this->_framework() ) ?>" />
+        <div class="lava-action-tray" style="margin-left:30px; margin-top:20px;">
+            <input type="submit" class="lava-btn lava-btn-action lava-btn-action-green" name="action" value="<?php _e( "Save Settings", $this->_framework() ) ?>" />
         </div>
         <?php
         echo '</form>';
@@ -152,15 +151,5 @@ class lavaSettingsPage extends lavaPage
         exit;
     }
 
-    function leftActions()
-    {
-        //$actions[] = '<div class="js-only subtle-button">'. __( "Export Settings", $this->_framework() ) .'</div>';
-        //$actions[] = '<div class="js-only subtle-button">'. __( "Import Settings", $this->_framework() ) .'</div>';
-        //$actions[] = '<div class="js-only subtle-button">'. __( "Reset All Settings", $this->_framework() ) .'</div>';
-        $actions[] = '<div class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-yellow" onclick="jQuery(\'.settings-wrap\').submit()">'. __( "Save Settings", $this->_framework() ) .'</div>';
-        $actions[] = '<div class="js-only lava-btn-mini lava-btn-2d lava-btn lava-btn-chunk lava-btn-chunk-white" onclick="jQuery(\'.lava-form-purpose\').val(\'reset\');jQuery(\'.settings-wrap\').submit()">'. __( "Reset Settings", $this->_framework() ) .'</div>';
-
-        return $actions;
-    }
 }
 ?>
