@@ -38,25 +38,71 @@
 .lava-nav {
     position: relative;
     display: block;
-	padding:0px;
+	padding: 8px 0px;
     z-index: 100;
-    height: 40px;
+    height: 54px;
+    .box-shadow(~"0px 7px 7px -7px black, 0px -7px 7px -7px black");
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,rgba(0,0,0,0)),color-stop(100%,rgba(0,0,0,.20))),url(images/red-woven-texture.png) !important;
+    margin-left: -25px !important;
 
     &::before, &::after {
-        background: rgba(0,0,0,0.3);
-        content: "";
+        content:"";
         position: absolute;
-        top: 0px;
-        left: 0px;
+        left:0px;
         right: 0px;
-        height: 4px;
-        z-index: 20;
+        background: url(images/stitch.png) repeat;
+        background-position: top center;
+        height:9px;
     }
 
-    &::after
-    {
-        top: auto;
+    &::before {
+        top:0px;
+    }
+
+    &::after {
         bottom: 0px;
+    }
+
+    .left-grad {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        bottom: 0px;
+        width: 10px;
+        background: -moz-linear-gradient(left, rgba(0,0,0,0.23) 0%, rgba(0,0,0,0.23) 1%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,0,0.23)), color-stop(1%,rgba(0,0,0,0.23)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(left, rgba(0,0,0,0.23) 0%,rgba(0,0,0,0.23) 1%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(left, rgba(0,0,0,0.23) 0%,rgba(0,0,0,0.23) 1%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(left, rgba(0,0,0,0.23) 0%,rgba(0,0,0,0.23) 1%,rgba(0,0,0,0) 100%); /* IE10+ */
+        background: linear-gradient(left, rgba(0,0,0,0.23) 0%,rgba(0,0,0,0.23) 1%,rgba(0,0,0,0) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3b000000', endColorstr='#00000000',GradientType=1 ); /* IE6-9 */
+    }
+
+    .sticky-toggle {
+        cursor: pointer;
+        position: absolute;
+        right:0px;
+        top:0px;
+        bottom: 0px;
+        width: 70px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-image: url(images/pin.png);
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &.lava-sticky {
+        .sticky-toggle {
+            opacity: 1;
+
+            &:hover {
+                opacity: 0.6;
+            }
+        }
     }
 }
 
@@ -64,9 +110,7 @@ ul.nav {
     display:block;
     float:left;
     margin:0px;
-    padding:0px;
     width:auto;
-    height:40px;
 
     li {
         float:left;
@@ -78,10 +122,9 @@ ul.nav {
             display:inline-block;
             color:#efc6bc;
             text-decoration:none;
-            line-height:40px;
-            font-family:'Courier New';
-            font-size:12px;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+            line-height:54px;
+            font-size:15px;
+            text-shadow: 0px -1px 0px black;
             padding:0px 15px;
         }
 
@@ -90,29 +133,7 @@ ul.nav {
                 color:#ffffff;
             }
 
-            &::before, &::after {
-                content: "" !important;
-                position: absolute;
-                bottom: 4px;
-                border: 6px solid transparent;
-                border-top-width: 0px;
-                border-bottom-color: rgba(0,0,0,0.3);
-                left: 50%;
-                margin-left: -9px;
-                z-index: 21;
-            }
-
-            &::after {
-                visibility:visible;
-                bottom:0px;
-                border:5px solid transparent;
-                border-bottom-color:#fefefe;
-                -webkit-border-bottom-image: url(images/bg.png);
-                -moz-border-bottom-image: url(images/bg.png);
-                -o-border-bottom-image: url(images/bg.png);
-                -ms-border-bottom-image: url(images/bg.png);
-                margin-left: -8px;
-            }
+            
         }
     }
 
@@ -239,8 +260,6 @@ ul.nav {
 	.lava-underground {
 		height:0px;
 		overflow:hidden;
-		background: #CE3D2B;
-		height:100px;
 	}
 
 	.lava-overground {
@@ -276,45 +295,19 @@ ul.nav {
         background-image: url(images/texture-drk-red.png);
         background-color: #a93d22;
     }
+
+    &.texture-red-woven {
+        background-image: url(images/red-woven-texture.png);
+        background-color: #d1593c;
+    }
+
+    &.texture-woven {
+		background-color: #f3f3f3;
+        background-image: url(images/texture-woven.png)
+    }
 }
 
 
-
-/* Stitching */
-
-@stitch-color-1: #f1785d;
-
-@stitch-color-2: #751200;
-
-.stitch-btm {
-    border-bottom: 1px dashed @stitch-color-1;
-}
-
-.stitch-top {
-    border-top: 1px dashed @stitch-color-2;
-}
-
-.stitch-left {
-    border-left: 1px dashed @stitch-color-1;
-}
-.stitch-right {
-    border-right: 1px dashed @stitch-color-2;
-}
-
-.stitch-btm-x {
-    border-bottom: 1px dashed #751200;
-}
-
-.stitch-top-x {
-    border-top: 1px dashed @stitch-color-1;
-}
-
-.stitch-left-x {
-    border-left: 1px dashed @stitch-color-2;
-}
-.stitch-right-x {
-    border-right: 1px dashed @stitch-color-1;
-}
 
 /* Quirks */
 
@@ -862,4 +855,298 @@ ul.nav {
 	#tiptip_holder.tip_top #tiptip_arrow_inner { 
 		border-top-color: rgba(20,20,20,0.92);
 	}
+}
+
+
+/*
+  Bootstrap v1.1
+  Variables and mixins to bootstrap any new web development project.
+*/
+
+
+/* Variables
+-------------------------------------------------- */
+
+// Links
+@linkColor:         #8b59c2;
+@linkColorHover:    darken(@linkColor, 10);
+
+// Grays
+@white:             #fff;
+@grayLighter:       #ccc;
+@grayLight:         #777;
+@gray:              #555;
+@grayDark:          #333;
+@black:             #000;
+
+// Accent Colors
+@blue:              #08b5fb;
+@green:             #46a546;
+@red:               #9d261d;
+@yellow:            #ffc40d;
+@orange:            #f89406;
+@pink:              #c3325f;
+@purple:            #7a43b6;
+
+// Baseline grid
+@baseline:          20px;
+
+// Griditude
+@gridColumns:       16;
+@gridColumnWidth:   40px;
+@gridGutterWidth:   20px;
+@siteWidth:         (@gridColumns * @gridColumnWidth) + (@gridGutterWidth * (@gridColumns - 1));
+
+
+/* Mixins
+-------------------------------------------------- */
+
+// Clearfix for clearing floats like a boss
+.clearfix {
+  zoom: 1;
+	&:after {
+    display: block;
+    visibility: hidden;
+    height: 0;
+    clear: both;
+    content: ".";
+	}
+}
+
+// Center-align a block level element
+.center-block { 
+	display: block;
+  margin: 0 auto;
+}
+
+// Sizing shortcuts
+.size(@height: 5px, @width: 5px) {
+	height: @height;
+	width: @width;
+}
+.square(@size: 5px) {
+	.size(@size, @size);
+}
+
+// Input placeholder text
+.placeholder(@color: @grayLight) {
+  :-moz-placeholder {
+    color: @color;
+  }
+  ::-webkit-input-placeholder {
+    color: @color;
+  }
+}
+
+// Font Stacks
+#font {
+  .shorthand(@weight: normal, @size: 14px, @lineHeight: 20px) {
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+  }
+  .sans-serif(@weight: normal, @size: 14px, @lineHeight: 20px) {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+  }
+  .serif(@weight: normal, @size: 14px, @lineHeight: 20px) {
+    font-family: "Georgia", Times New Roman, Times, sans-serif;
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+  }
+  .monospace(@weight: normal, @size: 12px, @lineHeight: 20px) {
+    font-family: "Monaco", Courier New, monospace;
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+  }
+}
+
+// Grid System
+.container {
+  width: @siteWidth;
+  margin: 0 auto;
+  .clearfix();
+}
+.columns(@columnSpan: 1) {
+  display: inline;
+  float: left;
+  width: (@gridColumnWidth * @columnSpan) + (@gridGutterWidth * (@columnSpan - 1));
+  margin-left: @gridGutterWidth;
+  &:first-child {
+    margin-left: 0;
+  }
+}
+.offset(@columnOffset: 1) {
+  margin-left: (@gridColumnWidth * @columnOffset) + (@gridGutterWidth * (@columnOffset - 1)) !important;
+}
+
+// Border Radius
+.border-radius(@radius: 5px) {
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+// Drop shadows
+.box-shadow(@shadow: 0 1px 3px rgba(0,0,0,.25)) {
+  -webkit-box-shadow: @shadow;
+  -moz-box-shadow: @shadow;
+  box-shadow: @shadow;
+}
+
+// Transitions
+.transition(@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	transition: @transition;
+}
+
+// CSS3 Content Columns
+.content-columns(@columnCount, @columnGap: 20px) {
+	-webkit-column-count: @columnCount;
+	-webkit-column-gap: @columnGap;
+	-moz-column-count: @columnCount;
+	-moz-column-gap: @columnGap;
+	column-count: @columnCount;
+	column-gap: @columnGap;
+}
+
+// Buttons
+.button(@color: #f5f5f5, @textColor: #333, @textShadow: 0 1px 1px rgba(255,255,255,.75), @fontSize: 13px, @padding: 9px 15px 10px, @borderRadius: 6px) {
+  display: inline-block;
+  #gradient > .vertical(@color,darken(saturate(@color,10),10));
+  padding: @padding;
+  text-shadow: @textShadow;
+  color: @textColor;
+  font-size: @fontSize;
+  line-height: 20px;
+  .border-radius(@borderRadius);
+  @shadow: inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(0,0,0,.25);
+  .box-shadow(@shadow);
+  &:hover {
+    background-position: 0 -15px;
+    color: @textColor;
+    text-decoration: none;
+  }
+}
+
+// Add an alphatransparency value to any background or border color (via Elyse Holladay)
+#translucent {
+  .background(@color: @white, @alpha: 1) {
+    background-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
+	}
+	.border(@color: @white, @alpha: 1) {
+		border-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
+		background-clip: padding-box;
+	}
+}
+
+// Gradients
+#gradient {
+  .horizontal (@startColor: #555, @endColor: #333) {
+    background-color: @endColor;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, right top, from(@startColor), to(@endColor)); /* Konqueror */
+    background-image: -moz-linear-gradient(left, @startColor, @endColor); /* FF 3.6+ */
+    background-image: -ms-linear-gradient(left, @startColor, @endColor); /* IE10 */
+    background-image: -webkit-gradient(linear, left top, right top, color-stop(0%, @startColor), color-stop(100%, @endColor)); /* Safari 4+, Chrome 2+ */
+    background-image: -webkit-linear-gradient(left, @startColor, @endColor); /* Safari 5.1+, Chrome 10+ */
+    background-image: -o-linear-gradient(left, @startColor, @endColor); /* Opera 11.10 */
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@startColor,@endColor)); /* IE6 & IE7 */
+    -ms-filter: %("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@startColor,@endColor); /* IE8+ */
+    background-image: linear-gradient(left, @startColor, @endColor); /* the standard */
+  }
+  .vertical (@startColor: #555, @endColor: #333) {
+    background-color: @endColor;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, left bottom, from(@startColor), to(@endColor)); /* Konqueror */
+    background-image: -moz-linear-gradient(@startColor, @endColor); /* FF 3.6+ */
+    background-image: -ms-linear-gradient(@startColor, @endColor); /* IE10 */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @startColor), color-stop(100%, @endColor)); /* Safari 4+, Chrome 2+ */
+    background-image: -webkit-linear-gradient(@startColor, @endColor); /* Safari 5.1+, Chrome 10+ */
+    background-image: -o-linear-gradient(@startColor, @endColor); /* Opera 11.10 */
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@startColor,@endColor)); /* IE6 & IE7 */
+    -ms-filter: %("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@startColor,@endColor); /* IE8+ */
+    background-image: linear-gradient(@startColor, @endColor); /* the standard */
+  }
+  .directional (@startColor: #555, @endColor: #333, @deg: 45deg) {
+    background-color: @endColor;
+    background-repeat: repeat-x;
+    background-image: -moz-linear-gradient(@deg, @startColor, @endColor); /* FF 3.6+ */
+    background-image: -ms-linear-gradient(@deg, @startColor, @endColor); /* IE10 */
+    background-image: -webkit-linear-gradient(@deg, @startColor, @endColor); /* Safari 5.1+, Chrome 10+ */
+    background-image: -o-linear-gradient(@deg, @startColor, @endColor); /* Opera 11.10 */
+    background-image: linear-gradient(@deg, @startColor, @endColor); /* the standard */
+  }
+  .vertical-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 0.5, @endColor: #c3325f) {
+    background-color: @endColor;
+    background-repeat: no-repeat;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
+    background-image: -webkit-linear-gradient(@startColor, color-stop(@colorStop, @midColor), @endColor);
+    background-image: -moz-linear-gradient(@startColor, color-stop(@midColor, @colorStop), @endColor);
+  }
+}
+
+
+// Opacity
+.opacity(@opacity: 100) {
+	filter: e(%("alpha(opacity=%d)", @opacity));
+	-khtml-opacity: @op / 100;
+	-moz-opacity: @op / 100;
+	opacity: @op / 100;
+}
+
+// CSS3 Flexible Box Module
+#flexbox {
+  // #flexbox > .display-box; must be used along with other flexbox mixins
+  .display-box { 
+    display: -moz-box;
+    display: -webkit-box;
+    display: box;
+  }
+  // Box align [ start | end | center | baseline | stretch ]
+  .box-align(@alignment: stretch) {
+    -moz-box-align: @alignment;
+    -webkit-box-align: @alignment;
+    box-align: @alignment;
+  }
+  // Box direction [ normal | reverse | inherit ]
+  .box-direction(@direction: normal) {
+    -moz-box-direction: @direction;
+    -webkit-box-direction: @direction;
+    box-direction: @direction;
+  }
+  // Box flex [ integer ]
+  .box-flex(@flex: 0) {
+    -moz-box-flex: @flex;
+    -webkit-box-flex: @flex;
+    box-flex: @flex;
+  }
+  // Box flex group [ integer ]
+  .box-flex-group(@group: 1) {
+    -moz-box-flex-group: @group;
+    -webkit-box-flex-group: @group;
+    box-flex-group: @group;
+  }
+  // Box orientation [ horizontal | vertical | inline-axis | block-axis | inherit ]
+  .box-orient(@orientation: horizontal) {
+    -moz-box-orient: @orientation;
+    -webkit-box-orient: @orientation;
+    box-orient: @orientation;
+  }
+  // Box ordinal group [ integer ]
+  .box-ordinal-group(@group: 1) {
+    -moz-box-ordinal-group: @group;
+    -webkit-box-ordinal-group:@group;
+    box-flex-ordinal-group: @group;
+  }
+  // Box pack  [ start | end | center | justify ]
+  .box-pack(@pack: start) {
+    -moz-box-pack: @pack;
+    -webkit-box-pack: @pack;
+    box-pack: @pack;
+  }
 }

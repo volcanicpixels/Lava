@@ -684,19 +684,9 @@ class lavaSetting extends lavaBase
         
         switch( $type )
         {
-            case "skins":
-                $theOptions = $this->getProperty( "radio-values" );
-                if( !is_array( $theOptions ) )
-                {
-                    $theOptions = array();
-                }
-                $settingControl = "";
-                foreach( $theOptions as $option )
-                {
-                    $slug = $option->slug;
-                    $name = $option->name;
-                    $settingControl .= "<label><input type='radio' name='{$settingInputName}' value='{$slug}' />$name</label>";
-                }
+            case "skin":
+            case "hidden":
+                $settingControl = "<input data-actual='true' id='{$settingInputID}' type='hidden' name='{$settingInputName}' value='{$settingValue}' />";
             break;
             case "radio":
                 $theOptions = $this->getProperty( "radio-values" );

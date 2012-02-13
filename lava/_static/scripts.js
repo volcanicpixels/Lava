@@ -250,7 +250,7 @@ function makeSticky()
         jQuery(this).attr('data-sticky-top', theProperties.top);
         jQuery(this).attr('data-sticky-width', jQuery(this).width());
         jQuery(this).attr('data-sticky-height', jQuery(this).height());
-        jQuery(this).after( '<div class="sticky-padding" style="display:none;width:' + jQuery(this).width() +'px;height:'+ jQuery(this).height() + 'px;"></div>' );
+        jQuery(this).after( '<div class="sticky-padding" style="display:none;width:' + jQuery(this).width() +'px;height:'+ jQuery(this).outerHeight() + 'px;"></div>' );
     });
 
 	jQuery(window).scroll( function() {
@@ -259,7 +259,6 @@ function makeSticky()
             jQuery('.lava-sticky').each(function(){
                 var random = jQuery(this).attr('data-sticky');
                 var stickyLeft = jQuery(this).attr('data-sticky-left');
-                console.log(stickyLeft);
                 var stickyTop = jQuery(this).attr('data-sticky-top');
                 var stickyWidth = jQuery(this).attr('data-sticky-width');
                 var stickyHeight = jQuery(this).attr('data-sticky-height');

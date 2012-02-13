@@ -5,6 +5,13 @@ class lavaSkinsPage extends lavaSettingsPage
     public $who = "skins";
     public $toolbarClasses = "toolbar-skins";
 
-
+    function displayUnderground()
+    {
+        ?>
+        <div class="skin-selector">
+            
+        </div>
+        <?php
+    }
 }
 ?>

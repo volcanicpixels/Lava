@@ -164,10 +164,12 @@ class lavaPage extends lavaBase
                 </div>
             <!--.lava-header END-->
             </div>
-            <div id="lava-nav" class="lava-nav texture texture-drk-red bleed-left bleed-right with-padding lava-sticky" style="height:40px;">
-                <ul class="nav nav-horizontal clearfix stitch-left-x stitch-right-x">
+            <div id="lava-nav" class="lava-nav texture texture-red-woven bleed-left bleed-right with-padding lava-sticky">
+                <div class="sticky-toggle tiptip" title="Toggle whether this bar should stick to the top of the screen."></div>
+                <div class="left-grad"></div>
+                <ul class="nav nav-horizontal clearfix">
                     <?php foreach( $this->_pages( false )->adminPages() as $page ): ?>
-                   <li class="stitch-left stitch-right clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->getUrl(); ?>"><?php echo $page->get( "title" ); ?></a></li>
+                   <li class="clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->getUrl(); ?>"><?php echo $page->get( "title" ); ?></a></li>
                    <?php endforeach; ?>
                 </ul>
                 <?php
@@ -183,7 +185,7 @@ class lavaPage extends lavaBase
                 </div>
             </noscript>
 			<div class="lava-content-cntr bleed-left bleed-right with-padding">
-				<div class="lava-underground bleed-left bleed-right with-padding">
+				<div class="lava-underground texture texture-woven bleed-left bleed-right with-padding" style="display:none;">
 				<?php
 					$this->displayUnderground();
 				?>
