@@ -8,6 +8,7 @@ class lavaSettingsPage extends lavaPage
     {
         $this->saveSettings();
         $this->resetSettings();
+		add_action( $this->_slug( "toolbar" ), array($this, "toolbarButtons") );
         //queue notifications
         //do redirect
     }
@@ -16,18 +17,24 @@ class lavaSettingsPage extends lavaPage
     {
         $settings = $this->_settings()->fetchSettings( $this->who );
 
-        //display heading
-        //start settings wrap
         $this->doSettings( $settings );
-        //do save dialog
-        //close wrap
     }
     
     function doSettings( $settings )
     {
         $settings = apply_filters( $this->_slug( $this->who . "settingsOrder" ), $settings );
-
-        echo '<form class="settings-wrap" method="post">';
+        $hiddenForms = $this->runFilters( "hiddenForms", array() );
+        foreach( $hiddenForms as $form )
+        {
+            ?>
+            <form id="<?php echo $form['id'] ?>" class="invisible">
+                <?php foreach( $form['fields'] as $field ): ?>
+                    <input type="hidden" name="<?php echo $field['name'] ?>" value="<?php echo $field['value'] ?>" />
+                <?php endforeach; ?>
+            </form>
+            <?php
+        }
+        echo '<form id="lava-settings-form" class="settings-wrap" method="post">';
 
         $this->runActions( "settingsHiddenInputs" );
 
@@ -41,7 +48,7 @@ class lavaSettingsPage extends lavaPage
         }
         ?>
         <div class="lava-action-tray" style="margin-left:30px; margin-top:20px;">
-            <input type="submit" class="lava-btn lava-btn-action lava-btn-action-green" name="action" value="<?php _e( "Save Settings", $this->_framework() ) ?>" />
+            <input type="submit" class="lava-btn js-fallback" name="action" value="<?php _e( "Save Settings", $this->_framework() ) ?>" />
         </div>
         <?php
         echo '</form>';
@@ -150,6 +157,16 @@ class lavaSettingsPage extends lavaPage
         wp_redirect( $redirect );
         exit;
     }
+
+	function toolbarButtons()
+	{
+		?>
+		<div class="toolbar-block toolbar-overground js-only">
+			<button class="lava-btn lava-btn-action lava-btn-inline lava-btn-action-red		lava-btn-form-submit" data-form="lava-settings-form"><?php _e( "Save Settings", $this->_framework() ) ?></button>
+			<button class="lava-btn lava-btn-action lava-btn-inline lava-btn-action-white	lava-btn-form-submit lava-btn-confirmation not-implemented " data-form="lava-settings-reset"><?php _e( "Reset Settings", $this->_framework() ) ?></button>
+		</div>
+		<?php
+	}
 
 }
 ?>

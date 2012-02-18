@@ -98,9 +98,35 @@ class lavaSkin extends lavaBase
     function addSkinSetting( $slug )
     {
         $slug = $this->slug . "-" . $slug;
-        $theSetting = $this->_settings()->withinContext( $this )->addSetting( $slug, "skins" )->bindData( "skin", $this->slug )->bindData( "skin-toggle", "true" );
+        $theSetting = $this->_settings()->withinContext( $this )->addSetting( $slug, "skins" )->bindData( "skin", $this->slug )->bindData( "setting-visibility", "visible" )->addTag( "setting-hidden" )->addTag( "skin-setting" );
 
         return $theSetting;//put it in context of lavaSettings with lavaSetting as child and lavaSkin as parent
     }
+
+    function skinPath( $append = "" )
+    {
+        $path = dirname( $this->_file() ) . '/skins/'. $this->slug . '/' . $append;
+        return $path;
+    }
+
+    function skinUrl( $append = "" )
+    {
+        return plugins_url( 'skins/' . $this->slug . '/' . $append, $this->_file() );
+    }
+
+	function getSlug()
+	{
+		return $this->slug;
+	}
+
+	function getName()
+	{
+		return $this->name;
+	}
+
+	function getAuthor()
+	{
+		return $this->author;
+	}
 }
 ?>

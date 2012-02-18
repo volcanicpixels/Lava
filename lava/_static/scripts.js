@@ -1,32 +1,30 @@
+var lavaAnimations = true;
+
 jQuery(document).ready(function(){
     jQuery('.js-only').removeClass('js-only');
+	jQuery('.js-fallback').hide();
     jQuery('select').dropkick();
+
+	bindSticky();
+	bindButtons();
+
     prettifyCheckboxes();
     prettifyPasswords();
     prettifyTexts();
     prettifyTimePeriods();
     prettifySkins();
+
     addResetSettings();
-    makeSticky();
+	parseSkin();
+
+	jQuery( '.tiptip' ).tipTip({'delay':0});
+    jQuery( '.tiptip-right' ).tipTip({'defaultPosition':'right','delay':0});
 });
 
 
 function prettifySkins()
 {
-    jQuery('.setting.type-skins .lava-skin').each(function(){
-        jQuery(this).find("input").addClass( 'invisible' );
-        jQuery(this).find(".select-button").click(function(){
-            //reset all skins
-            var parent = jQuery(this).parents('.setting');
-            var slug = jQuery(this).parents('.lava-skin').attr('data-skin');
-            jQuery(parent).find('.lava-skin').removeClass('skin-selected');
-            jQuery(parent).find('input').removeAttr('checked');
-            //now lets select the current skin
-            jQuery(this).parents('.lava-skin').addClass('skin-selected').find('input').attr('checked', 'checked');
-            jQuery('.setting[data-skin-toggle="true"]').hide();
-            jQuery('.setting[data-skin="' + slug + '"]').show();
-        });
-    });
+    
 }
 
 function prettifyCheckboxes()
@@ -82,13 +80,15 @@ function prettifyPasswords()
         });
 
         jQuery(this).find( ".show-password-handle" ).click(function(){
-            jQuery(this).parents('.setting').find('.input-cntr').attr("data-show", "text");
+			var currentPassword = jQuery(this).parents('.setting').find('.input-cntr').attr("data-show", "text").find( '.password-show' ).val();//hack to prevent browser from selecting text in field
+			jQuery(this).parents('.setting').find( '.password-show' ).focus().val( currentPassword );
             jQuery(this).siblings(".hide-password-handle").show();
             jQuery(this).hide();
         });
 
         jQuery(this).find( ".hide-password-handle" ).click(function(){
-            jQuery(this).parents('.setting').find('.input-cntr').attr("data-show", "password");
+			var currentPassword = jQuery(this).parents('.setting').find('.input-cntr').attr("data-show", "password").find( 'input[type="password"]' ).val();
+			jQuery(this).parents('.setting').find( 'input[type="password"]' ).focus().val( currentPassword );
             jQuery(this).siblings(".show-password-handle").show();
             jQuery(this).hide();
         });
@@ -232,54 +232,143 @@ function changeSettingValue(settingSelector, settingValue)
     return isChanged;
 }
 
-function makeSticky()
-{
-    var stickyVars = Object;
-    stickyVars.topPadding = jQuery('#wpadminbar').height();
-    stickyVars.scrollingDistance = jQuery('#lava-nav').offset();
-    stickyVars.nudge = stickyVars.scrollingDistance.top - stickyVars.topPadding
-    stickyVars.stuck = false;
 
-    window.stickyVars = stickyVars;
-
-    jQuery('.lava-sticky').each(function(){
-        var random = Math.floor(Math.random()*100001);
-        jQuery(this).attr('data-sticky', random);
-        var theProperties = jQuery(this).offset();
-        jQuery(this).attr('data-sticky-left', theProperties.left);
-        jQuery(this).attr('data-sticky-top', theProperties.top);
-        jQuery(this).attr('data-sticky-width', jQuery(this).width());
-        jQuery(this).attr('data-sticky-height', jQuery(this).height());
-        jQuery(this).after( '<div class="sticky-padding" style="display:none;width:' + jQuery(this).width() +'px;height:'+ jQuery(this).outerHeight() + 'px;"></div>' );
+function bindButtons() {
+    //the save buttons
+    jQuery(".lava-btn.lava-btn-form-submit").click(function(){
+        var formID = jQuery(this).attr( "data-form" );
+		jQuery("#" + formID).submit();
     });
+	//the underground buttons
+	jQuery(".lava-btn.lava-btn-show-underground").click(function(){
+        showUnderground();
+    });
+	jQuery(".lava-btn.lava-btn-hide-underground").click(function(){
+        hideUnderground();
+    });
+	//the select skin button
+	jQuery(".lava-btn.lava-btn-select-skin").click(function(){
+        var skinSlug = jQuery(this).attr( "data-slug" );
+		jQuery('#private_blog-skins-skin').val( skinSlug );
+		hideUnderground();
+		parseSkin();
+    });
+	//not implemented buttons
+	jQuery(".lava-btn.not-implemented").addClass("lava-btn-disabled").addClass("tiptip-right").attr("title", "This feature hasn't been imlemented yet :(");
+}
 
-	jQuery(window).scroll( function() {
-		if(jQuery(document).scrollTop()  > stickyVars.nudge && stickyVars.stuck == false){
-            stickyVars.stuck = true;
-            jQuery('.lava-sticky').each(function(){
-                var random = jQuery(this).attr('data-sticky');
-                var stickyLeft = jQuery(this).attr('data-sticky-left');
-                var stickyTop = jQuery(this).attr('data-sticky-top');
-                var stickyWidth = jQuery(this).attr('data-sticky-width');
-                var stickyHeight = jQuery(this).attr('data-sticky-height');
-                jQuery(this).css({'position':'fixed','top':stickyTop - stickyVars.nudge, 'right': 15,'left': '', 'width': stickyWidth, 'height': stickyHeight});
-            });
-            jQuery( '.sticky-padding' ).show();
-			
-		}else if(jQuery(document).scrollTop()  < stickyVars.nudge && stickyVars.stuck == true) {
-			stickyVars.stuck = false;
-			jQuery( '.sticky-padding' ).hide();
-            jQuery('.lava-sticky').each(function(){
-                var random = jQuery(this).attr('data-sticky');
-                var stickyLeft = jQuery(this).attr('data-sticky-left');
-                var stickyTop = jQuery(this).attr('data-sticky-top');
-                var stickyWidth = jQuery(this).attr('data-sticky-width');
-                var stickyHeight = jQuery(this).attr('data-sticky-height');
-                jQuery(this).css({'position':'relative','top':0, 'left':0, 'width': '', 'height': ''});
-            });
-		}
-		
-		//console.log(jQuery('#sticky-nav').css('opacity'))
-	
+function bindSticky()
+{
+	jQuery('#wpbody').resize( function() {
+		restartStickyBottom();
+		restartStickyTop();
 	});
+	jQuery('#wpbody').resize();
+	jQuery(window).scroll( function() {
+		refreshStickyBottom();
+		refreshStickyTop();
+	});
+	setTimeout( "restartStickyBottom()", 1000);
+	setTimeout( "restartStickyTop()", 1000);
+}
+
+function restartStickyTop()
+{
+	var leftPosition = jQuery('#adminmenuback').outerWidth();//work out how far from the left it should be when absolutely positioned;
+	var topPosition = jQuery('#wpbody').offset();//work out how far from top it should be positioned so it doesn't cover the admin bar
+	topPosition = topPosition.top;
+
+	jQuery('.lava-sticky-top').each(function(){
+		var offset = jQuery(this).removeClass('sticky').offset();
+		jQuery(this).attr( 'data-sticky-offset', offset.top - topPosition );
+		jQuery(this).attr( 'data-sticky-leftposition', leftPosition );
+		jQuery(this).attr( 'data-sticky-topposition', topPosition );
+	});
+
+	refreshStickyTop();
+}
+
+function refreshStickyTop()
+{
+	jQuery('.lava-sticky-top').each(function(){
+		var offset = jQuery(this).attr('data-sticky-offset');//distance between object and top of document
+		var targetOffset = jQuery(document).scrollTop();
+		var leftPosition = jQuery(this).attr('data-sticky-leftposition');
+		var topPosition = jQuery(this).attr('data-sticky-topposition');
+		offset = parseInt(offset);
+		targetOffset = parseInt(targetOffset);
+
+		if( offset < targetOffset ) {
+			jQuery(this).addClass('sticky').css({'left':leftPosition + 'px', 'top':topPosition + 'px'});
+		} else if( offset > targetOffset ) {
+			jQuery(this).removeClass('sticky').css({'left':'0px','top':'0px'});
+		}
+	});
+}
+
+function restartStickyBottom()
+{
+	var leftPosition = jQuery('#adminmenuback').outerWidth();
+	jQuery('.lava-sticky-bottom').each(function(){
+		var offset = jQuery(this).removeClass('sticky').offset();
+		var targetOffset = jQuery('body').height() - jQuery(this).outerHeight() + 5;
+
+		jQuery(this).attr( 'data-sticky-offset', offset.top );
+		jQuery(this).attr( 'data-sticky-target', targetOffset );
+		jQuery(this).attr( 'data-sticky-leftposition', leftPosition );
+	});
+
+	refreshStickyBottom();
+}
+
+function refreshStickyBottom()
+{
+	jQuery('.lava-sticky-bottom').each(function(){
+		var offset = jQuery(this).attr('data-sticky-offset');
+		var targetOffset = jQuery(document).scrollTop() + parseInt(jQuery(this).attr('data-sticky-target'));
+		var leftMargin = jQuery(this).attr('data-sticky-leftposition');
+		offset = parseInt(offset);
+		targetOffset = parseInt(targetOffset);
+
+		if( offset > targetOffset ) {
+			jQuery(this).addClass('sticky').css({'left':leftMargin + 'px'});
+		} else if( offset < targetOffset ) {
+			jQuery(this).removeClass('sticky').css({'left':'0px'});
+		}
+	});
+}
+
+
+function showUnderground() {
+	var animationDuration = 500;
+	jQuery('.lava-underground').slideDown(animationDuration).removeClass('underground-hidden').addClass('underground-visible');
+	jQuery('.lava-overground .underground-cancel-bar').slideDown().animate({'opacity':1},animationDuration, function(){
+		jQuery('.lava-overground').addClass('lava-sticky-bottom');
+		restartStickyBottom();
+	});
+	jQuery('.lava-overground .content').fadeOut(animationDuration);
+    jQuery('.lava-content-cntr').addClass( "no-toolbar" );
+}
+
+function hideUnderground() {
+	var animationDuration = 500;
+	jQuery('.lava-overground').removeClass('lava-sticky-bottom').removeClass('sticky').css({'left':'0px'});
+	jQuery('.lava-overground .content').fadeIn(animationDuration);
+	jQuery('.lava-underground').slideUp(animationDuration).addClass('underground-hidden').removeClass('underground-visible');
+	jQuery('.lava-overground .underground-cancel-bar').slideUp().animate({'opacity':0},animationDuration);
+    jQuery('.lava-content-cntr').removeClass( "no-toolbar" );
+}
+
+function parseSkin() {
+	jQuery( ".skin-selector .skin" ).removeClass( "active" );
+	var currentTheme = jQuery('#private_blog-skins-skin').val();
+	jQuery('.skin[data-slug="' + currentTheme + '"]').addClass('active');
+	var imgSrc = jQuery('.skin[data-slug="' + currentTheme + '"] img').attr('src');
+	jQuery('#setting-cntr_private_blog-skins-skin .skin-thumb img').attr({'src': imgSrc});
+
+    //show skin options
+
+	jQuery('.setting.tag-skin-setting').addClass( 'tag-setting-hidden' );
+	jQuery('.setting[data-skin="' + currentTheme + '"]').removeClass( 'tag-setting-hidden' );
+
 }

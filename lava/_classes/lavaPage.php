@@ -24,8 +24,6 @@
 class lavaPage extends lavaBase
 {
     public $multisiteSupport = false;//Whether the page should appear in the network page
-    public $displayToolbar = false;
-    public $toolbarClasses = "";
     
     
     /**
@@ -164,7 +162,7 @@ class lavaPage extends lavaBase
                 </div>
             <!--.lava-header END-->
             </div>
-            <div id="lava-nav" class="lava-nav texture texture-red-woven bleed-left bleed-right with-padding lava-sticky">
+            <div id="lava-nav" class="lava-nav bleed-left bleed-right with-padding lava-sticky-top">
                 <div class="sticky-toggle tiptip" title="Toggle whether this bar should stick to the top of the screen."></div>
                 <div class="left-grad"></div>
                 <ul class="nav nav-horizontal clearfix">
@@ -172,26 +170,22 @@ class lavaPage extends lavaBase
                    <li class="clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->getUrl(); ?>"><?php echo $page->get( "title" ); ?></a></li>
                    <?php endforeach; ?>
                 </ul>
-                <?php
-                if($this->displayToolbar) $this->doToolbar();
-                ?>
             </div>
-            <?php if($this->displayToolbar): ?>
-            <div class="toolbar-padder"></div>
-            <?php endif; ?>
             <noscript>
                 <div class="lava-message warning">
                     <span class="message"><?php _e( "You don't have JavaScript enabled. Some features will not work without JavaScript.", $this->_framework()) ?></span>
                 </div>
             </noscript>
 			<div class="lava-content-cntr bleed-left bleed-right with-padding">
-				<div class="lava-underground texture texture-woven bleed-left bleed-right with-padding" style="display:none;">
+				<div class="lava-underground texture texture-woven bleed-left bleed-right with-padding underground-hidden" style="">
 				<?php
 					$this->displayUnderground();
 				?>
 				</div>
 				<div class="lava-overground">
 					<div class="torn-paper bleed-left bleed-right bleed-abs"></div>
+					<div class="lava-btn-hide-underground underground-cancel-bar lava-btn lava-btn-block" style="display:none"><?php $this->cancelText() ?></div>
+					<div class="content">
         <?php
     }
 
@@ -203,8 +197,11 @@ class lavaPage extends lavaBase
     function displayFooter()
     {
         ?>
+					<!--.content END-->
+					</div>
 				<!--.lava-overground END-->
 				</div>
+				<?php $this->displayToolbar() ?>
 			<!--.lava-content-cntr END-->
 			</div>
         <!--.wrap END-->
@@ -250,73 +247,28 @@ class lavaPage extends lavaBase
         <?php
     }
 
-    function doToolbar()
+    function displayToolbar()
     {
-        $leftActions = $this->_leftActions();
-        $rightActions = $this->_rightActions();
-
-        $toolbarClasses = $this->toolbarClasses;
-
-        echo '<div class="lava-toolbar '.$toolbarClasses.'">';
-            echo '<div class="actions-left">';
-                foreach($leftActions as $action)
-                {
-                    echo '<div class="action">';
-                        echo $action;
-                    echo '</div>';
-                }
-            echo '</div>';
-            echo '<div class="actions-right">';
-                foreach($rightActions as $action)
-                {
-                    echo '<div class="action">';
-                        echo $action;
-                    echo '</div>';
-                }
-            echo '</div>';
-        echo '</div>';
+		?>
+		<div class="lava-toolbar lava-sticky-bottom <?php echo $this->runFilters( "toolbarClass" ) ?>">
+			<div class="inner">
+				<?php $this->runActions( "toolbar" ) ?>
+			</div>
+		</div>
+		<?php
     }
 
-    function _leftActions()
-    {
-        $actions = array();
-        if( method_exists($this, "leftActions") )
-        {
-            $actions = $this->leftActions();
-        }
-
-        $actions = apply_filters( $this->_slug( "leftActions" ), $actions );
-        $actions = apply_filters( $this->_slug( "leftActions-page/{$this->slug}" ), $actions );
-
-        
-        
-
-        return $actions;
-    }
-
-    function _rightActions()
-    {
-        $actions = array();
-        if( method_exists($this, "rightActions") )
-        {
-            $actions = $this->rightActions();
-        }
-
-        $actions = apply_filters( $this->_slug( "rightActions" ), $actions );
-        $actions = apply_filters( $this->_slug( "rightActions-page/{$this->slug}" ), $actions );
-
-
-        return $actions;
-    }
+	function cancelText()
+	{
+		_e( "Cancel", $this->_framework() );
+	}
 
     function hookTags()
     {
         $hooks = array(
             "",
             "slug/{$this->slug}",
-            "multisiteSupport/{$this->multisiteSupport}",
-            "toolbar/{$this->displayToolbar}",
-            "class/{$class}",
+            "multisiteSupport/{$this->multisiteSupport}"
         );
         return $hooks;
     }

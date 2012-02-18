@@ -183,9 +183,9 @@ class lavaBase
     }
 
     /**
-     * lavaContext function.
+     * withinContext function.
      * 
-     * adds/removes context
+     * Sets the parent handler (adds to chain for method lookups)
      * 
      * @return $this
      * 
@@ -247,7 +247,7 @@ class lavaBase
      * 
      * @since 1.0.0
      */
-    function runActions( $hookTag )
+    function runActions( $hookTag, $debug = false )
     {
         $hooks = array_unique( $this->hookTags() );
         $suffixes = array_unique( $this->suffixes );
@@ -260,6 +260,10 @@ class lavaBase
                 {
                     $hook = "-".$hook;
                 }
+				if( $debug )
+				{
+					echo $this->_slug( "{$hookTag}{$hook}{$suffix}" ) . "\n";
+				}
                 do_action( $this->_slug( "{$hookTag}{$hook}{$suffix}" ), $this );
             }
         }

@@ -44,6 +44,7 @@ class lavaPages extends lavaBase
         $this->addScript( $this->_slug( "modernizr" ), "lava/_static/modernizr.js" );
         $this->addScript( $this->_slug( "tiptip" ), "lava/_static/tiptip.js" );
         $this->addScript( $this->_slug( "jquery-color" ), "lava/_static/jquery.color.js" );
+        $this->addScript( $this->_slug( "jquery-color" ), "lava/_static/jquery.resize.js" );
 
         $this->addStyle( "lobster", "http://fonts.googleapis.com/css?family=Lobster", true );
         

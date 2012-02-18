@@ -595,7 +595,7 @@ class lavaSetting extends lavaBase
         $defaultValue = $this->getDefault();
         $settingID = "setting-cntr_{$pluginSlug}-{$settingWho}-{$settingKey}";
 
-        $settingStart = "<div class=\"{$classes}\" $dataTags data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-key=\"{$key}\" data-default-value=\"{$defaultValue}\" id=\"$settingID\" >";
+        $settingStart = "<div class=\"{$classes}\" $dataTags data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-setting-key=\"{$key}\" data-default-value=\"{$defaultValue}\" id=\"$settingID\" >";
             $statusIndicator = '<span class="status-indicator show-status"></span>';
             $preSettingStart = '<div class="pre-setting">';
                 $settingName = "<span class=\"setting-name\">$name</span>$help";
@@ -684,7 +684,7 @@ class lavaSetting extends lavaBase
         
         switch( $type )
         {
-            case "skin":
+            
             case "hidden":
                 $settingControl = "<input data-actual='true' id='{$settingInputID}' type='hidden' name='{$settingInputName}' value='{$settingValue}' />";
             break;
@@ -716,6 +716,7 @@ class lavaSetting extends lavaBase
 
             case "timeperiod":
                 $settingControl = "<input data-actual='true' id='{$settingInputID}' type='text' name='{$settingInputName}' value='{$settingValue}' />";
+			case "skin":
             case "text":
             default:
                 $settingControl = "<input data-actual='true' id='{$settingInputID}' type='text' name='{$settingInputName}' value='{$settingValue}' />";

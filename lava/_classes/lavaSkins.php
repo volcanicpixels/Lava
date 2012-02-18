@@ -152,5 +152,10 @@ class lavaSkins extends lavaBase
 			return $this->skins[$dir];
 		}
 	}
+
+    function fetchSkins()
+    {
+        return $this->skins;
+    }
 }
 ?>
