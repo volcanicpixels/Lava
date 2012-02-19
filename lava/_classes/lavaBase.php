@@ -237,6 +237,20 @@ class lavaBase
         return false;
     }
 
+	function addAction( $hookTag, $methodName = "", $priority = 10 ) {
+		if( empty( $methodName ) ) {
+			$methodName = $hookTag;
+		}
+		add_action( $this->_slug( $hookTag ), array( $this, $methodName ), $priority );
+	}
+
+	function addFilter( $hookTag, $methodName = "", $priority ) {
+		if( empty( $methodName ) ) {
+			$methodName = $hookTag;
+		}
+		add_filter( $this->_slug( $hookTag ), array( $this, $methodName ), $priority );
+	}
+
     /**
      * runActions function.
      * 
@@ -279,7 +293,7 @@ class lavaBase
      * 
      * @since 1.0.0
      */
-    function runFilters( $hookTag, $argument = "" )
+    function runFilters( $hookTag, $argument = "", $debug = false )
     {
         
         $hooks = array_unique( $this->hookTags() );
@@ -300,7 +314,7 @@ class lavaBase
                 }
                 //echo( $this->_slug( "{$hookTag}{$hook}{$suffix}" ). "<br/>" );
                 $theHook = $this->_slug( "{$hookTag}{$hook}{$suffix}" );
-
+				if( $debug ){ echo( "$theHook<br>" ); }
                 $argument = apply_filters( $theHook, $argument, $this );
             }
         }
@@ -310,7 +324,7 @@ class lavaBase
 
     function hookTags()
     {
-        return array();
+        return array( " " );
     }
 }
 ?>

@@ -47,6 +47,22 @@ class lavaPlugin
             include( $filename );
             $className = $this->_slug( "callbacks" );
             $this->pluginCallbacks = $this->_new( $className );
+
+			$autoHooks = array(
+				"init" => "registerActions"
+			);
+
+			foreach( $autoHooks as $hookTag => $actions ) {
+				if( !is_array( $actions ) ) {
+					$actions = array( $actions );
+				}
+				foreach( $actions as $action ) {
+					if( method_exists( $this->pluginCallbacks, $action ) ) {
+						$callback = array( $this->pluginCallbacks, $action ); 
+						add_action( $hookTag, $callback );
+					}
+				}
+			}
         }
 
 		$callback = array( $this->_skins(), "parseSkins" );
