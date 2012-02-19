@@ -23,6 +23,7 @@ class lavaSkins extends lavaBase
 {
     protected $skins = array();
     public $currentSkinSlug;
+	public $translations = array();
     
     /**
      * lavaSkins::lavaConstruct()
@@ -36,18 +37,13 @@ class lavaSkins extends lavaBase
     function lavaConstruct()
     {
         $callbacks = $this->_new( 'lavaSkinsCallback' );
-
-		$hookTag = "_templateVars";
-		add_filter( $this->_slug( $hookTag ), array( $this, "templateVars" ) );
-
-		$hookTag = "_templateVars_env";
-		add_filter( $this->_slug( $hookTag ), array( $this, "templateVars_env" ) );
-
+		
         //add the setting that holds which skin is selected
         $this->_settings()
             ->addSetting( 'skin', 'skins' )
                 ->setType( 'skin' )
-                ->setName( __( 'Current skin', $this->_framework() ) );
+                ->setName( __( 'Current skin', $this->_framework() ) )
+				->setDefault( 'default' );
     }
 
 
@@ -132,7 +128,7 @@ class lavaSkins extends lavaBase
 
 		$this->_settings( false )
 				->fetchSetting( "skin", "skins" )
-                ->addPropertyValue( "radio-values", $theSkin );
+                ->addsettingOption( $theSkin );
 
         return $theSkin;
     }
@@ -184,30 +180,13 @@ class lavaSkins extends lavaBase
 		return $h2o->render( $templateVars );
 	}
 
-	function templateVars( $templateVars ) {
-		$envVars = apply_filters( $this->_slug( "_templateVars_env" ), array() );
-		$bodyClass = apply_filters( $this->_slug( "_templateVars_bodyClass" ), "" );
-		$pluginVars = apply_filters( $this->_slug( "_templateVars_pluginVars" ), array() );
-
-		$templateVars = array(
-			"environment" => $envVars,
-			"body_class" => $bodyClass,
-			"plugin_vars" => $pluginVars
-		);
-
-		return $templateVars;
+	function addTranslation( $key, $value ) {
+		$this->translations[ $key ] = $value;
+		return $this->_skins( false );
 	}
 
-	function templateVars_env( $envVars )
-	{
-		$currentSkin = $this->currentSkin();
-
-		$envVars = array(
-			"blog_name" => get_bloginfo('name'),
-			"static_url" => plugins_url( "/skins/{$currentSkin}/static", $this->_file() )
-		);
-
-		return $envVars;
+	function getTranslations() {
+		return $this->translations;
 	}
 }
 ?>

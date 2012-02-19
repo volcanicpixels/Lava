@@ -49,7 +49,8 @@ class lavaPlugin
             $this->pluginCallbacks = $this->_new( $className );
 
 			$autoHooks = array(
-				"init" => "registerActions"
+				"init" => "init",
+				"admin_init" => "adminInit"
 			);
 
 			foreach( $autoHooks as $hookTag => $actions ) {

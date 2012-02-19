@@ -237,18 +237,86 @@ class lavaBase
         return false;
     }
 
-	function addAction( $hookTag, $methodName = "", $priority = 10 ) {
-		if( empty( $methodName ) ) {
-			$methodName = $hookTag;
+	function addWPAction( $hookTags, $methodNames = "", $priority = 10, $debug = false ) {
+		if( !is_array( $hookTags ) ) {
+			$hookTags = array( $hookTags );
 		}
-		add_action( $this->_slug( $hookTag ), array( $this, $methodName ), $priority );
+		if( !is_array( $methodNames ) ) {
+			$methodNames = array( $methodNames );
+		}
+		foreach( $hookTags as $hookTag ) {
+
+			foreach( $methodNames as $methodName ) {
+				$_methodName = $methodName;
+				if( empty( $_methodName) ) {
+					$_methodName = $hookTag;
+				}
+				//if( $debug) { echo $hookTag; echo "<br>"; echo $_methodName;echo "<br>"; }
+				add_action( $hookTag, array( $this, $_methodName ), $priority );
+			}
+		}
+		//if( $debug ) exit;
 	}
 
-	function addFilter( $hookTag, $methodName = "", $priority ) {
-		if( empty( $methodName ) ) {
-			$methodName = $hookTag;
+	function addWPFilter( $hookTags, $methodNames = "", $priority = 10, $args = 1 ) {
+		if( !is_array( $hookTags ) ) {
+			$hookTags = array( $hookTags );
 		}
-		add_filter( $this->_slug( $hookTag ), array( $this, $methodName ), $priority );
+		if( !is_array( $methodNames ) ) {
+			$methodNames = array( $methodNames );
+		}
+		foreach( $hookTags as $hookTag ) {
+
+			foreach( $methodNames as $methodName ) {
+				$_methodName = $methodName;
+				if( empty( $_methodName) ) {
+					$_methodName = $hookTag;
+				}
+				//if( $debug) { echo $hookTag; echo "<br>"; echo $_methodName;echo "<br>"; }
+				add_filter( $hookTag, array( $this, $_methodName ), $priority, $args );
+			}
+		}
+		//if( $debug ) exit;
+	}
+
+	function addAction( $hookTags, $methodNames = "", $priority = 10 ) {
+		if( !is_array( $hookTags ) ) {
+			$hookTags = array( $hookTags );
+		}
+		if( !is_array( $methodNames ) ) {
+			$methodNames = array( $methodNames );
+		}
+		foreach( $hookTags as $hookTag ) {
+
+			foreach( $methodNames as $methodName ) {
+				$_methodName = $methodName;
+				if( empty( $_methodName) ) {
+					$_methodName = $hookTag;
+				}
+				add_action( $this->_slug( $hookTag ), array( $this, $_methodName ), $priority );
+			}
+		}
+	}
+
+
+	function addFilter( $hookTags, $methodNames = "", $priority = 10 ) {
+
+		if( !is_array( $hookTags ) ) {
+			$hookTags = array( $hookTags );
+		}
+		if( !is_array( $methodNames ) ) {
+			$methodNames = array( $methodNames );
+		}
+		foreach( $hookTags as $hookTag ) {
+
+			foreach( $methodNames as $methodName ) {
+				$_methodName = $methodName;
+				if( empty( $_methodName) ) {
+					$_methodName = $hookTag;
+				}
+				add_filter( $this->_slug( $hookTag ), array( $this, $_methodName ), $priority );
+			}
+		}
 	}
 
     /**

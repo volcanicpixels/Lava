@@ -44,6 +44,15 @@ class lavaSkinsCallback extends lavaSettingsCallback
 		//skinRibbons
         $hookTag = "skinRibbons";
         add_action( $this->_slug( "{$hookTag}" ), array( $this, "addActiveRibbon" ), 10, 2 );
+
+		$hookTag = "_templateVars_bodyClass";
+		$this->addAction( $hookTag );
+
+		$hookTag = "_templateVars";
+		$this->addAction( $hookTag );
+
+		$hookTag = "_templateVars_env";
+		$this->addAction( $hookTag );
     }
 
 	function addSkinsUx( $settingControl, $theSetting )
@@ -65,6 +74,44 @@ class lavaSkinsCallback extends lavaSettingsCallback
 			<?php _e( "Selected", $this->_framework() ) ?>
 		</div>
 		<?php
+	}
+
+	function _templateVars( $templateVars ) {
+		$envVars = apply_filters( $this->_slug( "_templateVars_env" ), array() );
+		$bodyClass = apply_filters( $this->_slug( "_templateVars_bodyClass" ), "" );
+		$pluginVars = apply_filters( $this->_slug( "_templateVars_pluginVars" ), array() );
+		$pluginTranslation = $this->_skins()->getTranslations();
+
+
+		$templateVars = array(
+			"environment" => $envVars,
+			"body_class" => $bodyClass,
+			"plugin_vars" => $pluginVars,
+			"plugin_translation" => $pluginTranslation
+		);
+
+		return $templateVars;
+	}
+
+	function _templateVars_env( $envVars )
+	{
+		$currentSkin = $this->_skins()->currentSkin();
+
+		$envVars = array(
+			"blog_name" => get_bloginfo('name'),
+			"static_url" => plugins_url( "/skins/{$currentSkin}/static", $this->_file() )
+		);
+
+		return $envVars;
+	}
+
+	function _templateVars_bodyClass( $current ) {
+		if( is_array( $_GET ) ) {
+			foreach( $_GET as $class => $ignore ) {
+				$current .= " {$class}";
+			}
+		}
+		return $current;
 	}
 
 }

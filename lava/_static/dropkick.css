@@ -16,8 +16,11 @@
   -webkit-user-select: none;
   color:#888;
   line-height: 14px;
-  margin-left:15px;
   outline: 0;
+}
+.setting.type-timeperiod .dk_container {
+	margin-left: 15px;
+	margin-top: 1px;
 }
   .dk_container:focus {
     outline: 0;
@@ -41,12 +44,13 @@
   color: #888;
   padding: 7px 0px 7px 0px;
   width:222px;
+  min-width: 100px;
   -moz-box-shadow: 0 1px 1px #EFEFEF;
   -webkit-box-shadow: 0 1px 1px #EFEFEF;
   box-shadow: 0 1px 1px #EFEFEF;
   -webkit-border-radius: 2px;
--moz-border-radius: 2px;
-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
   .dk_toggle:hover {
   	color:#5e6066;

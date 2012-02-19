@@ -12,7 +12,6 @@ jQuery(document).ready(function(){
     prettifyPasswords();
     prettifyTexts();
     prettifyTimePeriods();
-    prettifySkins();
 
     addResetSettings();
 	parseSkin();
@@ -21,11 +20,6 @@ jQuery(document).ready(function(){
     jQuery( '.tiptip-right' ).tipTip({'defaultPosition':'right','delay':0});
 });
 
-
-function prettifySkins()
-{
-    
-}
 
 function prettifyCheckboxes()
 {

@@ -45,6 +45,7 @@ class lavaSettingsCallback extends lavaBase
         add_filter( $this->_slug( "{$hookTag}-type/password" ), array( $this, "addPasswordWrapper" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/checkbox" ), array( $this, "addCheckboxUx" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/text" ), array( $this, "addTextWrapper" ), 10, 2 );
+        add_filter( $this->_slug( "{$hookTag}-type/select" ), array( $this, "addSelectUx" ), 10, 2 );
 
         //settingsHiddenInputs
         $hookTag = "settingsHiddenInputs";
@@ -194,6 +195,39 @@ class lavaSettingsCallback extends lavaBase
             $checked = 'checked';
         }
         $settingControl .=  '<div title ="' . __( /* In context of a checkbox slider */"Click to enable/disable ", $this->_framework() ) . '" class="js-only tiptip checkbox-ux '.$checked.'"></div>';
+        return $settingControl;
+    }
+
+	/**
+     * lavaSettingsCallback::addSelectUx()
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
+    function addSelectUx( $settingControl, $theSetting )
+    {
+		$settingKey = $theSetting->getKey();
+        $settingWho = $theSetting->who;
+        $pluginSlug =  $this->_slug();
+        $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
+        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
+		$options = $theSetting->getProperty( "setting-options" );
+		$value = $theSetting->getValue();
+
+		if( !is_array($options) ) {
+			$options = array();
+		}
+
+		$settingControl = '<select id="' . $settingInputID . '" name="' . $settingInputName . '" >';
+								foreach( $options as $option ) {
+									$selected = 'data-bob="test"';
+									if( $value == $option['value'] ) {
+										$selected = 'selected="selected"';
+									}
+									$settingControl .= '<option ' . $selected . ' value="' . $option['value'] . '" >' . $option['name'] . '</option>';
+								}
+		$settingControl .='</select>';
         return $settingControl;
     }
 

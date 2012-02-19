@@ -207,7 +207,6 @@ class lavaSetting extends lavaBase
         }
         if( $duplicate == false and in_array( $value, $current ) )
         {
-            exit( "ETF");
             return $this->_settings( false );
         }
         $current[] = $value;
@@ -215,6 +214,21 @@ class lavaSetting extends lavaBase
 
         return $this->_settings( false );
     }
+
+	function addSettingOption( $value, $name = "", $class = "" ) {
+		if( empty($name) ) {
+			$name = $value;
+		}
+		$option = array(
+			"value" => $value,
+			"name" => $name,
+			"class" => $class,
+		);
+		$this->addTag( "options-available" );
+		$this->addPropertyValue( "setting-options", $option );
+
+		return $this->_settings( false );
+	}
     
     
 

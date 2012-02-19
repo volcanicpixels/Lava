@@ -751,6 +751,9 @@ ul.nav:hover li.active:hover a {
 .setting.tag-hidden {
   display: none;
 }
+.setting.tag-no-margin {
+  margin-top: -10px;
+}
 /* Skins page */
 .skin-selector .skin {
   width: 45%;
