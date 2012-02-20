@@ -318,6 +318,7 @@ ul.nav:hover li.active:hover a {
   -moz-border-radius: 3px;
   border-radius: 3px;
   color: white;
+  line-height: 14px;
 }
 .lava-btn.lava-btn-action.lava-btn-action-large {
   padding: 20px 0px;
@@ -736,6 +737,7 @@ ul.nav:hover li.active:hover a {
   float: left;
   margin-right: 30px;
   position: relative;
+  border: 1px solid #498CF5;
 }
 .setting[data-type="skin"] .setting-inner .setting-control .skin-thumb .actions {
   float: left;
