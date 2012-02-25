@@ -46,6 +46,7 @@ class lavaSettingsCallback extends lavaBase
         add_filter( $this->_slug( "{$hookTag}-type/checkbox" ), array( $this, "addCheckboxUx" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/text" ), array( $this, "addTextWrapper" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/select" ), array( $this, "addSelectUx" ), 10, 2 );
+		$this->addFilter( "{$hookTag}-type/image", "addImageUx", 10, 2 );
 
         //settingsHiddenInputs
         $hookTag = "settingsHiddenInputs";
@@ -180,6 +181,35 @@ class lavaSettingsCallback extends lavaBase
         return $settingControl;
     }
 
+	/**
+     * lavaSettingsCallback::addImageUx()
+     * 
+     * Adds the image uploader HTML and CSS
+     * 
+     * @return void
+     * 
+     * @since 1.0.0
+     */
+    function addImageUx( $settingControl, $theSetting )
+    {
+        $settingKey = $theSetting->getKey();
+        $settingWho = $theSetting->who;
+        $pluginSlug =  $this->_slug();
+        $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
+        $settingUploadInputName = "{$pluginSlug}_upload[{$settingWho}/{$settingKey}]";
+        $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
+        $settingUploadInputID = "{$pluginSlug}_upload-{$settingWho}-{$settingKey}";
+
+        $placeholder = 'placeholder="'. $theSetting->properties['placeholder'] .'"';
+        $settingControl =  '<div class="image-thumb show-status clearfix">'.
+								'<img src="' . $theSetting->getValue( true ) . '" />'.
+								'<div class="lava-shadow-overlay"></div>'.
+								'<input class="file_upload" id="' . $settingUploadInputID . '" type="file" name="' . $settingUploadInputName . '" />'.
+                                '<input id="' . $settingInputID . '" name="' . $settingInputName . '"  '.$placeholder.' type="hidden" value="' . $theSetting->getValue( true ) . '"/>'.
+                            '</div>';
+        return $settingControl;
+    }
+
     /**
      * lavaSettingsCallback::addCheckboxUx()
      * 
@@ -286,10 +316,7 @@ class lavaSettingsCallback extends lavaBase
      * @return void
      * 
      * @since 1.0.0
-     *
-    function (  )
-    {
-        
-    }*/
+     */
+    
 }
 ?>
