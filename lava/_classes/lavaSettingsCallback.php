@@ -196,17 +196,42 @@ class lavaSettingsCallback extends lavaBase
         $settingWho = $theSetting->who;
         $pluginSlug =  $this->_slug();
         $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
-        $settingUploadInputName = "{$pluginSlug}_upload[{$settingWho}/{$settingKey}]";
         $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
+        $settingUploadInputName = "{$pluginSlug}_upload-{$settingWho}-{$settingKey}";//the name attribute for the FILE input
+        $settingUploadHiddenInputName = "{$pluginSlug}_upload[{$settingWho}/{$settingKey}]";//the base name attribute for the upload settings
         $settingUploadInputID = "{$pluginSlug}_upload-{$settingWho}-{$settingKey}";
+        $settingValue = $theSetting->getValue( true );
+
+        $formData = array(
+            array(
+                "name" => "action",
+                "value" => $this->_slug( "image_upload" )
+            ),
+            array(
+                "name" => "nonce",
+                "value" => wp_create_nonce( $this->_slug( "image_upload" ) )
+            )
+        );
+
+        $formData = json_encode($formData);
+
+        $fileInputClass = "lava-ajax-request-label-" . rand(10000,99999);
+
+        $theInput = '<input data-file_input_class="' . $fileInputClass . '" data-form_data=\'' . $formData . '\' class="' . $fileInputClass . ' lava-file_upload-manual_select" id="' . $settingUploadInputID . '" type="file" name="' . $settingUploadInputName . '" />';
+        $theLabel = '</span><label for="' . $settingUploadInputID . '">' . $theInput;
 
         $placeholder = 'placeholder="'. $theSetting->properties['placeholder'] .'"';
-        $settingControl =  '<div class="image-thumb show-status clearfix">'.
-								'<img src="' . $theSetting->getValue( true ) . '" />'.
-								'<div class="lava-shadow-overlay"></div>'.
-								'<input class="file_upload" id="' . $settingUploadInputID . '" type="file" name="' . $settingUploadInputName . '" />'.
-                                '<input id="' . $settingInputID . '" name="' . $settingInputName . '"  '.$placeholder.' type="hidden" value="' . $theSetting->getValue( true ) . '"/>'.
-                            '</div>';
+        $settingControl =  '<label for="' . $settingUploadInputID . '" ><div class="image-thumb lava-file_upload lava-file_upload-dropzone show-status clearfix">'.
+								'<img src="' . $settingValue . '" />'.
+                                '<div class="lava-message lava-message-absolute-in-cntr lava-message-red lava-message-html5"><span class="drag-drop-only">' .
+                                    __( sprintf("To change the image either drop one here or %sselect an image%s", $theLabel, "</label>"), $this->_framework() ) .
+                                '</div>'.
+                                '<div class="lava-message lava-message-absolute-in-cntr lava-message-red uploading-message">' . __( "Uploading", $this->_framework() ) . '</div>' .
+                                '<input data-actual="true" class="lava-file-upload-url-dump" id="' . $settingInputID . '" name="' . $settingInputName . '" type="hidden" value="' . $settingValue . '"/>'.
+                                '<input class="' . $fileInputClass . '" name="' . $settingUploadHiddenInputName . '[upload_key]"  type="hidden" value="' . $settingUploadInputName . '"/>'.//tells the upload handler where to look for a file (so it doesn't blindly copy entire contents of $_FILES)
+                                '<input class="' . $fileInputClass . '" name="' . $settingUploadHiddenInputName . '[callback_tag]"  type="hidden" value="' . "{$settingWho}-{$settingKey}" . '"/>'.
+                                '<div class="lava-shadow-overlay"></div>'.
+                            '</div></label>';
         return $settingControl;
     }
 

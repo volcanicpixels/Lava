@@ -851,13 +851,48 @@
 
 }));
 jQuery(document).ready(function(){
-	jQuery('.file_upload').fileupload({
-        dataType: 'json',
-        url: 'server/php/',
-        done: function (e, data) {
-            $.each(data.result, function (index, file) {
-                $('<p/>').text(file.name).appendTo(document.body);
-            });
+	jQuery('.lava-file_upload').each(function(){
+        if( jQuery(this).hasClass('lava-file_upload-dropzone') ) {
+            var dropZone = this;
+        } else {
+                var dropZone = jQuery(this).find( '.lava-file_upload-dropzone' );
         }
+        /*jQuery(this).click(function(){
+            jQuery(this).find('.lava-file_upload-manual_select').click();
+        })*/
+        jQuery(this).fileupload({
+            dataType: 'json',
+            url: ajaxurl,
+            dropZone: dropZone,
+            done: function (e, data) {
+                var theData = data.result;
+                for( i in theData ) {
+                    var theImage = theData[i];
+                    theImage = theImage.url;
+                    jQuery(this).removeClass("uploading");
+                    jQuery(this).find('.lava-file-upload-url-dump').val(theImage).change();
+                }
+
+            },
+            add: function(e,data) {
+                jQuery(this).addClass("uploading");
+                data.submit();
+            },
+            formData: function(form) {
+                var formData = jQuery(this.fileInput).attr("data-form_data");
+                var fileUploadClass = jQuery(this.fileInput).attr("data-file_input_class");
+                formData = jQuery.parseJSON( formData );
+
+                for ( data in formData) {
+                    var theData = formData[data];
+                    var theName = theData.name;
+                    var theValue = theData.value;
+                    jQuery(form).append( '<input type="hidden" class="' + fileUploadClass + ' fileUploadTmp" name="' + theName + '" value="' + theValue + '" />' );
+                };
+                var serialisedArray = jQuery(form).find('.' + fileUploadClass).serializeArray();
+                jQuery( '.fileUploadTmp' ).remove();
+                return serialisedArray;
+            }
+        });
     });
 });
