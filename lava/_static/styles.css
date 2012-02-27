@@ -840,6 +840,8 @@ ul.nav:hover li.active:hover a {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  position: relative;
+  top: -2px;
 }
 .setting[data-type="image"] .setting-inner .setting-control .image-thumb img {
   min-height: 40px;

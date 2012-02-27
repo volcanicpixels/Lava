@@ -47,10 +47,15 @@ class lavaSettingsCallback extends lavaBase
         add_filter( $this->_slug( "{$hookTag}-type/text" ), array( $this, "addTextWrapper" ), 10, 2 );
         add_filter( $this->_slug( "{$hookTag}-type/select" ), array( $this, "addSelectUx" ), 10, 2 );
 		$this->addFilter( "{$hookTag}-type/image", "addImageUx", 10, 2 );
+        $this->addFilter( "{$hookTag}-type/color", "addColorUx", 10, 2 );
 
         //settingsHiddenInputs
         $hookTag = "settingsHiddenInputs";
         add_action( $this->_slug( "{$hookTag}"), array( $this, "nonces") );
+
+        //hiddenForms
+        $hooktag = "hiddenForms";
+        $this->addFilter( "hiddenForms" );
     }
 
 
@@ -235,6 +240,11 @@ class lavaSettingsCallback extends lavaBase
         return $settingControl;
     }
 
+    function addColorUx( $settingControl, $theSetting ) {
+        $settingControl .= '<div class="color-preview"><div class="lava-message lava-message-absolute-in-cntr lava-message-red">Click to change</div></div>';
+        return $settingControl;
+    }
+
     /**
      * lavaSettingsCallback::addCheckboxUx()
      * 
@@ -300,8 +310,7 @@ class lavaSettingsCallback extends lavaBase
             "manage_options" => "setting-nonce"
         );
         $otherNonces = array(
-            "purpose" => "save",
-            "reset-scope" => "total"
+            "purpose" => "save"
         );
         if( is_network_admin() )
         {
@@ -332,6 +341,27 @@ class lavaSettingsCallback extends lavaBase
     {
         $settingActions = "";
         return $settingActions;
+    }
+
+    function hiddenForms( $forms ) {
+        $defaults = array(
+            "id" => "",
+            "fields" => array(),
+            "capabilities" => array()
+        );
+        $resetForm = array(
+            "id" => "lava-settings-reset",
+            "fields" => array(
+                "purpose" => "reset",
+                "reset-scope" => "total"
+            ),
+            "capabilities" => array(
+                "manage_options" => "setting-nonce"
+            )
+        );
+        $forms['lava-settings-reset'] = wp_parse_args($resetForm, $defaults);
+
+        return $forms;
     }
 
     
