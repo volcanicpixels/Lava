@@ -103,6 +103,17 @@ class lavaSkin extends lavaBase
         return $theSetting;//put it in context of lavaSettings with lavaSetting as child and lavaSkin as parent
     }
 
+    function addPresetSkinSetting( $slug ) {
+        $theSetting = "";
+        switch( $slug ){
+            case "custom_css":
+                die('asd');
+                $theSetting = $this->addSkinSetting( "custom_css" )->type('code')->bindData( "syntax-highlighting", "css" );
+            break;
+        }
+        return $theSetting;
+    }
+
     function skinPath( $append = "" )
     {
         $path = dirname( $this->_file() ) . '/skins/'. $this->slug . '/' . $append;

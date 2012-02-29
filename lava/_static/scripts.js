@@ -163,7 +163,10 @@ function prettifyTimePeriods()
 
 function prettifyColors() {
     jQuery('.setting.type-color').each(function(){
-
+        jQuery(this).find('input[data-actual="true"]').change(function(){
+            var value = jQuery(this).val();
+            jQuery(this).parent().find('.color-preview').css("backgroundColor", value ).find('.color-hex').html( value );
+        }).change();//load current colour
     });
 }
 
