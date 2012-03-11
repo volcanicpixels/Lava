@@ -912,6 +912,37 @@ ul.nav:hover li.active:hover a {
   font-size: 23px;
   font-family: Courier;
 }
+.setting[data-type="textarea"] .setting-inner .setting-control textarea {
+  min-width: 400px;
+  background: white;
+  -webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  padding: 7px;
+  font-size: 13px;
+  line-height: 16px;
+  color: #888;
+}
+.setting[data-type="textarea"] .setting-inner .setting-control textarea:hover {
+  border-color: #A4A4A4;
+  color: #5E6066;
+  -webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+.setting[data-type="textarea"] .setting-inner .setting-control textarea:focus {
+  outline: none;
+  border: 1px solid #4d90f0;
+}
+.setting[data-type="textarea"].tag-align-center textarea {
+  text-align: center;
+}
 .setting[data-status="refresh-blink"] .status-indicator {
   background: #fdeeab;
 }
@@ -941,6 +972,12 @@ ul.nav:hover li.active:hover a {
   background-position: 35px 0px;
   background-repeat: repeat-y;
   padding: 0px 2px;
+}
+.lava-code-box.focus {
+  -webkit-box-shadow: inset 0px 0px 9px rgba(77, 144, 240, 0.8);
+  -moz-box-shadow: inset 0px 0px 9px rgba(77, 144, 240, 0.8);
+  box-shadow: inset 0px 0px 9px rgba(77, 144, 240, 0.8);
+  border: 1px solid #4d90f0;
 }
 .lava-code-box .code-box-top {
   height: 30px;

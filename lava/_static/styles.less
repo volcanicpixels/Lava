@@ -3,6 +3,7 @@
 //simpless:!minify
 
 @ui-foreground-color : #dc4321;
+@ui-colors-focus: #4D90F0;
 
 
 .no-drag-drop .drag-drop-only {
@@ -878,6 +879,40 @@ ul.nav {
         }
     }
 
+    &[data-type="textarea"] {
+        .setting-inner {
+            .setting-control {
+                textarea {
+                    min-width: 400px;
+                    background: white;
+                    .box-shadow( inset 1px 1px 3px rgba(0, 0, 0, 0.1) );
+                    .border-radius( 0px );
+                    padding: 7px;
+                    font-size: 13px;
+                    line-height: 16px;
+                    color: #888;
+
+                    &:hover {
+                        border-color: #A4A4A4;
+                        color: #5E6066;
+                        .box-shadow( inset 1px 1px 3px rgba(0, 0, 0, 0.2) );
+                    }
+
+                    &:focus {
+                        outline: none;
+                        border: 1px solid @ui-colors-focus;
+                    }
+                }
+            }
+        }
+
+        &.tag-align-center {
+            textarea {
+                text-align: center;
+            }
+        }
+    }
+
     /* statuses */
 
     &[data-status="refresh-blink"] {
@@ -916,6 +951,11 @@ ul.nav {
     background-position: 35px 0px;
     background-repeat: repeat-y;
     padding: 0px 2px; //hack to stop lines from overlapping on shadow
+
+    &.focus {
+        .box-shadow( inset 0px 0px 9px rgba(77, 144, 240, 0.8));
+        border: 1px solid @ui-colors-focus;
+    }
 
     .code-box-top {
         height: 30px;

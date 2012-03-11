@@ -49,6 +49,7 @@ class lavaSettingsCallback extends lavaBase
 		$this->addFilter( "{$hookTag}-type/image", "addImageUx", 10, 2 );
         $this->addFilter( "{$hookTag}-type/color", "addColorUx", 10, 2 );
         $this->addFilter( "{$hookTag}-type/code", "addCodeUx", 10, 2 );
+        $this->addFilter( "{$hookTag}-type/textarea", "addTextareaUx", 10, 2 );
 
         //settingsHiddenInputs
         $hookTag = "settingsHiddenInputs";
@@ -306,13 +307,22 @@ class lavaSettingsCallback extends lavaBase
         $settingVars = $theSetting->getVars();
         extract( $settingVars );
 
-        $settingControl =   '<div class="lava-code-box show-status">'.
+        $settingControl =   '<div class="lava-code-box lava-focus-outer show-status">'.
                                 '<div class="code-box-top"></div>'.
                                 '<div class="code-box-mid">'.
                                     '<textarea data-actual="true" class="lava-code-textarea" id="' . $settingInputID . '" name="' . $settingInputName . '" >' . $settingValue . '</textarea>'.
                                 '</div>'.
                                 '<div class="code-box-bot"></div>'.
                             '</div>';
+        return $settingControl;
+    }
+
+    function addTextareaUx( $settingControl, $theSetting ) {
+        $settingVars = $theSetting->getVars();
+        extract( $settingVars );
+
+        $settingControl = '<textarea data-actual="true" name="' . $settingInputName . '" id="' .  $settingInputID . '" >' . $settingValue . '</textarea>';
+
         return $settingControl;
     }
 
