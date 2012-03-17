@@ -2,6 +2,9 @@ var lavaAnimations = true;
 var codeBoxes = new Array();
 
 jQuery(document).ready(function(){
+    addResetSettings();
+    parseSkin();
+
     jQuery('.js-only').removeClass('js-only');
 	jQuery('.js-fallback').hide();
     jQuery('select').dropkick();
@@ -13,9 +16,7 @@ jQuery(document).ready(function(){
     bindImageChange();
     bindFocus();
     bindSettingToggle();
-
-    addResetSettings();
-    parseSkin();
+    bindAutoResize();
 
     prettifyCheckboxes();
     prettifyPasswords();
@@ -93,14 +94,14 @@ function prettifyPasswords()
 
         jQuery(this).find( ".show-password-handle" ).click(function(){
 			var currentPassword = jQuery(this).parents('.setting').find('.input-cntr').attr("data-show", "text").find( '.password-show' ).val();//hack to prevent browser from selecting text in field
-			jQuery(this).parents('.setting').find( '.password-show' ).focus().val( currentPassword );
+			jQuery(this).parents('.setting').find( '.password-show' ).change().focus().val( currentPassword );
             jQuery(this).siblings(".hide-password-handle").show();
             jQuery(this).hide();
         });
 
         jQuery(this).find( ".hide-password-handle" ).click(function(){
 			var currentPassword = jQuery(this).parents('.setting').find('.input-cntr').attr("data-show", "password").find( 'input[type="password"]' ).val();
-			jQuery(this).parents('.setting').find( 'input[type="password"]' ).focus().val( currentPassword );
+			jQuery(this).parents('.setting').find( 'input[type="password"]' ).change().focus().val( currentPassword );
             jQuery(this).siblings(".show-password-handle").show();
             jQuery(this).hide();
         });
@@ -338,6 +339,12 @@ function bindImageUpload() {
     });
 }
 
+function bindAutoResize() {
+    jQuery('.lava-auto-resize').autoResize({'extraSpace': 5, 'animate': false}).removeClass('lava-auto-resize').addClass('lava-auto-resize-init');
+
+    jQuery('.lava-auto-resize-init');
+}
+
 function bindFocus() {
     jQuery('input.lava-focus-inner').focus(function(){
         jQuery(this).parents('.lava-focus-outer').addClass( "focus" );
@@ -445,6 +452,7 @@ function parseSkin() {
 	jQuery('.setting.tag-skin-setting').addClass( 'tag-setting-hidden' );
 	jQuery('.setting[data-skin="' + currentTheme + '"]').removeClass( 'tag-setting-hidden' );
     codeRefresh();
+    bindAutoResize();
 }
 
 function prettifyCode() {

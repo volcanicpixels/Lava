@@ -234,6 +234,7 @@ ul.nav:hover li.active:hover a {
   padding: 5px 0px;
   background: url(images/toolbar-repeat.png);
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+  z-index: 100;
 }
 .lava-toolbar.sticky {
   position: fixed;
@@ -674,7 +675,7 @@ ul.nav:hover li.active:hover a {
   line-height: 30px;
 }
 .setting .setting-inner .setting-control .input-cntr {
-  width: 215px;
+  min-width: 215px;
   float: left;
   height: 30px;
   background: white;
@@ -708,13 +709,7 @@ ul.nav:hover li.active:hover a {
   background: transparent;
   outline: none;
   border: none;
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: auto;
-  width: 215px;
+  min-width: 215px;
 }
 .setting .setting-inner .setting-actions {
   -webkit-user-select: none;
@@ -765,7 +760,11 @@ ul.nav:hover li.active:hover a {
   background-position: -52px 2px;
 }
 .setting[data-type="timeperiod"] .setting-inner .setting-control .input-cntr {
-  width: 80px;
+  min-width: 30px;
+}
+.setting[data-type="timeperiod"] .setting-inner .setting-control .input-cntr input {
+  min-width: 30px;
+  width: 30px;
 }
 .setting[data-type="skin"] .setting-inner .setting-control .skin-thumb {
   position: relative;
@@ -914,6 +913,7 @@ ul.nav:hover li.active:hover a {
 }
 .setting[data-type="textarea"] .setting-inner .setting-control textarea {
   min-width: 400px;
+  min-height: 60px;
   background: white;
   -webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);

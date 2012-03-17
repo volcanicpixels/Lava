@@ -221,7 +221,7 @@ class lavaPlugin
         }
         else
         {
-            return $this->$pointer;
+            return $this->$pointer->getThis();
         }
     }
 
