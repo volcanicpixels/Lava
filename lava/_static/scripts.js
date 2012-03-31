@@ -17,6 +17,7 @@ jQuery(document).ready(function(){
     bindFocus();
     bindSettingToggle();
     bindAutoResize();
+    bindDataSource();
 
     prettifyCheckboxes();
     prettifyPasswords();
@@ -335,7 +336,6 @@ function bindSettingToggle() {
 
 function bindImageUpload() {
     jQuery('.setting.type-image .lava-file_upload-manual_select').bind('fileuploaddone', function (e, data) {
-        alert('bob');
     });
 }
 
@@ -351,6 +351,55 @@ function bindFocus() {
     }).blur(function(){
         jQuery(this).parents('.lava-focus-outer').removeClass( "focus" );
     });
+}
+
+function bindDataSource() {
+    jQuery('.lava-table-loader-refresh-button').click(function(){
+        console.log(1);
+        doDataSource();
+    })
+    doDataSource();
+}
+
+function doDataSource() {
+    jQuery('.lava-full-page-loader').show();
+    jQuery('.lava-table-viewer').each(function(){
+        jQuery(this).find('table').html("<thead></thead><tbody></tbody>");
+        var dataSource = jQuery(this).attr( "data-data-source" );
+        var action = jQuery(this).attr( "data-ajax-action" );
+        var nonce = jQuery(this).attr( "data-ajax-nonce" );
+		jQuery.getJSON( ajaxurl + '?action=' + action + '&nonce=' + nonce + '&data-source=' + dataSource, function(data) {
+			jQuery('.lava-full-page-loader').hide();
+			parseTableData( dataSource, data["data"]["data"] );
+        });
+    });
+
+    jQuery('.lava-table-update-trigger').change(function(){
+    	jQuery(this).siblings('table').find('.impelements-timestamp').each(function(){
+    		var timestamp = jQuery(this).html();
+    	});
+    });
+}
+
+function parseTableData( dataSource, data ) {
+
+	var theTable = jQuery('.lava-table-viewer[data-data-source="' + dataSource + '"] table');
+	var theTableBody = jQuery(theTable).find('tbody');
+
+	for( row in data ) {
+		var theRow = jQuery("<tr></tr>").appendTo(theTableBody);
+		for( column in data[row] ) {
+			var theCol = jQuery("<td></td>").appendTo( theRow );
+			jQuery(theCol).attr('class', data[row][column]['classes']);
+			jQuery(theCol).addClass( "cell-" + column );
+			jQuery(theCol).attr( "data-value" + data[row][column] );
+			jQuery(theCol).html( data[row][column]['data'] );
+			jQuery(theCol).attr( "title", data[row][column]['title'] );
+		}
+	}
+
+	jQuery('.lava-table-update-trigger').change();
+
 }
 
 function restartStickyTop()

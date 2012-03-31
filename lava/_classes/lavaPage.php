@@ -55,6 +55,10 @@ class lavaPage extends lavaBase
         }
     }
 
+    function loadPage() {
+        
+    }
+
 	function get( $what )
 	{
 		return $this->$what;
@@ -161,12 +165,15 @@ class lavaPage extends lavaBase
         <div class="wrap">
             <div class="lava-header" style="margin-bottom:10px;">
                 <div id="icon-options-general" class="icon32"></div>
-                <h2><?php echo $pluginName; ?> <span class="version"><?php echo $pluginVersion; ?></span></h2>
-                <div class="ajax-checks">
+                <h2>
+                    <?php echo $pluginName; ?> <span class="version"><?php echo $pluginVersion; ?></span>
+                    <span class="ajax-checks">
                     <!-- When no-update is implemented wrap this in an "if" or better implement a hook -->
-                    <div class="js-only loader" data-name="update-available"></div>
-                 <!--.ajax-checks END-->
-                </div>
+                        <?php $this->runActions( "ajaxChecks" ); ?>
+                    <!--.ajax-checks END-->
+                    </span>
+                </h2>
+                
             <!--.lava-header END-->
             </div>
             <div id="lava-nav" class="lava-nav bleed-left bleed-right with-padding lava-sticky-top">
@@ -177,6 +184,7 @@ class lavaPage extends lavaBase
                    <li class="clearfix <?php echo $page->get( "slug" ); ?> <?php if( $page_hook == $page->get( "slug" ) ){ echo "active"; } ?>"><a href="<?php echo $page->getUrl(); ?>"><?php echo $page->get( "title" ); ?></a></li>
                    <?php endforeach; ?>
                 </ul>
+                <?php $this->runActions( "lavaNav" ); ?>
             </div>
             <noscript>
                 <div class="lava-message warning">
@@ -265,6 +273,11 @@ class lavaPage extends lavaBase
 		<?php
     }
 
+    function dieWith( $message = "" ) {
+        echo "$message";
+        die;
+    }
+ 
 	function cancelText()
 	{
 		_e( "Cancel", $this->_framework() );

@@ -383,8 +383,11 @@ class lavaBase
      * 
      * @since 1.0.0
      */
-    function runFilters( $hookTag, $argument = "", $debug = false )
+    function runFilters( $hookTag, $argument = "", $args = null, $debug = false )
     {
+        if( is_null( $args ) ) {
+            $args = $this;
+        }
         
         $hooks = array_unique( $this->hookTags() );
         $suffixes = array_unique( $this->suffixes );
@@ -401,7 +404,7 @@ class lavaBase
                 //echo( $this->_slug( "{$hookTag}{$hook}{$suffix}" ). "<br/>" );
                 $theHook = $this->_slug( "{$hookTag}{$hook}{$suffix}" );
 				if( $debug ){ echo( "$theHook<br>" ); }
-                $argument = apply_filters( $theHook, $argument, $this );
+                $argument = apply_filters( $theHook, $argument, $args );
             }
         }
 

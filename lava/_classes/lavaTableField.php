@@ -56,6 +56,9 @@ class lavaTableField extends lavaBase
             case "varchar":
                 return 255;
                 break;
+            case "text":
+                return 1000;
+                break;
 
         }
         return 30;

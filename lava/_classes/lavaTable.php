@@ -80,6 +80,18 @@ class lavaTable extends lavaBase
         return $wpdb->prefix . $this->_slug( $this->slug );
     }
 
+    function setOrderBy( $key ) {
+        $this->orderBy = $key;
+    }
+
+    function getOrderBy() {
+        if( isset( $this->orderBy ) ) {
+            return $this->orderBy;
+        } else {
+            return $this->uniqueKey->slug;
+        }
+    }
+
     function doInstall() {
         global $wpdb;
 
@@ -109,6 +121,10 @@ class lavaTable extends lavaBase
 
     function insertRow( $row, $nonce = null ) {
         global $wpdb;
+        if( !is_null( $nonce ) ) {
+            $hookTag = "insertRow/nonce-{$nonce}";
+            $row = $this->runFilters( $hookTag, $row );
+        }
         if( ! is_null( $nonce ) and array_key_exists($nonce, $this->previousRows) ) {
             $tableName = $this->getTableName();
             $uniqueId = $this->uniqueKey->slug;
@@ -117,16 +133,43 @@ class lavaTable extends lavaBase
                 DELETE FROM {$tableName}
                 WHERE {$uniqueId} = {$rowToDelete}
             ";
-            $wpdb->query( $sql );
+            //$wpdb->query( $sql );
         }
-
         $affected_rows = $wpdb->insert( $this->getTableName(), $row );
-        die( $affected_rows );
         $row_id = $wpdb->insert_id;
 
         if( !is_null( $nonce ) ) {
             $this->previousRows[ $nonce ] = $row_id;
         }
+    }
+
+    function getResults( $where = null, $orderBy = null, $startFrom = 0, $numberOfResults = 100 ) {
+        global $wpdb;
+        $tableName = $this->getTableName();
+
+        if( is_null( $orderBy ) ) {
+            $orderBy = $this->getOrderBy();
+        }
+
+        $sql = 
+        "SELECT *
+        FROM {$tableName}
+        ";
+
+        if( !is_null( $where ) ) {
+            $sql .= "WHERE {$where}
+            ";
+        }
+
+        if( !is_null( $orderBy ) ) {
+            $sql .= "ORDER BY {$orderBy}
+            ";
+        }
+
+
+        $result = $wpdb->get_results( $sql, ARRAY_A );
+
+        return $result;
     }
 }
 ?>

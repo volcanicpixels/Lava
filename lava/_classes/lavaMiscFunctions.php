@@ -67,6 +67,57 @@ class lavaMiscFunctions extends lavaBase
         return fasle;
     }
 
+    function userAgentInfo() {
+        $ua = $_SERVER['HTTP_USER_AGENT'];
+        $info = array(
+            'device' => 'pc',
+            'os' => 'unknown',
+            'browser' => 'unknown'
+        );
+        if( strpos( $ua, "ipad" ) ) {
+            $info['device'] = "iPad";
+            $info['os'] = 'ios';
+            $info['browser'] = 'Mobile Safari';
+            return $info;
+        } else if( strpos( $ua, "iPod" ) ) {
+            $info['device'] = "iPod";
+            $info['os'] = 'ios';
+            $info['browser'] = 'Mobile Safari';
+            return $info;
+        } else if( strpos( $ua, "iPhone" ) ) {
+            $info['device'] = "iPhone";
+            $info['os'] = 'ios';
+            $info['browser'] = 'Mobile Safari';
+            return $info;
+        }
+
+        //not an ios device
+         if( strpos( $ua, "Windows NT 6.2" ) ) {
+            $info['os'] = 'Windows 8';
+         } else if( strpos( $ua, "Windows NT 6.1" ) ) {
+            $info['os'] = 'Windows 7';
+         } else if( strpos( $ua, "Windows NT 6.0" ) ) {
+            $info['os'] = 'Windows Vista';
+         } else if( strpos( $ua, "Windows NT 5.1" ) ) {
+            $info['os'] = 'Windows XP';
+         } else if( strpos( $ua, "Macintosh" ) ) {
+            $info['os'] = "OSX";
+         }
+         //do the browser
+         if( strpos( $ua, "Chrome" ) ) {
+            $info['browser'] = 'Chrome';
+         } else if( strpos( $ua, "Safari" ) ) {
+            $info['browser'] = 'Safari';
+         } else if( strpos( $ua, "MSIE" ) ) {
+            $info['browser'] = 'Internet Explorer';
+         } else if( strpos( $ua, "Firefox" ) ) {
+            $info['browser'] = 'Firefox';
+         } else if( strpos( $ua, "Opera" ) ) {
+            $info['browser'] = 'Opera';
+         }
+         return $info;
+    }
+
     
 }
 ?>

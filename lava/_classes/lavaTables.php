@@ -38,5 +38,12 @@ class lavaTables extends lavaBase
 
 		return $this;
 	}
+
+	function tableExists( $slug ) {
+		if( array_key_exists($slug, $this->tables) ) {
+			return true;
+		}
+		return false;
+	}
 }
 ?>

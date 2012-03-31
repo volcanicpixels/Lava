@@ -672,7 +672,6 @@ class lavaSetting extends lavaBase
         $settingID = "setting-cntr_{$pluginSlug}-{$settingWho}-{$settingKey}";
 
         $settingStart = "<div class=\"{$classes}\" $dataTags data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-setting-key=\"{$key}\" data-default-value=\"{$defaultValue}\" id=\"$settingID\" >";
-            $statusIndicator = '<span class="status-indicator show-status"></span>';
             $preSettingStart = '<div class="pre-setting">';
                 $settingName = "<span class=\"setting-name\">$name</span>$help";
             $preSettingEnd = '</div>';
@@ -695,8 +694,7 @@ class lavaSetting extends lavaBase
         $settingFull = 
             "
             $settingStart
-                $statusIndicator
-            
+                        
                 $preSettingStart
                     $settingName
                 $preSettingEnd
