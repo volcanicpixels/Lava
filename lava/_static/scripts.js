@@ -3,7 +3,7 @@ var codeBoxes = new Array();
 
 jQuery(document).ready(function(){
     addResetSettings();
-    parseSkin();
+    bindSkin();
 
     jQuery('.js-only').removeClass('js-only');
 	jQuery('.js-fallback').hide();
@@ -175,8 +175,6 @@ function prettifyColors() {
         return false;
     },
     onChange: function (hsb, hex, rgb) {
-        console.log('asdss');
-        console.log(this);
     }
 });;//load current colour
         jQuery(this).find('.lava-shadow-overlay').click(function(){
@@ -296,15 +294,8 @@ function bindButtons() {
 	jQuery(".lava-btn.lava-btn-hide-underground").click(function(){
         hideUnderground();
     });
-	//the select skin button
-	jQuery(".lava-btn.lava-btn-select-skin").click(function(){
-        var skinSlug = jQuery(this).attr( "data-slug" );
-		jQuery('#private_blog-skins-skin').val( skinSlug );
-		hideUnderground();
-		parseSkin();
-    });
 	//not implemented buttons
-	jQuery(".lava-btn.not-implemented").addClass("lava-btn-disabled").addClass("tiptip-right").attr("title", "This feature hasn't been imlemented yet :(");
+	jQuery(".lava-btn.not-implemented").addClass("lava-btn-disabled").addClass("tiptip-right").attr("title", "This feature hasn't been implemented yet :(");
 }
 
 function bindSticky()
@@ -355,7 +346,6 @@ function bindFocus() {
 
 function bindDataSource() {
     jQuery('.lava-table-loader-refresh-button').click(function(){
-        console.log(1);
         doDataSource();
     })
     doDataSource();
@@ -469,8 +459,12 @@ function refreshStickyBottom()
 }
 
 
-function showUnderground() {
+function showUnderground( context ) {
+    if( typeof(context) == undefined ) {
+        context = "page";
+    }
 	var animationDuration = 500;
+    jQuery('.lava-underground').attr( 'data-underground-context', context );
 	jQuery('.lava-underground').slideDown(animationDuration).removeClass('underground-hidden').addClass('underground-visible');
 	jQuery('.lava-overground .underground-cancel-bar').slideDown().animate({'opacity':1},animationDuration, function(){
 		jQuery('.lava-overground').addClass('lava-sticky-bottom');
@@ -489,19 +483,25 @@ function hideUnderground() {
     jQuery('.lava-content-cntr').removeClass( "no-toolbar" );
 }
 
-function parseSkin() {
-	jQuery( ".skin-selector .skin" ).removeClass( "active" );
-	var currentTheme = jQuery('#private_blog-skins-skin').val();
-	jQuery('.skin[data-slug="' + currentTheme + '"]').addClass('active');
-	var imgSrc = jQuery('.skin[data-slug="' + currentTheme + '"] img').attr('src');
-	jQuery('#setting-cntr_private_blog-skins-skin .skin-thumb img').attr({'src': imgSrc});
+function bindSkin() {
+    jQuery( ".setting.type-skin input[data-actual='true']" ).change(function(){
+        jQuery(this).parents('.setting-control').find('.skin').removeClass( "selected" );
+        var currentTheme = jQuery(this).val();
+        jQuery('.skin[data-slug="' + currentTheme + '"]').addClass('selected');
 
-    //show skin options
+        //show skin options
 
-	jQuery('.setting.tag-skin-setting').addClass( 'tag-setting-hidden' );
-	jQuery('.setting[data-skin="' + currentTheme + '"]').removeClass( 'tag-setting-hidden' );
-    codeRefresh();
-    bindAutoResize();
+        jQuery('.setting.tag-skin-setting').addClass( 'tag-setting-hidden' );
+        jQuery('.setting[data-skin="' + currentTheme + '"]').removeClass( 'tag-setting-hidden' );
+        codeRefresh();
+        bindAutoResize();
+    }).change();
+
+    jQuery( '.skin-selector .skin .select-skin').click(function(){
+        var new_skin = jQuery(this).parents('.skin').attr('data-slug');
+        jQuery(this).parents('.setting-control').find('input[data-actual="true"]').val(new_skin).change();
+    })
+	
 }
 
 function prettifyCode() {

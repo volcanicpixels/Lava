@@ -40,9 +40,11 @@ class lavaPages extends lavaBase
         $this->addStyle( $this->_slug( "dropkick" ), "lava/_static/dropkick.css" );
         $this->addStyle( $this->_slug( "codemirror" ), "lava/_static/codemirror/codemirror.css" );
         $this->addStyle( $this->_slug( "codemirror-theme" ), "lava/_static/codemirror/codemirror.theme.css" );
+        $this->addStyle( $this->_slug( "lobster" ), "http://fonts.googleapis.com/css?family=Lobster" );
         //$this->addStyle( $this->_slug( "colorpicker-theme" ), "lava/_static/colorpicker/colorpicker.css" );
 
         $this->addScript( $this->_slug( "lavaScripts" ), "lava/_static/scripts.js", array( "jquery" ) );
+        $this->addScript( $this->_slug( "lavaScriptsNew" ), "lava/_static/scripts_new.js", array( "jquery" ) );
         $this->addScript( $this->_slug( "dropkick" ), "lava/_static/dropkick.js", array( "jquery" ) );
         $this->addScript( $this->_slug( "modernizr" ), "lava/_static/modernizr.js" );
         $this->addScript( $this->_slug( "tiptip" ), "lava/_static/tiptip.js", array( "jquery" ) );
@@ -187,6 +189,8 @@ class lavaPages extends lavaBase
                     ->setTitle( __( "Plugin Settings", $this->_framework() ) );
                     
         return $this;
+
+        //add Link to plugin page
     }
     
     /**

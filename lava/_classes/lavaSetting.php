@@ -382,7 +382,8 @@ class lavaSetting extends lavaBase
     function updateValue( $value, $doStatus = false, $suppressSave = false )
     {
         
-        $value = htmlentities($value, ENT_QUOTES);
+        //$value = htmlentities($value, ENT_QUOTES);
+        $value = utf8_encode( $value );
         $cache = $this->getCache();
         
         if( $doStatus )
@@ -406,7 +407,7 @@ class lavaSetting extends lavaBase
         $settingInputName = "{$pluginSlug}[{$settingWho}/{$settingKey}]";
         $settingInputID = "{$pluginSlug}-{$settingWho}-{$settingKey}";
         $settingOptions = $this->getProperty( "setting-options" );
-        $settingValue = $this->getValue( true );
+        $settingValue = $this->getValue( false );
 
         return array(
             "settingKey" => $settingKey,
@@ -439,7 +440,8 @@ class lavaSetting extends lavaBase
         $value = $cache[ $this->key ];
         if( $format == false)
         {
-            $value = html_entity_decode( $value );
+            //$value = html_entity_decode( $value );
+            $value = utf8_decode($value);
             return $value;
         }
         return $value;
@@ -477,16 +479,16 @@ class lavaSetting extends lavaBase
     {
         $classes = array();
 
-        $classes[] = "setting";
-        $classes[] = "clearfix";
+        $classes["setting"] = "setting";
+        $classes["clearfix"] = "clearfix";
 
         foreach( $this->tags as $tag )
         {
-            $classes[] = "tag-{$tag}";
+            $classes["tag-{$tag}"] = "tag-{$tag}";
         }
 
         $type = $this->getType();
-        $classes[] = "type-{$type}";
+        $classes["type-{$type}"] = "type-{$type}";
 
         $classes = $this->runFilters( "settingClasses", $classes );
 
@@ -672,6 +674,9 @@ class lavaSetting extends lavaBase
         $settingID = "setting-cntr_{$pluginSlug}-{$settingWho}-{$settingKey}";
 
         $settingStart = "<div class=\"{$classes}\" $dataTags data-tags=\"{$tags}\" data-status=\"{$status}\" data-type=\"{$type}\" data-setting-key=\"{$key}\" data-default-value=\"{$defaultValue}\" id=\"$settingID\" >";
+            
+            $settingAbsElements = $this->runFilters( "settingAbsElements", '' );
+            $statusIndicator = '<span class="status-indicator show-status"></span>';
             $preSettingStart = '<div class="pre-setting">';
                 $settingName = "<span class=\"setting-name\">$name</span>$help";
             $preSettingEnd = '</div>';
@@ -694,7 +699,9 @@ class lavaSetting extends lavaBase
         $settingFull = 
             "
             $settingStart
-                        
+                $settingAbsElements
+                $statusIndicator
+
                 $preSettingStart
                     $settingName
                 $preSettingEnd

@@ -174,7 +174,36 @@ ul.nav:hover li.active:hover a {
   color: white;
   text-shadow: 0px -1px 0px #000000;
 }
+.lava-new-message {
+  border-left: 4px solid;
+  padding: 15px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.lava-new-message.lava-message-notice {
+  border-left-color: #999;
+  background: #efefef;
+  color: #333;
+}
 /* Loader */
+.lava-full-screen-loader {
+  display: none;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: white;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 200;
+}
+body.lava-loading {
+  -webkit-filter: blur(3px);
+  overflow: hidden;
+}
+body.lava-loading .lava-full-screen-loader {
+  display: block;
+}
 .lava-loader {
   margin-left: -4px;
   height: 50%;
@@ -318,8 +347,15 @@ ul.nav:hover li.active:hover a {
   padding-top: 20px;
   overflow: hidden;
 }
-.lava-content-cntr .lava-underground.underground-hidden {
+.lava-content-cntr .lava-underground.underground-hidden, .lava-content-cntr .lava-underground .underground-hidden {
   display: none;
+}
+.lava-content-cntr .lava-underground .underground-section h2 {
+  text-align: center;
+  font-family: Lobster;
+  font-size: 45px;
+  text-shadow: 0px -1px #ffffff;
+  margin-bottom: 30px;
 }
 .lava-content-cntr .lava-overground {
   background: #fafafa;
@@ -702,6 +738,8 @@ ul.nav:hover li.active:hover a {
   padding: 20px 0px;
   background: #FAFAFA;
   font-size: 23px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .lava-btn.lava-btn-block:hover {
   background-color: whiteSmoke;
@@ -721,12 +759,12 @@ ul.nav:hover li.active:hover a {
   box-shadow: inset 0 1px 15px rgba(0, 0, 0, 0.08);
 }
 /* Ajax Checks */
-.ajax-checks {
+.lava-ajax-checks {
   display: inline-block;
   padding-left: 20px;
   height: 20px;
 }
-.ajax-checks .ajax-check {
+.lava-ajax-checks .ajax-blinker {
   display: inline-block;
   float: left;
   margin-left: 8px;
@@ -741,7 +779,7 @@ ul.nav:hover li.active:hover a {
   -moz-border-radius: 8px;
   border-radius: 8px;
 }
-.ajax-checks .ajax-check.loading {
+.lava-ajax-checks .ajax-blinker[data-status="loading"] {
   background: #dcdcdc;
   animation: "ajax-check-loading" 0.5s infinite;
   -moz-animation: "ajax-check-loading" 0.5s infinite;
@@ -751,7 +789,7 @@ ul.nav:hover li.active:hover a {
   /* Safari and Chrome */
 
 }
-.ajax-checks .ajax-check.complete {
+.lava-ajax-checks .ajax-blinker[data-status="success"] {
   background-color: #eaf9d8;
   animation: "ajax-check-complete" 2s 1;
   -moz-animation: "ajax-check-complete" 2s 1;
@@ -761,10 +799,10 @@ ul.nav:hover li.active:hover a {
   /* Safari and Chrome */
 
 }
-.ajax-checks .ajax-check.complete:hover {
+.lava-ajax-checks .ajax-blinker[data-status="success"]:hover {
   background-color: #abea61;
 }
-.ajax-checks .ajax-check.error {
+.lava-ajax-checks .ajax-blinker[data-status="error"] {
   background-color: #ffc2c2;
   animation: "ajax-check-error" 2s 1;
   -moz-animation: "ajax-check-error" 2s 1;
@@ -774,10 +812,10 @@ ul.nav:hover li.active:hover a {
   /* Safari and Chrome */
 
 }
-.ajax-checks .ajax-check.error:hover {
+.lava-ajax-checks .ajax-blinker[data-status="error"]:hover {
   background-color: #ff0000;
 }
-.ajax-checks .ajax-check.hidden {
+.lava-ajax-checks .ajax-blinker.hidden {
   display: none;
 }
 @-webkit-keyframes ajax-check-loading {
@@ -871,9 +909,6 @@ ul.nav:hover li.active:hover a {
 .setting.tag-force-invisible {
   display: none !important;
 }
-.setting:hover {
-  background: rgba(253, 237, 168, 0.05);
-}
 .setting:hover .status-indicator {
   opacity: 1;
 }
@@ -881,13 +916,13 @@ ul.nav:hover li.active:hover a {
   opacity: 0.3;
 }
 .setting .status-indicator {
-  opacity: 0.5;
+  opacity: 0.9;
   position: absolute;
   left: 5px;
   top: 0px;
   bottom: 0px;
   width: 5px;
-  background: #e6e6e6;
+  background: #fafafa;
 }
 .setting .pre-setting {
   line-height: 25px;
@@ -1273,6 +1308,10 @@ ul.nav:hover li.active:hover a {
   float: left;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(220, 67, 33, 0.30000000000000004);
+}
+.skin-selector .skin:hover, .skin-selector .skin.hover {
+  border: 1px solid rgba(220, 67, 33, 0.6);
 }
 .skin-selector .skin:hover .select-skin .skin-overlay, .skin-selector .skin.hover .select-skin .skin-overlay {
   display: block;
@@ -1289,6 +1328,7 @@ ul.nav:hover li.active:hover a {
 .skin-selector .skin .select-skin {
   position: relative;
   overflow: hidden;
+  margin: -1px;
 }
 .skin-selector .skin .select-skin img {
   display: block;

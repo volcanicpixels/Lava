@@ -199,7 +199,41 @@ ul.nav {
     }
 }
 
+.lava-new-message {
+    border-left: 4px solid;
+    padding: 15px;
+    font-size: 14px;
+    margin-bottom: 10px;
+
+    &.lava-message-notice {
+        border-left-color: #999;
+        background: #efefef;
+        color: #333;
+    }
+}
+
 /* Loader */
+
+.lava-full-screen-loader {
+    display: none;
+    position: fixed;
+    top:0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background: white;
+    background: rgba(255,255,255,0.7);
+    z-index: 200;
+}
+
+body.lava-loading {
+    -webkit-filter: blur( 3px);
+    overflow: hidden;
+    .lava-full-screen-loader {
+        display: block;
+    }
+}
+
 @loader-block-dimension: 4px;
 @loader-block-color: @ui-foreground-color;
 @loader-animation-duration: 5s;
@@ -338,9 +372,20 @@ ul.nav {
         padding-top:20px;
 		overflow:hidden;
 
-		&.underground-hidden {
+		&.underground-hidden, .underground-hidden {
 			display: none;
 		}
+
+        .underground-section {
+            h2 {
+                text-align: center;
+                font-family: Lobster;
+                font-size: 45px;
+                text-shadow: 0px -1px white;
+                margin-bottom: 30px;
+            }
+        }
+
 	}
 
 	.lava-overground {
@@ -604,6 +649,8 @@ ul.nav {
 		padding: 20px 0px;
 		background: #FAFAFA;
 		font-size: 23px;
+        padding-left: 20px;
+        padding-right: 20px;
 
 		&:hover {
 			background-color: whiteSmoke;
@@ -628,12 +675,12 @@ ul.nav {
 
 /* Ajax Checks */
 
-.ajax-checks {
+.lava-ajax-checks {
     display:inline-block;
     padding-left: 20px;
     height: 20px;
 
-    .ajax-check {
+    .ajax-blinker {
         display: inline-block;
         float: left;
         margin-left: 8px;
@@ -643,12 +690,12 @@ ul.nav {
         margin-top: 5px;
         .border-radius(8px);
 
-        &.loading {
+        &[data-status="loading"] {
             background: rgb(220,220,220);
             .animation( "ajax-check-loading", 0.5s, infinite );
         }
 
-        &.complete {
+        &[data-status="success"] {
             background-color: #eaf9d8;
             .animation( "ajax-check-complete", 2s, 1 );
 
@@ -657,7 +704,7 @@ ul.nav {
             }
         }
 
-        &.error {
+        &[data-status="error"] {
             background-color: #ffc2c2;
             .animation( "ajax-check-error", 2s, 1 );
 
@@ -781,10 +828,9 @@ ul.nav {
     }
 
     &:hover {
-        background: rgba(253, 237, 168, 0.05);
 
         .status-indicator {
-            opacity:1;
+            opacity: 1;
         }
 
         .setting-inner {
@@ -798,13 +844,13 @@ ul.nav {
 
 
     .status-indicator {
-        opacity: 0.5;
+        opacity: 0.9;
         position:absolute;
         left: 5px;
         top:0px;
         bottom:0px;
         width:5px;
-        background: rgb( 230, 230, 230);
+        background: #fafafa;
     }
 
     .pre-setting {
@@ -1231,8 +1277,11 @@ ul.nav {
         float: left;
         position: relative;
         overflow: hidden;
+        border: 1px solid fadeout(@ui-foreground-color, 70%);
 
         &:hover, &.hover {
+            border: 1px solid fadeout(@ui-foreground-color, 40%);
+
             .select-skin {
                 .skin-overlay {
                     display: block;
@@ -1253,6 +1302,7 @@ ul.nav {
         .select-skin {
             position: relative;
             overflow: hidden;
+            margin: -1px;
             
 
             img {

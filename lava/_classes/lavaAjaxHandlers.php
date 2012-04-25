@@ -31,5 +31,9 @@ class lavaAjaxHandlers extends lavaBase
             $this->handlers[$handler] = $this->_new( $fullHandler );
         }
     }
+
+    function addHandler( $handler ) {
+        $this->handlers[$handler] = $this->_new( $handler );
+    }
 }
 ?>

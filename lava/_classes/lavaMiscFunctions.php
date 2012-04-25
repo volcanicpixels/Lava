@@ -62,9 +62,10 @@ class lavaMiscFunctions extends lavaBase
             return false;//this is a beta plugin so we should assume run update hooks all the time
         }
         if( $ver1 == $ver2 ) {
+            return false;
             return true;
         }
-        return fasle;
+        return false;
     }
 
     function userAgentInfo() {
@@ -74,7 +75,7 @@ class lavaMiscFunctions extends lavaBase
             'os' => 'unknown',
             'browser' => 'unknown'
         );
-        if( strpos( $ua, "ipad" ) ) {
+        if( strpos( $ua, "iPad" ) ) {
             $info['device'] = "iPad";
             $info['os'] = 'ios';
             $info['browser'] = 'Mobile Safari';
@@ -116,6 +117,14 @@ class lavaMiscFunctions extends lavaBase
             $info['browser'] = 'Opera';
          }
          return $info;
+    }
+
+    /*
+        Adds a link to the plugins page
+    */
+
+    function addLink( $linkUrl, $linkText ) {
+        
     }
 
     

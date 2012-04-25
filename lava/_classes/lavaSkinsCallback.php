@@ -66,7 +66,7 @@ class lavaSkinsCallback extends lavaSettingsCallback
 
         foreach( $skins as $skin ){
         	$settingControl .= '
-        	<figure class="skin">  
+        	<figure class="skin"  data-slug="' . $skin->getSlug() . '">  
 				<a class="select-skin tiptip clearfix" title="Click to select this skin" href="#select">
 					<img class="preview-img" width="400" height="200" src="' . $skin->skinUrl( "thumbnail.png" ) .'" alt="Skin Thumbnail" />
 					<span class="skin-overlay">Select Skin</span>

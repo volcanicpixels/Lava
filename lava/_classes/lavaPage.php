@@ -162,15 +162,22 @@ class lavaPage extends lavaBase
 		  })();
 
 		</script>
+        <div class="lava-full-screen-loader">
+            <div class="lava-loader loading">
+                <span class="child1"></span>
+                <span class="child2"></span>
+                <span class="child3"></span>
+                <span class="child4"></span>
+                <span class="child5"></span>
+            </div>
+        </div>
         <div class="wrap">
             <div class="lava-header" style="margin-bottom:10px;">
                 <div id="icon-options-general" class="icon32"></div>
                 <h2>
                     <?php echo $pluginName; ?> <span class="version"><?php echo $pluginVersion; ?></span>
-                    <span class="ajax-checks">
-                    <!-- When no-update is implemented wrap this in an "if" or better implement a hook -->
+                    <span class="lava-ajax-checks">
                         <?php $this->runActions( "ajaxChecks" ); ?>
-                    <!--.ajax-checks END-->
                     </span>
                 </h2>
                 
@@ -188,12 +195,15 @@ class lavaPage extends lavaBase
             </div>
             <noscript>
                 <div class="lava-message warning">
-                    <span class="message"><?php _e( "You don't have JavaScript enabled. Some features will not work without JavaScript.", $this->_framework()) ?></span>
+                    <span class="message"><?php _e( "You don't have JavaScript enabled. Many features will not work without JavaScript.", $this->_framework()) ?></span>
                 </div>
             </noscript>
+            <?php $this->runActions( "pageHiddenStuff" ); ?>
+
 			<div class="lava-content-cntr bleed-left bleed-right with-padding">
 				<div class="lava-underground texture texture-woven bleed-left bleed-right with-padding underground-hidden" style="">
 				<?php
+                    $this->runActions( "displayUnderground" );
 					$this->displayUnderground();
 				?>
 				</div>
@@ -206,7 +216,7 @@ class lavaPage extends lavaBase
 
 	function displayUnderground()
 	{
-		//sub classes should overload this method or rely on js to move things around (if have to)
+		//sub classes should overload this method or rely on js to move things around (if they have to)
 	}
 
     function displayFooter()
