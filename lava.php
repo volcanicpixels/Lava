@@ -11,7 +11,7 @@
  */
 if( !class_exists( "Lava_Plugin" ) )
 {
-	require_once( dirname( __FILE__ ) . "/_classes/lava-plugin.php" );
+	require_once( dirname( __FILE__ ) . "/classes/lava-plugin.php" );
 }
 
 if( !class_exists( "Lava" ) ):
@@ -30,7 +30,7 @@ class Lava
 	 *
 	 * @since 1.0.0
 	 */
-	static function _new_plugin( $plugin_file_path = __file__, $plugin_name = "Some Plugin", $plugin_version = 1 )
+	static function new_plugin( $plugin_file_path = __file__, $plugin_name = "Some Plugin", $plugin_version = 1 )
 	{
 		$plugin_id = strtolower( str_replace( " ", "_", $plugin_name ) );
 
