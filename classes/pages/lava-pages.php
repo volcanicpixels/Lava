@@ -69,7 +69,7 @@ class Lava_Pages extends Lava_Base
 				$section_id
 			);
 
-			$the_page = $this->_admin_pages[ $page_id ] = $this->_instantiate_class( $class_name, $args );
+			$the_page = $this->_admin_pages[ $page_id ] = $this->_construct_class( $class_name, $args );
 
 		}
 

@@ -50,13 +50,12 @@ class Lava_Plugin extends Lava_Base
 		spl_autoload_register( array( $this, '__autoload' ) );
 
 		//initialise this class so that hooks are registered
-		$this->_funcs();
-		//$this->_register_action_methods( $this );
+		$this->_register_action_methods( $this );
 
 		if( $this->_load_vendor ) {
 			require_once( dirname( $plugin_file_path ) .  '/vendor.php' );
 			$class_name = $this->_class_name( 'Vendor' );
-			$this->_plugin_vendor = $this->_instantiate_class( $class_name, array(), false );
+			$this->_plugin_vendor = $this->_construct_class( $class_name, array(), false );
 		}
 
 		$this->_add_action( 'init', array( array( $this, 'test') ) );
@@ -120,7 +119,7 @@ class Lava_Plugin extends Lava_Base
 		if( array_key_exists( $class_name , $this->_singletons ) ) {
 			return $this->_singletons[ $class_name ];
 		} else {
-			return $this->_singletons = $this->_instantiate_class( $class_name );
+			return $this->_singletons = $this->_construct_class( $class_name );
 		}
 	}
 

@@ -39,7 +39,7 @@ class Lava_Settings extends Lava_Base
 				$setting_key
 			);
 
-			$this->_settings[ $setting_key ] = $this->_instantiate_class( $class_name, $args );
+			$this->_settings[ $setting_key ] = $this->_construct_class( $class_name, $args );
 		}
 
 		$this->_set_child( $this->_settings[ $setting_key ] );
