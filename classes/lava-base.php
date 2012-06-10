@@ -345,6 +345,23 @@ class Lava_Base
 
 		return $this->_apply_filters_( $hooks, $value, $args, true );
 	}
+
+	function _hook() {
+		$plugin_id = $this->_get_plugin_id();
+		$identifier = $this->_get_hook_identifier();
+		$hooks = func_get_args();
+
+		$hook = "{$plugin_id}{$identifier}";
+
+		foreach( $hooks as $subhook ) {
+			$hook = $hook . '/' . $subhook;
+		}
+
+	}
+
+	function _get_hook_identifier() {
+		return '';
+	}
 	
 
 

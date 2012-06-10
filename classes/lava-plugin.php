@@ -146,6 +146,10 @@ class Lava_Plugin extends Lava_Base
 		return $this->_plugin_file_path;
 	}
 
+	function _get_lava_path() {
+		return dirname( dirname( __file__ ) );
+	}
+
 	function _get_plugin_name() {
 		return $this->_plugin_name;
 	}

@@ -11,6 +11,21 @@
 class Lava_Pages extends Lava_Base
 {
 	protected $_admin_sections = array();
+	//special sections are the WordPress sections - this allows us to add a page to one of these sections
+	protected $_special_sections = array(
+		'themes' => 'themes.php',
+		'tools' => 'tools.php',
+		'management' => 'tools.php',
+		'options' => 'options-general.php',
+		'plugins' => 'plugins.php',
+		'users' => 'users.php',
+		'dashboard' => 'index.php',
+		'posts' => 'edit.php',
+		'media' => 'upload.php',
+		'links' => 'link-manager.php',
+		'pages' => 'edit.php?post_type=page',
+		'comments' => 'edit-comments.php'
+	);
 	protected $_admin_pages = array();
 	protected $_page_types = array(
 		'settings' => 'Settings'
@@ -20,9 +35,13 @@ class Lava_Pages extends Lava_Base
 	function _construct() {
 		$this->_add_action( 'admin_menu', '_register_sections', 2 );
 	}
+	
 
-
-
+	/*
+		A section is a top-level page
+		All 'pages' are actually sub pages of 'sections'
+		The framework was designed to require minimal work so a page can be defined without first defining a section (it will automatically create appropriate section)
+	*/
 
 
 
@@ -45,16 +64,17 @@ class Lava_Pages extends Lava_Base
 	function _add_page( $page_id, $page_type = '', $section_id = null ) {
 		$this->_kill_child();
 
+		// Sinces pages are actually sub pages we need a section to bind it to
 		if( is_null( $section_id ) ){
-			if( ! $this->_is_in_memory( '_section' ) )
+			if( ! $this->_is_in_memory( '_section' ) ) //if there isn't a section in memory then we should create one using plugin meta
 				$this->_add_section( $this->_get_plugin_name(), $this->_get_plugin_id() );
 
 			$section_id = $this->_recall( '_section' );
 		}
 
-		//if this section has no default page then lets register this
-
-		$this->_set_section_default( $section_id, $page_id, false );
+		if( !array_key_exists( $section_id, $this->_special_sections ) ) {
+			$this->_set_section_default( $section_id, $page_id, false );
+		}
 
 
 		if( ! $this->_page_exists( $page_id ) ) {
@@ -64,7 +84,7 @@ class Lava_Pages extends Lava_Base
 				$class_name = 'Page';
 
 			$args = array(
-				$this,
+				$this, // $page_controller
 				$page_id,
 				$section_id
 			);
@@ -116,6 +136,9 @@ class Lava_Pages extends Lava_Base
 	}
 
 	function _get_section_slug( $section_id ) {
+		if( array_key_exists( $section_id , $this->_special_sections) ) {
+			return $this->_special_sections[ $section_id ];
+		}
 		if( ! $this->_has_section( $section_id ) )
 			return null;
 
@@ -148,16 +171,16 @@ class Lava_Pages extends Lava_Base
 
 
 
-	function _add_settings_page( $page_id = 'settings' ) {
-		$this->_add_page( $page_id, 'settings' )
+	function _add_settings_page( $page_id = 'settings', $section_id = null ) {
+		$this->_add_page( $page_id, 'settings', $section_id )
 				->_set_page_title( $this->__( 'Plugin Settings') )
 		;
 
 		return $this->_r();
 	}
 
-	function _add_skins_page( $page_id = 'skins' ) {
-		$this->_add_page( $page_id, 'skins' )
+	function _add_skins_page( $page_id = 'skins', $section_id = null ) {
+		$this->_add_page( $page_id, 'skins', $section_id )
 				->_set_page_title( $this->__( 'Plugin Skin' ) )
 		;
 

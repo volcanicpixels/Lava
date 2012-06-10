@@ -1,0 +1,7 @@
+Filters
+
+{$plugin_slug}[-$identifier]/$hook[/$subhook]
+
+e.g.
+
+private_blog-page:private_blog_settings/_get_template_variables/_settings

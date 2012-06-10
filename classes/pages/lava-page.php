@@ -21,15 +21,34 @@ class Lava_Page extends Lava_Base
 	public $_page_styles = array();
 	public $_page_scripts = array();
 
+	public $_template_directories = array();
+	public $_twig_config = array();
+	public $_twig_template = 'base.twig';
+
 	function _construct( $page_controller, $page_id, $section_id ) {
 		$this->_page_controller = $page_controller;
 		$this->_page_id = $page_id;
 		$this->_section_id = $section_id;
 
+		$this->_template_directories = array(
+			$this->_get_lava_path() . '/templates/default/',
+			$this->_get_lava_path() . '/templates/'
+		);
+		$plugin_dir = dirname ( $this->_get_plugin_file_path() ) . '/templates/';
+		if ( is_dir( $plugin_dir ) ) {
+			array_unshift( $this->_template_directories, $plugin_dir );
+		}
 		$this->_set_return_object( $this->_page_controller );
 
 		$this->_add_action( 'admin_menu', '_register_page', 3 );
 	}
+
+	function _get_hook_identifier() {
+		return '-page:' . $this->_get_page_slug();
+	}
+
+
+
 
 
 
@@ -53,6 +72,11 @@ class Lava_Page extends Lava_Base
 		return $this->_recall( '_page_title', 'Undefined Page' );
 	}
 
+	function _set_page_title( $page_title ) {
+		$this->_remember( '_page_title', $page_title );
+		return $this->_r();
+	}
+
 	function _get_menu_title() {
 		return $this->_recall( '_menu_title', $this->_get_page_title() );
 	}
@@ -68,10 +92,6 @@ class Lava_Page extends Lava_Base
 
 
 
-	function _set_page_title( $page_title ) {
-		$this->_remember( '_page_title', $page_title );
-		return $this->_r();
-	}
 
 
 
@@ -86,10 +106,10 @@ class Lava_Page extends Lava_Base
 		$menu_title = $this->_get_menu_title();
 		$capability = 'manage_options'; # @todo add capability handling
 		$menu_slug = $this->_get_page_slug();
-		$function = array( $this, '_blank' );
+		$function = array( $this, '_do_page' );
 
 
-		$page_hook = add_submenu_page(
+		$this->_page_hook = add_submenu_page(
 			$parent_slug,
 			$page_title,
 			$menu_title,
@@ -101,8 +121,41 @@ class Lava_Page extends Lava_Base
 	}
 
 	function _do_page() {
-		
+		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
+		$this->_initialize_twig();
+		$template = $this->_load_template();
+		$variables = $this->_get_template_variables();
+		$template->display( $variables );
 	}
+
+	function _get_template_directories() {
+		return $this->_template_directories;
+	}
+
+	function _get_template_variables() {
+		$hook = $this->_hook( '_get_template_variables' );
+		return $this->_apply_lava_filters( $hook, array() );
+	}
+
+	function _initialize_twig() {
+		$template_directories = $this->_get_template_directories();
+
+		$this->_twig_loader = new Twig_Loader_Filesystem( $template_directories );
+		$this->_twig_environment = new Twig_Environment( $this->_twig_loader, $this->_twig_config );
+	}
+
+	function _load_template( $template = null ) {
+		if( is_null( $template ) ) {
+			$template = $this->_twig_template;
+		}
+		return $this->_twig_environment->loadTemplate( $template );
+	}
+
+
+
+
+
+
 
 
 

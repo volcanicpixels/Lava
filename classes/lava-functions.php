@@ -32,11 +32,27 @@ class Lava_Functions extends Lava_Base
 				}
 			}
 		}
-
-		//if( get_class( $object ) == 'Volcanic_Pixels_Privacy_Plugin' )
-		//	die('bb');
-		//add hooks with args
 	}
+
+	function _load_dependancy( $dependancy ) {
+		// allows for a more flexible dependancy loader where filenames do not correspond to class names
+		$dependancies = array(
+			'Twig_Autoloader' => dirname( __file__ ) . '/twig/Autoloader.php'
+		);
+
+		if( ! class_exists( $dependancy ) ) {
+			if( array_key_exists( $dependancy, $dependancies) ) {
+				require_once( $dependancies[ $dependancy ] );
+			}
+		}
+
+		switch( $dependancy ) {
+			case 'Twig_Autoloader':
+				Twig_Autoloader::register();
+		}
+		// Raise Dependancy not found error
+	}
+
 
 
 

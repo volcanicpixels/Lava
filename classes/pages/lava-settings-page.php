@@ -10,8 +10,16 @@
  */
 class Lava_Settings_Page extends Lava_Page
 {
-	public $multisiteSupport = true;
-	public $who = "settings";
+	
+
+
+
+
+	
+
+
+
+
 
 	function loadPage()
 	{
