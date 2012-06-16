@@ -30,10 +30,18 @@ class Lava_Pages extends Lava_Base
 	protected $_page_types = array(
 		'settings' => 'Settings'
 	);
+	public $_styles = array();
+	public $_scripts = array();
 
 
 	function _construct() {
 		$this->_add_action( 'admin_menu', '_register_sections', 2 );
+
+		$this->_add_action( 'admin_enqueue_scripts', '_add_dependancies', 1 );
+		$this->_add_action( 'admin_enqueue_scripts', '_register_styles', 2 );
+		$this->_add_action( 'admin_enqueue_scripts', '_register_scripts', 2 );
+		$this->_add_action( 'admin_enqueue_scripts', '_enqueue_styles' );
+		$this->_add_action( 'admin_enqueue_scripts', '_enqueue_scripts' );
 	}
 	
 
@@ -121,7 +129,7 @@ class Lava_Pages extends Lava_Base
 		return $this->_admin_sections;
 	}
 
-	function _has_section( $section_id ) {
+	function _section_exists( $section_id ) {
 		if( array_key_exists( $section_id , $this->_admin_sections ) )
 			return true;
 		else
@@ -129,7 +137,7 @@ class Lava_Pages extends Lava_Base
 	}
 
 	function _get_section( $section_id ) {
-		if( $this->_has_section( $section_id ) )
+		if( $this->_section_exists( $section_id ) )
 			return $this->_admin_sections[ $section_id ];
 		else
 			return null;
@@ -139,7 +147,7 @@ class Lava_Pages extends Lava_Base
 		if( array_key_exists( $section_id , $this->_special_sections) ) {
 			return $this->_special_sections[ $section_id ];
 		}
-		if( ! $this->_has_section( $section_id ) )
+		if( ! $this->_section_exists( $section_id ) )
 			return null;
 
 		$section = $this->_get_section( $section_id );
@@ -218,6 +226,102 @@ class Lava_Pages extends Lava_Base
 
 
 
+
+
+	/*
+		Dependancies
+	*/
+
+	function _add_dependancies() {
+		$this->_add_lava_stylesheet( 'styles', 'styles.css' );
+		$this->_do_lava_action( '_add_dependancies' );
+	}
+
+	function _add_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = true ) {
+		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue );
+		return $this->_r();
+	}
+
+	function _add_lava_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = false ) {
+		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, true, 'lava/assets/' );
+		return $this->_r();
+	}
+
+	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = true ) {
+		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, true, 'assets/' );
+		return $this->_r();
+	}
+
+	function _add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, $should_namespace = false, $asset_folder = false ) {
+		if( $should_namespace ) {
+			$handle = $this->_namespace( $handle );
+		}
+
+		if( $asset_folder ) {
+			$src = plugins_url( $asset_folder . $src, $this->_get_plugin_file_path() );
+		}
+		$style = compact( 'handle', 'src', 'deps', 'ver', 'media', 'should_enqueue' );
+		$this->_styles[ $handle ] = $style;
+	}
+
+	function _stylesheet_exists( $handle ) {
+		return array_key_exists( $handle, $this->_styles );
+	}
+
+	function _use_stylesheet( $handle, $should_namespace = false ) {
+		if( $should_namespace ) {
+			$handle = $this->_namespace( $handle );
+		}
+
+		if( $this->_stylesheet_exists( $handle ) ) {
+			$this->_styles[ $handle ]['should_enqueue'] = true;
+		}
+		return $this->_r();
+	}
+
+	function _use_lava_stylesheet( $handle ) {
+		$this->_use_stylesheet( $handle, true );
+		return $this->_r();
+	}
+
+	function _use_plugin_stylesheet( $handle ) {
+		$this->_use_stylesheet( $handle, true );
+		return $this->_r();
+	}
+
+
+	function _register_styles() {
+		foreach( $this->_styles as $style ) {
+			extract( $style );
+			wp_register_style( $handle, $src, $deps, $ver, $media );
+		}
+	}
+
+	function _enqueue_styles() {
+		foreach( $this->_styles as $style ) {
+			extract( $style );
+			if( $should_enqueue ) {
+				wp_enqueue_style( $handle );
+			}
+		}
+	}
+
+	function _register_scripts() {
+		foreach( $this->_scripts as $script ) {
+			extract( $script );
+			wp_register_script( $handle, $src, $deps, $ver, $media );
+		}
+	}
+
+	function _enqueue_scripts() {
+		foreach( $this->_scripts as $script ) {
+			extract( $script );
+			if( $should_enqueue ) {
+				wp_enqueue_script( $handle );
+			}
+		}
+	}
+		
 
 
 

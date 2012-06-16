@@ -41,6 +41,8 @@ class Lava_Page extends Lava_Base
 		$this->_set_return_object( $this->_page_controller );
 
 		$this->_add_action( 'admin_menu', '_register_page', 3 );
+
+		$this->_add_lava_action( '_add_dependancies' );
 	}
 
 	function _get_hook_identifier() {
@@ -49,7 +51,9 @@ class Lava_Page extends Lava_Base
 
 
 
-
+	/*
+		Accessors
+	*/
 
 
 	function _get_section_id() {
@@ -97,7 +101,9 @@ class Lava_Page extends Lava_Base
 
 
 
-
+	/*
+		Flow functions
+	*/
 
 	function _register_page() {
 
@@ -127,6 +133,12 @@ class Lava_Page extends Lava_Base
 		$variables = $this->_get_template_variables();
 		$template->display( $variables );
 	}
+
+
+
+	/* 
+		Template functions
+	*/
 
 	function _get_template_directories() {
 		return $this->_template_directories;
@@ -161,6 +173,16 @@ class Lava_Page extends Lava_Base
 
 
 
+
+	/* Page dependancy functions */
+
+	function _add_dependancies() {
+		$this->_use_lava_stylesheet( 'styles' );
+	}
+
+	function _add_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = true ) {
+		$this->_page_controller->_add_stylesheet( $handle, $src, $deps, $ver, $media, $should_enqueue );
+	}
 
 
 
