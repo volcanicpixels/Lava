@@ -52,6 +52,18 @@ class Lava_Page extends Lava_Base
 		return '-page:' . $this->_get_page_slug();
 	}
 
+	function _serialize() {
+		$old_vars = parent::_serialize();
+		$new_vars = array(
+			'menu_title' => $this->_get_menu_title(),
+			'page_title' => $this->_get_page_title(),
+			'page_id'    => $this->_get_page_id(),
+			'section_id' => $this->_get_section_id(),
+			'url'        => $this->_get_page_url()
+		);
+		return array_merge( $old_vars, $new_vars );
+	}
+
 
 
 	/*
@@ -68,11 +80,11 @@ class Lava_Page extends Lava_Base
 	}
 
 	function _get_page_url() {
-		$page_id = $this->_get_page_id();
+		$page_slug = $this->_get_page_slug();
 		if( $this->_is_network_page and function_exists( 'network_admin_url' ) )
-			return network_admin_url( "admin.php?page={$slug}" );
+			return network_admin_url( "admin.php?page={$page_slug}" );
 		else
-			return admin_url( "admin.php?page={$slug}" );
+			return admin_url( "admin.php?page={$page_slug}" );
 	}
 
 	function _get_page_title() {
@@ -166,20 +178,25 @@ class Lava_Page extends Lava_Base
 		return $this->_twig_environment->loadTemplate( $template );
 	}
 
-	/*
+	/*#######################################
 		Template variable functions
-	*/
+	*/#######################################
 
 	function _register_get_template_variables() {
 		$hook = $this->_hook( '_get_template_variables' );
 		$filters = array(
-			'plugin_meta'
+			'plugin_meta',
+			'pages'
 		);
 		foreach( $filters as $filter ) {
 			$this->_add_lava_filter( $hook, "_get_template_variables__{$filter}" );
 		}
 	}
 
+
+	/*
+		Exposes Plugin info to template
+	*/
 	function _get_template_variables__plugin_meta( $vars ) {
 		$plugin = array(
 			'id'      => $this->_get_plugin_id(),
@@ -191,6 +208,29 @@ class Lava_Page extends Lava_Base
 
 		$vars[ 'plugin' ] = $plugin;
 
+		return $vars;
+	}
+
+
+	/*
+		Exposes array of pages to template
+	*/
+	function _get_template_variables__pages( $vars ) {
+		$page_objects = $this->_page_controller->_get_pages_by_section( $this->_get_section_id() );
+		$pages = array();
+		$page_id = $this->_get_page_id();
+		foreach( $page_objects as $page_object ) {
+			$page = $page_object->_serialize();
+			if( $page['page_id'] == $page_id ) {
+				$page['selected'] = true;
+			} else {
+				$page['selected'] = false;
+			}
+			$pages[] = $page;
+		}
+		$hook = $this->_hook( '_get_template_variables', '_pages' );
+		$pages = $this->_apply_lava_filters( $hook, $pages );
+		$vars['pages'] = $pages;
 		return $vars;
 	}
 
@@ -207,7 +247,31 @@ class Lava_Page extends Lava_Base
 
 	function _add_dependancies() {
 		$this->_use_lava_stylesheet( 'styles' );
+		$this->_use_lava_script( 'html5shiv' );
+		$this->_use_lava_script( 'modernizr' );
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -360,6 +360,14 @@ class Lava_Base
 	function _get_hook_identifier() {
 		return '';
 	}
+
+	function _serialize() {
+		$vars = array(
+			'_class_name' => get_class( $this )
+		);
+
+		return $vars;
+	}
 	
 
 

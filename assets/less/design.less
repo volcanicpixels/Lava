@@ -1,2 +1,30 @@
-body {
+@primary-color: #FD492D;
+
+
+.lava-topbar {
+	background: #f9f9f9;
+
+
+}
+
+/*
+	Navigation
+*/
+
+.lava-nav-main {
+	a {
+		color: #333;
+		font-size: 12px;
+		cursor: pointer;
+		text-transform: uppercase;
+		.no-text-decoration;
+
+		&:hover, &.selected {
+			color: @primary-color;
+		}
+	}
+
+	.selected a {
+		color: @primary-color;
+	}
 }

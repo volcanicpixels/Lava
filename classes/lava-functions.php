@@ -7,6 +7,16 @@ class Lava_Functions extends Lava_Base
 			'admin_init'
 		);
 
+		$other_hooks = array(
+		);
+
+		$lava_hooks = array(
+			'admin_init' => array(
+				'register_settings',
+				'register_pages',
+			)
+		);
+
 		foreach( $hooks_with_same_method as $hook ) {
 			if( method_exists( $object, "_{$hook}" ) ) {
 				$callback = array( array( $object, "_{$hook}" ) );
@@ -14,12 +24,7 @@ class Lava_Functions extends Lava_Base
 			}
 		}
 
-		$other_hooks = array(
-			'init' 			=> array(
-				'register_settings',
-				'register_pages',
-			)
-		);
+		
 
 
 		foreach( $other_hooks as $hook => $methods ) {
@@ -32,12 +37,24 @@ class Lava_Functions extends Lava_Base
 				}
 			}
 		}
+
+		foreach( $lava_hooks as $hook => $methods ) {
+			if( ! is_array( $methods ) )
+				$methods = array( $methods );
+			foreach( $methods as $method ) {
+				if( method_exists( $object, "_{$method}" ) ) {
+					$callback = array( array( $object, "_{$method}" ) );
+					$this->_add_lava_action( $hook, $callback );
+				}
+			}
+		}
 	}
 
 	function _load_dependancy( $dependancy ) {
 		// allows for a more flexible dependancy loader where filenames do not correspond to class names
 		$dependancies = array(
-			'Twig_Autoloader' => dirname( __file__ ) . '/twig/Autoloader.php'
+			'Twig_Autoloader' => dirname( __file__ ) . '/twig/Autoloader.php',
+			'Spyc' => dirname( __file__ ) . '/spyc/spyc.php'
 		);
 
 		if( ! class_exists( $dependancy ) ) {

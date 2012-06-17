@@ -27,6 +27,7 @@ class Lava_Pages extends Lava_Base
 		'comments' => 'edit-comments.php'
 	);
 	protected $_admin_pages = array();
+	protected $_admin_pages_by_section = array();
 	protected $_page_types = array(
 		'settings' => 'Settings'
 	);
@@ -43,6 +44,8 @@ class Lava_Pages extends Lava_Base
 		$this->_add_action( 'admin_enqueue_scripts', '_enqueue_styles' );
 		$this->_add_action( 'admin_enqueue_scripts', '_enqueue_scripts' );
 	}
+
+	
 	
 
 	/*
@@ -99,6 +102,12 @@ class Lava_Pages extends Lava_Base
 
 			$the_page = $this->_admin_pages[ $page_id ] = $this->_construct_class( $class_name, $args );
 
+			if( ! array_key_exists( $section_id, $this->_admin_pages_by_section ) ) {
+				$this->_admin_pages_by_section[ $section_id ] = array();
+			}
+
+			$this->_admin_pages_by_section[ $section_id ][] = $page_id;
+
 		}
 
 
@@ -106,11 +115,19 @@ class Lava_Pages extends Lava_Base
 		return $this->_r();
 	}
 
+	/*
+		The difference between _get_page and _get_page_ is that the first adds the page object to memory and returns itself (like a jQuery chain) where as the second actually returns the object
+	*/
+
 	function _get_page( $page_id ) {
 		$this->_kill_child();
 		if( $this->_page_exists( $page_id ) )
 			$this->_set_child( $this->_admin_pages[ $page_id ] );
 		return $this->_r();
+	}
+
+	function _get_page_( $page_id ) {
+		return $this->_admin_pages[ $page_id ];
 	}
 
 	function _page_exists( $page_id ) {
@@ -123,6 +140,16 @@ class Lava_Pages extends Lava_Base
 
 	function _get_pages() {
 		return $this->_admin_pages;
+	}
+
+	function _get_pages_by_section( $section_id ) {
+		$pages = array();
+		if( array_key_exists( $section_id , $this->_admin_pages_by_section ) ) {
+			foreach( $this->_admin_pages_by_section[ $section_id ] as $page_id ) {
+				$pages[$page_id] = $this->_get_page_( $page_id );
+			}
+		}
+		return $pages;
 	}
 
 	function _get_sections() {
@@ -234,20 +261,22 @@ class Lava_Pages extends Lava_Base
 
 	function _add_dependancies() {
 		$this->_add_lava_stylesheet( 'styles', 'styles.css' );
+		$this->_add_lava_script( 'html5shiv', 'html5shiv.js' );
+		$this->_add_lava_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
 		$this->_do_lava_action( '_add_dependancies' );
 	}
 
-	function _add_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = true ) {
+	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
 		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue );
 		return $this->_r();
 	}
 
-	function _add_lava_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = false ) {
+	function _add_lava_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = false ) {
 		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, true, 'lava/assets/' );
 		return $this->_r();
 	}
 
-	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = 1, $media = false, $should_enqueue = true ) {
+	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
 		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, true, 'assets/' );
 		return $this->_r();
 	}
@@ -306,10 +335,62 @@ class Lava_Pages extends Lava_Base
 		}
 	}
 
+	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
+		$this->_add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue );
+		return $this->_r();
+	}
+
+	function _add_lava_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = false ) {
+		$this->_add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue, true, 'lava/assets/js/' );
+		return $this->_r();
+	}
+
+	function _add_plugin_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
+		$this->_add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue, true, 'assets/js/' );
+		return $this->_r();
+	}
+
+	function _add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue, $should_namespace = false, $asset_folder = false ) {
+		if( $should_namespace ) {
+			$handle = $this->_namespace( $handle );
+		}
+
+		if( $asset_folder ) {
+			$src = plugins_url( $asset_folder . $src, $this->_get_plugin_file_path() );
+		}
+		$script = compact( 'handle', 'src', 'deps', 'ver', 'in_footer', 'should_enqueue' );
+		$this->_scripts[ $handle ] = $script;
+	}
+
+	function _script_exists( $handle ) {
+		return array_key_exists( $handle, $this->_scripts );
+	}
+
+	function _use_script( $handle, $should_namespace = false ) {
+		if( $should_namespace ) {
+			$handle = $this->_namespace( $handle );
+		}
+
+		if( $this->_script_exists( $handle ) ) {
+			$this->_scripts[ $handle ]['should_enqueue'] = true;
+		}
+		return $this->_r();
+	}
+
+	function _use_lava_script( $handle ) {
+		$this->_use_script( $handle, true );
+		return $this->_r();
+	}
+
+	function _use_plugin_script( $handle ) {
+		$this->_use_script( $handle, true );
+		return $this->_r();
+	}
+
 	function _register_scripts() {
 		foreach( $this->_scripts as $script ) {
 			extract( $script );
-			wp_register_script( $handle, $src, $deps, $ver, $media );
+			wp_register_script( $handle, $src, $deps, $ver, $in_footer );
 		}
 	}
 

@@ -108,6 +108,20 @@ class Lava_Plugin extends Lava_Base
 		}
 	}
 
+	function _init() {
+		if( is_admin() ) {
+			$this->_do_lava_action( 'admin_init' );
+		}
+	}
+
+	function _register_settings() {
+
+	}
+
+	function _register_pages() {
+		$this->_load_dependancy( 'Spyc' );
+	}
+
 	function _construct_class( $class_name, $args = array(), $should_prefix = true ) {
 		if( $should_prefix )
 			$class_name = "Lava_" . $class_name;
