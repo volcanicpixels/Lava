@@ -36,6 +36,7 @@ class Lava_Plugin extends Lava_Base
 	 * @since 1.0.0
 	 */
 	function __construct( $plugin_file_path ) {
+		$plugin_file_path = apply_filters( 'junction_fixer', $plugin_file_path );
 		$this->_the_plugin = $this;
 		$this->_plugin_file_path = $plugin_file_path;
 

@@ -346,16 +346,15 @@ class Lava_Base
 	}
 
 	function _hook() {
-		$plugin_id = $this->_get_plugin_id();
 		$identifier = $this->_get_hook_identifier();
 		$hooks = func_get_args();
 
-		$hook = "{$plugin_id}{$identifier}";
+		$hook = "{$identifier}";
 
 		foreach( $hooks as $subhook ) {
 			$hook = $hook . '/' . $subhook;
 		}
-
+		return $hook;
 	}
 
 	function _get_hook_identifier() {

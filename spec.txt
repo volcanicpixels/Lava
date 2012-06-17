@@ -1,7 +1,13 @@
 Filters
 
-{$plugin_slug}[-$identifier]/$hook[/$subhook]
+{$plugin_id}[-$identifier]/$hook[/$subhook]
 
 e.g.
 
-private_blog-page:private_blog_settings/_get_template_variables/_settings
+private_blog-page:private_blog_settings/_get_template_variables/_plugin_meta
+
+Filter function naming:
+
+hook: _get_template_variables
+func: _get_template_variables__plugin_meta
+func: _get_template_variables__plugin_meta__version
