@@ -1,6 +1,6 @@
 <?php
 /**
- * Lava_Settings
+ * Settings
  *
  * @package Lava
  * @subpackage Settings
@@ -11,17 +11,16 @@
 class Lava_Settings extends Lava_Base
 {
 	protected $_settings = array();
-	protected $_setting_prefix = 'settings';
+	protected $_setting_namespace = 'setting';
 	protected $_setting_types = array(
 		'' 			=> ''
 	);
 
 
 
-	function _construct( $setting_prefix = 'settings' )	{
-		$this->_setting_prefix = $setting_prefix;
-		//add the option if it doesn't exist
-		add_option( $this->_namespace( $this->_setting_prefix ), array() );
+	function _construct()	{
+		//add the option if it doesn't exist - @todo this should be moved to an admin hook
+		add_option( $this->_namespace( $this->_setting_namespace ), array() );
 	}
 
 	function _add_setting( $setting_key, $setting_type = '' ) {

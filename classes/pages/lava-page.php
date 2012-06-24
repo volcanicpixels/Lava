@@ -46,6 +46,8 @@ class Lava_Page extends Lava_Base
 		$this->_add_action( 'admin_menu', '_register_get_template_variables', 4 );
 
 		$this->_add_lava_action( '_add_dependancies' );
+
+		$this->_load_defaults();
 	}
 
 	function _get_hook_identifier() {
@@ -69,6 +71,26 @@ class Lava_Page extends Lava_Base
 	/*
 		Accessors
 	*/
+
+	function _load_defaults() {
+		
+	}
+
+	function _parse_vars( $page_vars ) {
+		foreach( $page_vars as $key => $value ) {
+			switch( $key ) {
+				case 'section_title':
+				case 'section':
+				case 'type':
+				break;
+				case 'title':
+					$this->_set_page_title( $value );
+				break;
+				default:
+					die( 'Unhandled configuration: ' . $key );
+			}
+		}
+	}
 
 
 	function _get_section_id() {
@@ -106,7 +128,8 @@ class Lava_Page extends Lava_Base
 	}
 
 	function _get_page_slug() {
-		return $this->_get_section_id() . '_' . $this->_get_page_id();
+		$section = $this->_page_controller->_get_section( $this->_get_section_id() );
+		return  $section->_get_section_slug_fragment() . '_' . $this->_get_page_id();
 	}
 
 
@@ -120,9 +143,14 @@ class Lava_Page extends Lava_Base
 		Flow functions
 	*/
 
+	function _register_scenes() {
+		//should be overloaded to allow the registering of scenes
+	}
+
 	function _register_page() {
 
-		$parent_slug = $this->_page_controller->_get_section_slug( $this->_section_id );
+		$section = $this->_page_controller->_get_section( $this->_get_section_id() );
+		$parent_slug = $section->_get_section_slug();
 		$page_title = $this->_get_page_title();
 		$menu_title = $this->_get_menu_title();
 		$capability = 'manage_options'; # @todo add capability handling
@@ -221,6 +249,7 @@ class Lava_Page extends Lava_Base
 		$page_id = $this->_get_page_id();
 		foreach( $page_objects as $page_object ) {
 			$page = $page_object->_serialize();
+			$page['link'] = $page['url'];
 			if( $page['page_id'] == $page_id ) {
 				$page['selected'] = true;
 			} else {

@@ -1,0 +1,14 @@
+<div id="lava-programme" class="lava-programme">
+	<nav>
+		<ul class="lava-nav lava-nav-google lava-nav-scenes vertical-list">
+			{% for scene in scenes %}
+				<li class="{% if scene.selected %}selected{% endif %}" >
+					<a href="{{ scene.link }}">
+						{{ scene.title }}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</nav>
+</div>
+<!-- lava-programme -->

@@ -2,19 +2,26 @@
 	Defines structure for LAVA framework
 */
 
+// The number of pixels which we the theatre has outgrown (that need to applied as padding)
+@bleed-left: 19px;
+@bleed-right: 15px;
 
-.lava-theatre {
-	margin-left: -19px;
-	margin-right: -15px;
+@programme-width: 220px;
+
+#lava-theatre {
+	margin-left: -@bleed-left;
+	margin-right: -@bleed-right;
 }
 
-.lava-topbar {
-	position: relative;
+#lava-topbar {
 	@height: 50px;
 
+
+	position: relative;
 	height: @height;
 	margin-top: 10px;
 	margin-left: -6px;
+	padding-left: @bleed-left + 6;
 	z-index: 21; // makes sure that the sidebar shadow is below
 	border: 1px solid #999;
 	border-right: none;
@@ -34,4 +41,33 @@
 		line-height: @height;
 	}
 
+}
+
+#lava-actionbar {
+	@height: 30px;
+	border-bottom: 1px solid #ebebeb;
+
+	// This class should be applied to all children of #lava-actionbar and it applies padding and height (to keep it consistent)
+	.ab-block {
+		@padding: 15px;
+		height: @height;
+		line-height: @height;
+		padding: @padding;
+	}
+}
+
+#lava-programme {
+	width: @programme-width;
+	margin-left: -(@programme-width + @bleed-left);
+	float: left;
+}
+
+// applies padding to return to WordPress default
+.fix-bleed {
+	padding-left: @bleed-left;
+	padding-right: @bleed-right;
+}
+
+.lava-programme-aware {
+	padding-left: @bleed-left + @programme-width;
 }

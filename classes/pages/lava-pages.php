@@ -10,9 +10,10 @@
  */
 class Lava_Pages extends Lava_Base
 {
-	protected $_admin_sections = array();
+	public $_admin_sections = array();
 	//special sections are the WordPress sections - this allows us to add a page to one of these sections
-	protected $_special_sections = array(
+
+	protected $_special_section_friendly_names = array(
 		'themes' => 'themes.php',
 		'tools' => 'tools.php',
 		'management' => 'tools.php',
@@ -26,9 +27,10 @@ class Lava_Pages extends Lava_Base
 		'pages' => 'edit.php?post_type=page',
 		'comments' => 'edit-comments.php'
 	);
-	protected $_admin_pages = array();
-	protected $_admin_pages_by_section = array();
-	protected $_page_types = array(
+	
+	public $_admin_pages = array();
+	public $_admin_pages_by_section = array();
+	public $_page_types = array(
 		'settings' => 'Settings'
 	);
 	public $_styles = array();
@@ -36,8 +38,6 @@ class Lava_Pages extends Lava_Base
 
 
 	function _construct() {
-		$this->_add_action( 'admin_menu', '_register_sections', 2 );
-
 		$this->_add_action( 'admin_enqueue_scripts', '_add_dependancies', 1 );
 		$this->_add_action( 'admin_enqueue_scripts', '_register_styles', 2 );
 		$this->_add_action( 'admin_enqueue_scripts', '_register_scripts', 2 );
@@ -60,12 +60,19 @@ class Lava_Pages extends Lava_Base
 
 
 	function _add_section(  $section_title = 'Undefined Section', $section_id = 'default' ) {
-		$section = array(
-			'section_id' 	=> $section_id,
-			'section_title' => $section_title
-		);
 
-		$this->_set_section( $section_id, $section );
+		if( $this->_section_exists( $section_id ) ) {
+			return $this->_r();
+		}
+
+		$class_name = "Section";
+		$args = array(
+			$this,
+			$section_id,
+			$section_title
+		);
+		$this->_admin_sections[ $section_id ] = $this->_construct_class( $class_name, $args );
+
 
 		$this->_remember( '_section', $section_id );
 
@@ -83,9 +90,9 @@ class Lava_Pages extends Lava_Base
 			$section_id = $this->_recall( '_section' );
 		}
 
-		if( !array_key_exists( $section_id, $this->_special_sections ) ) {
-			$this->_set_section_default( $section_id, $page_id, false );
-		}
+		$section = $this->_get_section( $section_id );
+
+		$section->_set_default_page( $page_id, false );
 
 
 		if( ! $this->_page_exists( $page_id ) ) {
@@ -164,46 +171,14 @@ class Lava_Pages extends Lava_Base
 	}
 
 	function _get_section( $section_id ) {
-		if( $this->_section_exists( $section_id ) )
+		if( $this->_section_exists( $section_id ) ) {
 			return $this->_admin_sections[ $section_id ];
-		else
-			return null;
-	}
-
-	function _get_section_slug( $section_id ) {
-		if( array_key_exists( $section_id , $this->_special_sections) ) {
-			return $this->_special_sections[ $section_id ];
+		} else {
+			//raise exception
+			print_r( $this->_admin_sections );
+			die( 'Could not find section with ID:' . $section_id );
 		}
-		if( ! $this->_section_exists( $section_id ) )
-			return null;
-
-		$section = $this->_get_section( $section_id );
-		extract( $section );
-
-		return "{$section_id}_{$section_default_page}";
 	}
-
-	function _set_section( $section_id, $section ) {
-		$this->_admin_sections[ $section_id ] = $section;
-		return $this->_r();
-	}
-
-	function _set_section_default( $section_id = null, $page_id = null, $should_overwrite = true ) {
-		if( is_null( $section_id ) )
-			$section_id = $this->_recall( '_section' );
-		if( is_null( $page_id ) )
-			$page_id = $this->_get_child()->_get_page_id();
-		$section = $this->_get_section( $section_id );
-		if( $should_overwrite or ! array_key_exists( 'section_default_page' , $section) )
-			$section[ 'section_default_page' ] = $page_id;
-
-		$this->_set_section( $section_id, $section );
-		return $this->_r();
-	}
-
-
-
-
 
 
 	function _add_settings_page( $page_id = 'settings', $section_id = null ) {
@@ -222,32 +197,6 @@ class Lava_Pages extends Lava_Base
 		return $this->_r();
 	}
 
-
-
-
-
-
-
-
-	function _register_sections() {
-		$sections = $this->_get_sections();
-
-		foreach( $sections as $section ) {
-			# @todo - add filter for capabilities (get minimum capabilities required)
-			extract( $section );
-
-			$section_slug = $this->_get_section_slug( $section_id );
-			$page_title = $this->_get_page( $section_default_page )->_get_page_title();
-
-			add_menu_page(
-				$page_title,
-				$section_title,
-				'manage_options',
-				$section_slug,
-				array( $this, '_blank' ) 
-			);
-		}
-	}
 
 
 

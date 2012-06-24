@@ -60,6 +60,8 @@ class Lava_Functions extends Lava_Base
 		if( ! class_exists( $dependancy ) ) {
 			if( array_key_exists( $dependancy, $dependancies) ) {
 				require_once( $dependancies[ $dependancy ] );
+			} else {
+				die( 'Dependancy: "' . $dependancy . '" could not be loaded' );
 			}
 		}
 
@@ -68,6 +70,35 @@ class Lava_Functions extends Lava_Base
 				Twig_Autoloader::register();
 		}
 		// Raise Dependancy not found error
+	}
+
+
+	/*
+		Language extensions
+	*/
+
+	function _make_associative( $array, $default_key ) {
+		if( count( $array ) == 0 ) {
+			return array();
+		}
+		if( ! $this->_is_associative( $array ) ) {
+			return array( $default_key => $array );
+		}
+		return $array;
+	}
+
+	// http://stackoverflow.com/questions/173400/php-arrays-a-good-way-to-check-if-an-array-is-associative-or-sequential
+	function _is_associative( $arr ) {
+		return array_keys($arr) !== range(0, count($arr) - 1);
+	}
+
+	function _load_yaml( $file ) {
+		$this->_load_dependancy( 'Spyc' );
+		$file = dirname( $this->_get_plugin_file_path() ) . '/' . $file;
+		if( file_exists( $file ) ) {
+			return Spyc::YAMLLoad( $file );
+		}
+		return array();
 	}
 
 

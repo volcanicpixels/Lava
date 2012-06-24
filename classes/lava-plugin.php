@@ -119,7 +119,32 @@ class Lava_Plugin extends Lava_Base
 	}
 
 	function _register_pages() {
-		$this->_load_dependancy( 'Spyc' );
+		
+		$yaml = $this->_funcs()->_load_yaml( 'admin_pages.yaml' );
+		$pages = $this->_funcs()->_make_associative( $yaml, 'plugin' );
+
+		foreach( $pages as $page_id => $page_vars ){
+			$page_type = '';
+			if( ! is_array( $page_vars ) ) {
+				$page_vars = array();
+			}
+			$section_title = $this->_get_plugin_name();
+			if( array_key_exists( 'type', $page_vars ) ) {
+				$page_type = $page_vars[ 'type' ];
+			}
+			if( array_key_exists( 'section_title', $page_vars ) ) {
+				$section_title = $page_vars[ 'section_title' ];
+			}
+			$section_id = strtolower( str_replace( ' ', '_', $section_title ) );
+			if( array_key_exists( 'section', $page_vars ) ) {
+				$section_id = $page_vars[ 'section' ];
+			}
+			$this->_pages()
+					->_add_section( $section_title, $section_id )
+					->_add_page( $page_id, $page_type, $section_id )
+						->_parse_vars( $page_vars );
+			;
+		}
 	}
 
 	function _construct_class( $class_name, $args = array(), $should_prefix = true ) {
@@ -134,7 +159,7 @@ class Lava_Plugin extends Lava_Base
 		if( array_key_exists( $class_name , $this->_singletons ) ) {
 			return $this->_singletons[ $class_name ];
 		} else {
-			return $this->_singletons = $this->_construct_class( $class_name );
+			return $this->_singletons[ $class_name ] = $this->_construct_class( $class_name );
 		}
 	}
 

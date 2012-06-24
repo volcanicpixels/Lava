@@ -1,15 +1,11 @@
 <div class="wrap debug lava-cntr">
-	<h2>{{ plugin.name | default('Undefined Plugin') }}</h2>
+	<h2>{{ plugin.name | default('Undefined Page') }}</h2>
 	<div id="lava-theatre" class="lava-theatre">
 		{% include 'topbar.twig' %}
 		{% include 'actionbar.twig' %}
-		<div class="lava-stage-cntr">
-			<div class="lava-programme">
-			</div>
-			<!-- lava-programme -->
-			<div class="lava-stage">
-			</div>
-			<!-- lava-stage -->
+		<div class="lava-stage-cntr lava-programme-aware fix-bleed clearfix">
+			{% include 'programme.twig' %}
+			{% include 'stage.twig' %}
 		</div>
 		<!-- lava-stage-cntr -->
 	</div>

@@ -90,6 +90,11 @@ class Lava_Base
 			/* We couldn't find anywhere to send this request */
 
 		if( $this->_should_throw_error_if_method_is_missing ) {
+			$callee = next(debug_backtrace());
+			//Trigger appropriate error
+			trigger_error('Could not find method ' . $method_name . ' in '.$callee['file'].' on line '.$callee['line'].'', E_USER_ERROR);
+
+
 			echo "<h2>LavaError thrown in lavaBase.php</h2> <br/>";
 			echo "Could not find method '{$method_name}' on object of class '" . get_class( $this ) . "'. We also tried the current child which has class '" . get_class( $this->_get_child() ) . "'and the parent which has class '" . get_class( $this->_get_parent() ) . "'.";
 			exit;
