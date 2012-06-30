@@ -1,0 +1,7 @@
+{% block scene_wrap %}
+	<div id="lava-scene_{{ scene_id }}" class="lava-scene-wrap lava-scene{% if is_selected %} active-descendant{% else %} inactive-descendant{% endif %}" data-scene-id="{{ scene_id }}">
+		{% block scene %}
+			{{ scene_title }}
+		{% endblock %}
+	</div>
+{% endblock %}

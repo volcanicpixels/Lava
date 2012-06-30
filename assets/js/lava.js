@@ -9,19 +9,15 @@ How: Voodoo
 
 	$.fn.lava = function( options ) {
 
-	var default_settings = {
+		var defaults = {
 
-	}
+		}
+
+		var opts = $.extend( defaults, options);
 
 
 
-	this.fadeIn('normal', function(){
+		return this
 
-	  // the this keyword is a DOM element
-
-	});
-
-	return this
-
-  };
+	};
 })( jQuery );

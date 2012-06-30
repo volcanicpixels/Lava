@@ -19,6 +19,7 @@ class Lava_Page extends Lava_Base
 	protected $_page_scenes = array();
 	protected $_local_scenes = array();
 	protected $_external_scenes = array();
+	public $_default_scene_id;
 
 	public $_scene_types = array(
 
@@ -51,16 +52,19 @@ class Lava_Page extends Lava_Base
 		$this->_set_parent( $this->_page_controller );
 
 		$this->_add_action( 'admin_menu', '_register_page', 3 );
-		$this->_add_action( 'admin_menu', '_register_get_template_variables', 4 );
 
 		$this->_add_lava_action( '_add_dependancies' );
 
 		$this->_load_defaults();
 	}
 
-	function _get_hook_identifier() {
-		return '-page:' . $this->_get_page_slug();
-	}
+	/*
+		
+	*/
+
+
+
+	
 
 	function _serialize() {
 		$old_vars = parent::_serialize();
@@ -135,6 +139,27 @@ class Lava_Page extends Lava_Base
 	}
 
 	/*
+		Hook functions
+	*/
+
+	function _register_hooks() {
+		parent::_register_hooks();
+		$this->_register_actions( '_do_page', array(
+				'default_scene'
+		));
+		$this->_register_filters( '_get_template_variables', array(
+			'plugin_meta',
+			'pages',
+			'scenes'
+		));
+	}
+
+	function _get_hook_identifier() {
+		return '-page:' . $this->_get_page_slug();
+	}
+
+
+	/*
 		Scene/act functions
 	*/
 
@@ -164,6 +189,19 @@ class Lava_Page extends Lava_Base
 		return $this->_r();
 	}
 
+	function _get_default_scene_id() {
+		$scenes = $this->_get_scenes();
+		$default = '';
+		if( count($scenes) > 0 ) {
+			$scene = reset($scenes);
+			$default = $scene->_get_scene_id();
+		}
+		if( !empty( $this->_default_scene_id ) ) {
+			$default = $this->_default_scene_id;
+		}
+		return $this->_recall( '_default_scene_id', $default );
+	}
+
 	function _get_scenes() {
 		return $this->_page_scenes;
 	}
@@ -181,6 +219,7 @@ class Lava_Page extends Lava_Base
 
 	function _register_scenes() {
 		//should be overloaded to allow the registering of scenes
+		
 	}
 
 	function _register_page() {
@@ -205,58 +244,35 @@ class Lava_Page extends Lava_Base
 
 	}
 
+	// if the page is accessed without the 'scene' query param then we should add it
+
+
 	function _do_page() {
-		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
+		$hook = $this->_hook( '_do_page' );
+		$this->_do_lava_action( $hook );
 		$this->_initialize_twig();
 		$template = $this->_load_template();
 		$variables = $this->_get_template_variables();
 		$template->display( $variables );
 	}
 
-
-
-	/* 
-		Template functions
-	*/
-
-	function _get_template_directories() {
-		return $this->_template_directories;
-	}
-
-	function _get_template_variables() {
-		$hook = $this->_hook( '_get_template_variables' );
-		return $this->_apply_lava_filters( $hook, array() );
-	}
-
-	function _initialize_twig() {
-		$template_directories = $this->_get_template_directories();
-
-		$this->_twig_loader = new Twig_Loader_Filesystem( $template_directories );
-		$this->_twig_environment = new Twig_Environment( $this->_twig_loader, $this->_twig_config );
-	}
-
-	function _load_template( $template = null ) {
-		if( is_null( $template ) ) {
-			$template = $this->_twig_template;
+	function _do_page__default_scene() {
+		$default_scene_id = $this->_get_default_scene_id();
+		if( ! array_key_exists('scene', $_REQUEST) ) {
+			$_REQUEST['scene'] = $default_scene_id;
 		}
-		return $this->_twig_environment->loadTemplate( $template );
+
 	}
+
+
+
+	
 
 	/*#######################################
 		Template variable functions
 	*/#######################################
 
-	function _register_get_template_variables() {
-		$hook = $this->_hook( '_get_template_variables' );
-		$filters = array(
-			'plugin_meta',
-			'pages',
-			'scenes'
-		);
-		foreach( $filters as $filter ) {
-			$this->_add_lava_filter( $hook, "_get_template_variables__{$filter}" );
-		}
-	}
+
 
 
 	/*

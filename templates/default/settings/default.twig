@@ -1,0 +1,20 @@
+{% block setting_wrap %}
+	<div id="lava-setting_{{ full_setting_id }}" class="lava-setting-wrap lava-setting" data-setting-id="{{ full_setting_id }}">
+		{% block setting %}
+			{% block setting_title_wrap %}
+				<div class="lava-title-wrap lava-setting-title-wrap">
+					{% block setting_title %}
+						<span class="lava-title lava-title-sect lava-setting-title">{{ setting_title }}</span>
+					{% endblock %}
+				</div>
+			{% endblock %}
+			{% block setting_value_wrap %}
+				<div class="lava-setting-value-wrap">
+					{% block setting_value %}
+						<input value="{{ setting_value }}" />
+					{% endblock %}
+				</div>
+			{% endblock %}
+		{% endblock %}
+	</div>
+{% endblock %}

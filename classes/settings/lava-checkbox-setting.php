@@ -11,5 +11,7 @@
 
 class Lava_Checkbox_Setting extends Lava_Setting {
 	public $_setting_type = 'Checkbox';
+
+	public $_twig_template = 'checkbox.twig';
 }
 ?>

@@ -1,0 +1,9 @@
+{% extends 'default.twig' %}
+
+{% block setting_value %}
+	{% if setting_value == ( 'on' or 'true' or true ) %}
+		{% set checked = 'checked="checked"' %}
+	{% endif %}
+	<input type="hidden" name="{{ setting_name }}" value="on" />
+	<input type="checkbox" name="{{ setting_name }}" value="off" {{ checked }} />
+{% endblock %}

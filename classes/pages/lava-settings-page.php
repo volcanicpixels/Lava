@@ -10,6 +10,7 @@
  */
 class Lava_Settings_Page extends Lava_Page
 {
+
 	function _register_dependancies(){
 		parent::_register_dependancies();
 	}

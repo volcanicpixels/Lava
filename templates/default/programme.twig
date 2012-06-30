@@ -2,7 +2,7 @@
 	<nav>
 		<ul class="lava-nav lava-nav-google lava-nav-scenes vertical-list">
 			{% for scene in scenes %}
-				<li class="{% if scene.is_selected %}selected js-default-selection{% endif %}" >
+				<li class="{% if scene.is_selected %}active-descendant js-default-descendant{% endif %}" >
 					<a href="{{ scene.get_scene_url }}">
 						{{ scene.get_scene_title }}
 					</a>

@@ -1,0 +1,7 @@
+{% extends "default.twig" %}
+
+{% block scene %}
+	{% for setting in settings %}
+		{{ setting.do_setting }}
+	{% endfor %}
+{% endblock %}

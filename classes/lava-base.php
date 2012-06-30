@@ -42,6 +42,8 @@ class Lava_Base
 			call_user_func_array( $callback, $args );
 		}
 
+		$this->_register_hooks();
+
 		$this->_register_action_methods( $this );
 	}
 
@@ -112,6 +114,10 @@ class Lava_Base
 
 	function _blank() {
 		
+	}
+
+	function _register_hooks() {
+
 	}
 
 	/**
@@ -373,6 +379,20 @@ class Lava_Base
 		return '';
 	}
 
+	function _register_filters( $hook, $filters ) {
+		$full_hook = $this->_hook( $hook );
+		foreach( $filters as $filter ) {
+			$this->_add_lava_filter( $full_hook, "{$hook}__{$filter}" );
+		}
+	}
+
+	function _register_actions( $hook, $actions ) {
+		$full_hook = $this->_hook( $hook );
+		foreach( $actions as $action ) {
+			$this->_add_lava_action( $full_hook, "{$hook}__{$action}" );
+		}
+	}
+
 	function _serialize() {
 		$vars = array(
 			'_class_name' => get_class( $this )
@@ -424,6 +444,34 @@ class Lava_Base
 	
 	function _construct_class( $class_name, $args = array() ) {
 		return new $class_name( $this->_the_plugin, $args );
+	}
+
+	/* 
+		Template functions
+	*/
+
+	function _get_template_directories() {
+		return $this->_template_directories;
+	}
+
+	function _get_template_variables( $vars = array() ) {
+		$hook = $this->_hook( '_get_template_variables' );
+		return $this->_apply_lava_filters( $hook, $vars );
+	}
+
+	function _initialize_twig() {
+		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
+		$template_directories = $this->_get_template_directories();
+
+		$this->_twig_loader = new Twig_Loader_Filesystem( $template_directories );
+		$this->_twig_environment = new Twig_Environment( $this->_twig_loader, $this->_twig_config );
+	}
+
+	function _load_template( $template = null ) {
+		if( is_null( $template ) ) {
+			$template = $this->_twig_template;
+		}
+		return $this->_twig_environment->loadTemplate( $template );
 	}
 
 

@@ -102,9 +102,12 @@ class Lava_Settings extends Lava_Base
 		Sugar functions
 	*/
 
-	function _get_scene_id( $append = '' ) {
-		$append = strtolower( $append );
-		return $this->_controller_namespace . '-' . $append;
+	function _get_setting_id_prefix() {
+		return $this->_controller_namespace;
+	}
+
+	function _get_scene_id_prefix( $append = '' ) {
+		return $this->_controller_namespace;
 	}
 
 	/*
@@ -112,7 +115,7 @@ class Lava_Settings extends Lava_Base
 	*/
 
 	function _get_option_id() {
-		return $this->_namespace( $this->_setting_prefix );
+		return $this->_namespace( $this->_controller_namespace );
 	}
 
 	function _get_option() {
@@ -126,7 +129,7 @@ class Lava_Settings extends Lava_Base
 
 
 	function _get_settings_from_db() {
-		return get_option( $this->_namespace( $this->_setting_prefix ) );
+		return get_option( $this->_namespace( $this->_controller_namespace ) );
 	}
 
 	function _get_setting_from_db( $setting_key, $default = null ) {
@@ -139,7 +142,7 @@ class Lava_Settings extends Lava_Base
 	}
 
 	function _update_settings_to_db( $settings ) {
-		return update_option( $this->_namespace( $this->_setting_prefix ) );
+		return update_option( $this->_namespace( $this->_controller_namespace ) );
 	}
 
 	function _update_setting_to_db( $setting_key, $setting_value ) {

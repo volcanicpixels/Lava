@@ -63,6 +63,20 @@
 	padding-top: 30px;
 }
 
+#lava-stage {
+	padding-top: 30px;
+}
+
+/*
+	Scenes
+*/
+
+.lava-scene {
+	&.inactive-descendant {
+		display: none;
+	}
+}
+
 /*
 	Navigation
 */
@@ -75,10 +89,35 @@
 
 		a{
 			padding-left: 39px;
+			display: inline-block;
 			height: @height;
 			line-height: @height;
 		}
 	}
+}
+
+/*
+	Titles
+*/
+
+.lava-title-wrap {
+	@height: 30px;
+	line-height: @height;
+	height: @height;
+}
+
+.lava-title {
+	@height: 30px;
+	line-height: @height;
+	height: @height;
+}
+
+/*
+	Settings
+*/
+
+.lava-setting {
+	padding-bottom: 20px;
 }
 
 

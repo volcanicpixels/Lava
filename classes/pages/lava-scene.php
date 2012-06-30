@@ -23,13 +23,13 @@
 		All settings are pushed as local scenes with the scene of settings set by their origin or if plugin settings by the settings.yaml file
 
 		e.g.
-			general:
+			setting-general:
 				[some genreal settings]
-			advanced:
+			setting-advanced:
 				[some advanced settings]
-			skin/default_skin:
+			skin-default_skin:
 				[some skin settings]
-			extension/access_logs:
+			extension-access_logs:
 				[access logs settings]
 
 	Skins:
@@ -45,16 +45,33 @@
 class Lava_Scene extends Lava_Base
 {
 
+	public $_template_directories = array();
+	public $_twig_config = array();
+	public $_twig_template = 'default.twig';
+
 	function _construct( $scene_controller, $scene_id, $scene_scope ) {
 		$this->_scene_controller = $scene_controller;
 		$this->_scene_id = $scene_id;
 		$this->_scene_scope = $scene_scope;
 
 		$this->_set_return_object( $scene_controller );
+
+		$this->_template_directories = array(
+			$this->_get_lava_path() . '/templates/default/scenes/',
+			$this->_get_lava_path() . '/templates/'
+		);
 	}
 
 	function _serialize() {
+		$old = parent::_serialize();
+		$new = array(
+			'scene_id'          => $this->_get_scene_id(),
+			'scene_title'       => $this->_get_scene_title(),
+			'scene_url'         => $this->_get_scene_url(),
+			'is_selected' => $this->_is_selected()
+		);
 
+		return array_merge( $old, $new );
 	}
 
 
@@ -75,6 +92,10 @@ class Lava_Scene extends Lava_Base
 		return add_query_arg( 'scene', $this->_get_scene_id(), $root_url );
 	}
 
+	function _get_scene_template() {
+		return 'scenes/' . $this->_scene_template . '.twig';
+	}
+
 	function _set_scene_title( $title = '' ) {
 		if( ! empty( $title ) ) {
 			$this->_remember( '_scene_title', $title );
@@ -83,8 +104,32 @@ class Lava_Scene extends Lava_Base
 	}
 
 	function _is_selected() {
-		return $this->_get_scene_id() == $_REQUEST['scene'];
+		return array_key_exists( 'scene', $_REQUEST ) and $this->_get_scene_id() == $_REQUEST['scene'];
 	}
+
+	/*
+		Hook functions
+	*/
+
+	function _get_hook_identifier() {
+		return '-scene:' . $this->_scene_controller->_get_page_slug() . '-' . $this->_get_scene_id();
+	}
+
+	/*
+		Flow functions
+	*/
+
+	function _do_scene() {
+		$this->_initialize_twig();
+
+		$template = $this->_load_template();
+		$variables = $this->_get_template_variables( $this->_serialize() );
+		return $template->display( $variables );
+	}
+
+	/*
+		Template functions
+	*/
 
 }
 ?>
