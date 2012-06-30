@@ -9,7 +9,7 @@
  * @since 1.0.0
  */
 
-class Lava_Setting_ extends Lava_Setting {
+class Lava__Setting extends Lava_Setting {
 	public $_setting_type = '';
 }
 ?>

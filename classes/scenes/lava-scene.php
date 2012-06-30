@@ -44,47 +44,10 @@
 */
 class Lava_Scene extends Lava_Base
 {
+	$_type = 'local';
 
-	function _construct( $scene_controller, $scene_id, $scene_scope ) {
-		$this->_scene_controller = $scene_controller;
-		$this->_scene_id = $scene_id;
-		$this->_scene_scope = $scene_scope;
-
-		$this->_set_return_object( $scene_controller );
+	function _construct() {
+		
 	}
-
-	function _serialize() {
-
-	}
-
-
-	/*
-		Accessors
-	*/
-
-	function _get_scene_id() {
-		return $this->_scene_id;
-	}
-
-	function _get_scene_title() {
-		return $this->_recall( '_scene_title', $this->_get_scene_id() );
-	}
-
-	function _get_scene_url() {
-		$root_url = $this->_scene_controller->_get_page_url();
-		return add_query_arg( 'scene', $this->_get_scene_id(), $root_url );
-	}
-
-	function _set_scene_title( $title = '' ) {
-		if( ! empty( $title ) ) {
-			$this->_remember( '_scene_title', $title );
-		}
-		return $this->_r();
-	}
-
-	function _is_selected() {
-		return $this->_get_scene_id() == $_REQUEST['scene'];
-	}
-
 }
 ?>

@@ -4,7 +4,7 @@ class Lava_Functions extends Lava_Base
 	function _register_action_methods( $object ) {
 		$hooks_with_same_method = array(
 			'init',
-			'admin_init'
+			'admin_menu'
 		);
 
 		$other_hooks = array(
@@ -12,6 +12,7 @@ class Lava_Functions extends Lava_Base
 
 		$lava_hooks = array(
 			'admin_init' => array(
+				'admin_init',
 				'register_settings',
 				'register_pages',
 			)
@@ -101,6 +102,15 @@ class Lava_Functions extends Lava_Base
 		return array();
 	}
 
+
+
+	/*
+		Manipulation
+	*/
+
+	
+
+	
 
 
 

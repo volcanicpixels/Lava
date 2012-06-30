@@ -28,3 +28,33 @@
 		color: @primary-color;
 	}
 }
+
+.lava-nav-google {
+
+	.selected {
+		color: @primary-color;
+	}
+
+	li {
+		border-left: 5px solid transparent;
+
+		&:hover, &.hover, &:focus {
+			background: #eee;
+			border-left-color: #eee;
+		}
+
+		&.selected, &:active {
+			border-left-color: @primary-color;
+			a {
+				color: @primary-color;
+			}
+		}
+
+		a{
+			color: #222;
+			font-size: 13px;
+			font-weight: normal;
+			.no-text-decoration;
+		}
+	}
+}

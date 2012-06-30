@@ -30,9 +30,7 @@ class Lava_Pages extends Lava_Base
 	
 	public $_admin_pages = array();
 	public $_admin_pages_by_section = array();
-	public $_page_types = array(
-		'settings' => 'Settings'
-	);
+
 	public $_styles = array();
 	public $_scripts = array();
 
@@ -65,7 +63,8 @@ class Lava_Pages extends Lava_Base
 			return $this->_r();
 		}
 
-		$class_name = "Section";
+		$class_name = $this->_class("Section");
+
 		$args = array(
 			$this,
 			$section_id,
@@ -79,7 +78,7 @@ class Lava_Pages extends Lava_Base
 		return $this->_r();
 	}
 
-	function _add_page( $page_id, $page_type = '', $section_id = null ) {
+	function _add_page( $page_id, $page_class = '', $section_id = null ) {
 		$this->_kill_child();
 
 		// Sinces pages are actually sub pages we need a section to bind it to
@@ -96,10 +95,7 @@ class Lava_Pages extends Lava_Base
 
 
 		if( ! $this->_page_exists( $page_id ) ) {
-			if( array_key_exists( strtolower( $page_type ) , $this->_page_types ) )
-				$class_name = $this->_page_types[ strtolower( $page_type ) ] . '_Page';
-			else
-				$class_name = 'Page';
+			$class_name = $this->_class( $page_class ) . '_Page';
 
 			$args = array(
 				$this, // $page_controller
@@ -114,13 +110,13 @@ class Lava_Pages extends Lava_Base
 			}
 
 			$this->_admin_pages_by_section[ $section_id ][] = $page_id;
-
 		}
 
 
 		$this->_set_child( $this->_admin_pages[ $page_id ] );
 		return $this->_r();
 	}
+
 
 	/*
 		The difference between _get_page and _get_page_ is that the first adds the page object to memory and returns itself (like a jQuery chain) where as the second actually returns the object
@@ -209,8 +205,9 @@ class Lava_Pages extends Lava_Base
 	*/
 
 	function _add_dependancies() {
-		$this->_add_lava_stylesheet( 'styles', 'styles.css' );
+		$this->_add_lava_stylesheet( 'lava', 'lava.css' );
 		$this->_add_lava_script( 'html5shiv', 'html5shiv.js' );
+		$this->_add_lava_script( 'lava', 'lava.js', array( 'jquery' ) );
 		$this->_add_lava_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
 		$this->_do_lava_action( '_add_dependancies' );
 	}

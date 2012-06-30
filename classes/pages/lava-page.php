@@ -16,6 +16,14 @@ class Lava_Page extends Lava_Base
 	protected $_page_id;
 	protected $_section_id;
 
+	protected $_page_scenes = array();
+	protected $_local_scenes = array();
+	protected $_external_scenes = array();
+
+	public $_scene_types = array(
+
+	);
+
 	protected $_page_hook;
 
 	public $_page_styles = array();
@@ -38,7 +46,7 @@ class Lava_Page extends Lava_Base
 		if ( is_dir( $plugin_dir ) ) {
 			array_unshift( $this->_template_directories, $plugin_dir );
 		}
-		$this->_set_return_object( $this->_page_controller );
+		$this->_set_return_object( $this );
 
 		$this->_set_parent( $this->_page_controller );
 
@@ -79,15 +87,9 @@ class Lava_Page extends Lava_Base
 	function _parse_vars( $page_vars ) {
 		foreach( $page_vars as $key => $value ) {
 			switch( $key ) {
-				case 'section_title':
-				case 'section':
-				case 'type':
-				break;
 				case 'title':
 					$this->_set_page_title( $value );
 				break;
-				default:
-					die( 'Unhandled configuration: ' . $key );
 			}
 		}
 	}
@@ -130,6 +132,40 @@ class Lava_Page extends Lava_Base
 	function _get_page_slug() {
 		$section = $this->_page_controller->_get_section( $this->_get_section_id() );
 		return  $section->_get_section_slug_fragment() . '_' . $this->_get_page_id();
+	}
+
+	/*
+		Scene/act functions
+	*/
+
+	function _add_scene( $scene_id, $class = '' , $scope = 'local') {
+		if( ! $this->_scene_exists( $scene_id ) ){
+			$class_name = $this->_class( $class ) . '_Scene';
+			$args = array(
+				$this, // parent_page
+				$scene_id,
+				$scope
+			);
+			$this->_page_scenes[ $scene_id ] = $scene = $this->_construct_class( $class_name, $args );
+			if( $scope == 'external' )
+				$this->_external_scenes[] = $scene_id;
+			else
+				$this->_local_scenes[] = $scene_id;
+		}
+		return $this->_get_scene( $scene_id );
+	}
+
+	function _scene_exists( $scene_id ) {
+		return array_key_exists( $scene_id, $this->_page_scenes);
+	}
+
+	function _get_scene( $scene_id ) {
+		$this->_set_child( $this->_page_scenes[ $scene_id ] );
+		return $this->_r();
+	}
+
+	function _get_scenes() {
+		return $this->_page_scenes;
 	}
 
 
@@ -214,7 +250,8 @@ class Lava_Page extends Lava_Base
 		$hook = $this->_hook( '_get_template_variables' );
 		$filters = array(
 			'plugin_meta',
-			'pages'
+			'pages',
+			'scenes'
 		);
 		foreach( $filters as $filter ) {
 			$this->_add_lava_filter( $hook, "_get_template_variables__{$filter}" );
@@ -263,6 +300,14 @@ class Lava_Page extends Lava_Base
 		return $vars;
 	}
 
+	function _get_template_variables__scenes( $vars ) {
+		$scenes = $this->_get_scenes();
+		// currently the whole array of objects is passed 
+		$vars['scenes'] = $scenes;
+
+		return $vars;
+	}
+
 
 
 
@@ -275,8 +320,9 @@ class Lava_Page extends Lava_Base
 	/* Page dependancy functions */
 
 	function _add_dependancies() {
-		$this->_use_lava_stylesheet( 'styles' );
+		$this->_use_lava_stylesheet( 'lava' );
 		$this->_use_lava_script( 'html5shiv' );
+		$this->_use_lava_script( 'lava' );
 		$this->_use_lava_script( 'modernizr' );
 	}
 

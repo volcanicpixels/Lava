@@ -80,9 +80,15 @@ class Lava_Base
 			$callback = array( $this, "_parent_{$method_name}" );
 			return call_user_func_array( $callback, $args );
 		}
+		/* lets check whether we have a method with an extra underscore (used in templates) */
+
+		if( method_exists( $this, "_{$method_name}") ) {
+			$callback = array( $this, "_{$method_name}" );
+			return call_user_func_array( $callback, $args );
+		}
 
 		/* Check plugin instance */
-		elseif( method_exists( $this->_the_plugin, $method_name ) ) {
+		if( method_exists( $this->_the_plugin, $method_name ) ) {
 			$callback = array( $this->_the_plugin, $method_name );
 			return call_user_func_array( $callback, $args );
 		}
@@ -90,9 +96,10 @@ class Lava_Base
 			/* We couldn't find anywhere to send this request */
 
 		if( $this->_should_throw_error_if_method_is_missing ) {
+			echo get_class( $this->_the_plugin );
 			$callee = next(debug_backtrace());
 			//Trigger appropriate error
-			trigger_error('Could not find method ' . $method_name . ' in '.$callee['file'].' on line '.$callee['line'].'', E_USER_ERROR);
+			trigger_error('Could not find method ' . $method_name . ' in '.$callee['file'].' on line '.$callee['line'].'. The class is:' . get_class( $this ), E_USER_ERROR);
 
 
 			echo "<h2>LavaError thrown in lavaBase.php</h2> <br/>";
@@ -220,7 +227,7 @@ class Lava_Base
 	 */
 
 	function _register_action_methods( $ignore ) {
-		if( $this->_should_register_action_methods == true ) {
+		if( $this->_should_register_action_methods ) {
 			$this->_funcs()->_register_action_methods( $this );
 		}
 	}
@@ -249,7 +256,7 @@ class Lava_Base
 					$method = $hook;
 
 				if( $should_namespace ) {
-					$hook = $this	->_namespace( $hook   );
+					$hook = $this	->_namespace( $hook );
 				}
 
 				$callback = $method;
@@ -275,7 +282,7 @@ class Lava_Base
 	}
 
 	function _add_lava_action( $hooks, $methods = '', $priority = 10, $how_many_args = 0 ) {
-		return $this->_add_action( $hooks, $methods, $priority, $how_many_args ,true );
+		return $this->_add_action( $hooks, $methods, $priority, $how_many_args, true );
 	}
 
 	function _add_lava_filter( $hooks, $methods = '', $priority = 10, $how_many_args = 1 ) {
@@ -373,7 +380,51 @@ class Lava_Base
 
 		return $vars;
 	}
+
+	/*
+		Manipulation
+	*/
+
+	function _capitalize( $string ) {
+		$string = explode( ' ', $string);
+		foreach( $string as $i => $word ) {
+			$string[$i] = ucfirst( $word );
+		}
+		return implode( ' ', $string );
+	}
+
+	function _class( $string ) {
+		if( substr_count( $string, 'plugin/') == 1 ) {
+			return $this->_plugin_class( str_replace( 'plugin/', '', $string) );
+		} else {
+			return $this->_lava_class( $string );
+		}
+	}
+
+	function _lava_class( $string ) {
+		return $this->_namespaced_class( $string, 'Lava' );
+	}
+
+	function _plugin_class( $string ) {
+		return $this->_namespaced_class( $string, $this->_get_plugin_class_prefix() );
+	}
+
+	function _namespaced_class( $string, $namespace ) {
+		$string = str_replace( '-', ' ', $string);
+		$string = str_replace( '_', ' ', $string);
+		$string = $this->_capitalize( $string );
+		$string = str_replace( ' ', '_', $string);
+
+		return $namespace . '_' . $string;
+	}
+
+	/*
+		Constructors
+	*/
 	
+	function _construct_class( $class_name, $args = array() ) {
+		return new $class_name( $this->_the_plugin, $args );
+	}
 
 
 }
