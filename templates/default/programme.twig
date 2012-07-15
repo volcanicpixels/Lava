@@ -1,9 +1,9 @@
 <div id="lava-programme" class="lava-programme">
 	<nav>
-		<ul class="lava-nav lava-nav-google lava-nav-scenes vertical-list">
+		<ul data-lava-nav-target-cntr="lava-stage" data-lava-nav-identifier="data-scene-id" class="lava-nav lava-nav-google lava-nav-scenes js-lava-nav vertical-list">
 			{% for scene in scenes %}
-				<li class="{% if scene.is_selected %}active-descendant js-default-descendant{% endif %}" >
-					<a href="{{ scene.get_scene_url }}">
+				<li data-scene-id="{{ scene.get_scene_id }}" class="{% if scene.is_selected %}active-descendant js-default-descendant{% endif %}{% for class in scene.get_classes %} {{ class }}{% endfor %}">
+					<a class="js-lava-address" href="{{ scene.get_scene_url }}">
 						{{ scene.get_scene_title }}
 					</a>
 				</li>

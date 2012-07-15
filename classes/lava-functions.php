@@ -4,7 +4,8 @@ class Lava_Functions extends Lava_Base
 	function _register_action_methods( $object ) {
 		$hooks_with_same_method = array(
 			'init',
-			'admin_menu'
+			'admin_menu',
+			'admin_bar_menu'
 		);
 
 		$other_hooks = array(

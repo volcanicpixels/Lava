@@ -1,0 +1,3 @@
+{% macro input(name, value, type, attrs) %}
+    <input type="{{ type }}" name="{{ name }}" value="{{ value | e }}" {% for attr, value in attrs %} {{ attr }}="{{ value }}"{% endfor %} />
+{% endmacro %}

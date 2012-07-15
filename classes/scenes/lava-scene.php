@@ -23,13 +23,13 @@
 		All settings are pushed as local scenes with the scene of settings set by their origin or if plugin settings by the settings.yaml file
 
 		e.g.
-			general:
+			setting-general:
 				[some genreal settings]
-			advanced:
+			setting-advanced:
 				[some advanced settings]
-			skin/default_skin:
+			skin-default_skin:
 				[some skin settings]
-			extension/access_logs:
+			extension-access_logs:
 				[access logs settings]
 
 	Skins:
@@ -44,10 +44,137 @@
 */
 class Lava_Scene extends Lava_Base
 {
-	$_type = 'local';
 
-	function _construct() {
-		
+	public $_template_directories = array();
+	public $_twig_template = 'default.twig';
+	public $_should_hide_scene = false;
+
+	function _construct( $scene_controller, $scene_id, $scene_scope ) {
+		$this->_scene_controller = $scene_controller;
+		$this->_scene_id = $scene_id;
+		$this->_scene_scope = $scene_scope;
+
+		$this->_set_return_object( $scene_controller );
+
+		$this->_template_directories = array(
+			$this->_get_lava_path() . '/templates/default/scenes/',
+			$this->_get_lava_path() . '/templates/default/',
+			$this->_get_lava_path() . '/templates/'
+		);
 	}
+
+	function _serialize() {
+		$old = parent::_serialize();
+		$new = array(
+			'scene_id'          => $this->_get_scene_id(),
+			'scene_title'       => $this->_get_scene_title(),
+			'scene_url'         => $this->_get_scene_url(),
+			'is_selected'       => $this->_is_selected(),
+			'input_attrs'       => $this->_get_input_attrs(),
+			'setting_attrs'     => $this->_get_setting_attrs(),
+			'classes'           => $this->_get_classes()
+		);
+
+		
+
+		return array_merge( $old, $new );
+	}
+
+
+	/*
+		Accessors
+	*/
+
+	function _get_scene_id() {
+		return $this->_scene_id;
+	}
+
+	function _get_scene_title() {
+		return $this->_recall( '_scene_title', $this->_get_scene_id() );
+	}
+
+	function _get_scene_url() {
+		$root_url = $this->_scene_controller->_get_page_url();
+		return add_query_arg( 'scene', $this->_get_scene_id(), $root_url );
+	}
+
+	function _get_scene_template() {
+		return 'scenes/' . $this->_scene_template . '.twig';
+	}
+
+	function _set_scene_title( $title = '' ) {
+		if( ! empty( $title ) ) {
+			$this->_remember( '_scene_title', $title );
+		}
+		return $this->_r();
+	}
+
+	function _is_selected() {
+		return array_key_exists( 'scene', $_REQUEST ) and $this->_get_scene_id() == $_REQUEST['scene'];
+	}
+
+	function _get_input_attrs() {
+		$old = $this->_get_twig_context( 'input_attrs', array() );
+		$new = array();
+		return array_merge( $old, $new );
+	}
+
+	function _get_setting_attrs() {
+		$old = $this->_get_twig_context( 'setting_attrs', array() );
+		$new = array();
+		return array_merge( $old, $new );
+	}
+
+	function _get_classes() {
+		$classes = array(
+		);
+
+		if( $this->_should_hide_scene ) {
+			$classes[] = 'hidden-descendant';
+		}
+
+		return $classes;
+	}
+
+
+
+	/*
+		Hook functions
+	*/
+
+	function _get_hook_identifier() {
+		return '-scene:' . $this->_scene_controller->_get_page_slug() . '-' . $this->_get_scene_id();
+	}
+
+	/*
+		Flow functions
+	*/
+
+	function _do_scene( $context = null ) {
+		$this->_set_twig_context( $context );
+
+		$this->_initialize_twig();
+
+		$template = $this->_load_template();
+		$variables = $this->_get_template_variables( $this->_serialize() );
+		return $template->display( $variables );
+	}
+
+	function _do_actions() {
+		return array();
+	}
+
+	function _do_button( $type = 'default', $args = array() ) {
+		$defaults = array();
+		$args = array_merge_recursive($defaults, $args);
+		$this->_initialize_twig();
+		$template = $this->_load_template( 'buttons/' . $type . '.twig' );
+		return $template->display( $args );
+	}
+
+	/*
+		_load_template functions
+	*/
+
 }
 ?>

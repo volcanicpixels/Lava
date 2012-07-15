@@ -1,0 +1,5 @@
+{% extends 'default.twig' %}
+
+{% block setting_value %}
+	{{ macros.input( setting_name, setting_value, 'text', setting_attrs ) }}
+{% endblock %}

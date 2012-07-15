@@ -15,6 +15,7 @@ class Lava_Setting extends Lava_Base
 	public $_setting_id;
 	public $_setting_title = '';
 	public $_setting_default_value;
+	public $_setting_scene = null;
 
 	public $_template_directories = array();
 	public $_twig_config = array();
@@ -30,6 +31,7 @@ class Lava_Setting extends Lava_Base
 
 		$this->_template_directories = array(
 			$this->_get_lava_path() . '/templates/default/settings/',
+			$this->_get_lava_path() . '/templates/default/',
 			$this->_get_lava_path() . '/templates/'
 		);
 	}
@@ -41,7 +43,10 @@ class Lava_Setting extends Lava_Base
 			'setting_id'      => $this->_get_setting_id(),
 			'setting_title'   => $this->_get_setting_title(),
 			'setting_type'    => $this->_get_setting_type(),
-			'setting_value'   => $this->_get_setting_value()
+			'setting_value'   => $this->_get_setting_value(),
+			'setting_name'    => $this->_get_setting_name(),
+			'input_attrs'    => $this->_get_input_attrs(),
+			'setting_attrs'    => $this->_get_setting_attrs()
 		);
 		return array_merge( $old, $new );
 	}
@@ -93,8 +98,27 @@ class Lava_Setting extends Lava_Base
 		return $this->_setting_controller->_get_setting_id_prefix() . '-' . $this->_get_setting_id();
 	}
 
+	function _get_setting_name() {
+		return $this->_namespace( $this->_setting_controller->_get_setting_name_prefix() . "[{$this->_get_setting_id()}]" );
+	}
+
 	function _get_setting_type() {
 		return $this->_setting_type;
+	}
+
+	function _get_input_attrs() {
+		$old = $this->_get_twig_context( 'input_attrs', array() );
+		$new = array(
+		);
+		return array_merge( $old, $new );
+	}
+
+	function _get_setting_attrs() {
+		$input_attrs = $this->_get_input_attrs();
+		$old = $this->_get_twig_context( 'setting_attrs', array() );
+		$new = array(
+		);
+		return array_merge( $input_attrs, $old, $new );
 	}
 
 	function _get_setting_title() {
@@ -121,6 +145,11 @@ class Lava_Setting extends Lava_Base
 		return $this->_setting_controller->_get_value_for( $this->_get_setting_id(), $this->_get_setting_default_value() );
 	}
 
+	function _get_scene_id() {
+		$scene_suffix = $this->_recall( '_scene_suffix', 'general' );
+		return $this->_recall( '_scene_id', $this->_setting_controller->_get_scene_id_prefix() . '-' . $scene_suffix );
+	}
+
 	/*
 		Flow functions
 	*/
@@ -128,8 +157,7 @@ class Lava_Setting extends Lava_Base
 	function _register_with_scene() {
 		//add settings page
 		//add relevant scene
-		$scene_suffix = $this->_recall( '_scene_suffix', 'general' );
-		$scene_id = $this->_recall( '_scene_id', $this->_setting_controller->_get_scene_id_prefix() . '-' . $scene_suffix );
+		$scene_id = $this->_get_scene_id();
 
 		$this->
 			_pages()
@@ -140,7 +168,9 @@ class Lava_Setting extends Lava_Base
 		;
 	}
 
-	function _do_setting() {
+	function _do_setting( $context = null ) {
+		$this->_set_twig_context( $context );
+
 		$this->_initialize_twig();
 		$template = $this->_load_template();
 		$variables = $this->_get_template_variables( $this->_serialize() );

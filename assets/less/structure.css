@@ -1,0 +1,124 @@
+/*
+	Defines structure for LAVA framework
+*/
+/*
+	Defines structure for LAVA framework
+*/
+#lava-theatre {
+  margin-left: -19px;
+  margin-right: -15px;
+}
+#lava-topbar {
+  position: relative;
+  height: 50px;
+  margin-top: 10px;
+  margin-left: -6px;
+  padding-left: 25px;
+  z-index: 21;
+  border: 1px solid #999;
+  border-right: none;
+}
+#lava-topbar::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  bottom: -6px;
+  border: 3px solid transparent;
+  border-top-color: #999;
+  border-right-color: #999;
+}
+#lava-topbar .lava-nav-pages {
+  height: 50px;
+  line-height: 50px;
+}
+#lava-actionbar {
+  border-bottom: 1px solid #ebebeb;
+}
+#lava-actionbar .lava-actionbar-title {
+  position: absolute;
+  padding-left: 20px;
+  left: 0px;
+  line-height: 60px;
+  height: 60px;
+  max-width: 220px;
+}
+#lava-actionbar .lava-actionbar-block {
+  height: 30px;
+  line-height: 30px;
+  padding: 15px;
+}
+#lava-actionbar .lava-actionbar-block.inactive-descendant {
+  display: none;
+}
+#lava-programme {
+  width: 220px;
+  margin-left: -239px;
+  float: left;
+  padding-top: 30px;
+}
+#lava-stage {
+  padding-top: 30px;
+}
+/*
+	Scenes
+*/
+.lava-scene.inactive-descendant {
+  display: none;
+}
+/*
+	Navigation
+*/
+.lava-nav li {
+  cursor: pointer;
+}
+.lava-nav li.hidden-descendant {
+  display: none;
+}
+.lava-nav li a {
+  min-width: 100%;
+}
+.lava-nav-google li a {
+  padding-left: 39px;
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+}
+/*
+	Buttons
+*/
+.lava-btn {
+  height: 30px;
+}
+/*
+	Titles
+*/
+.lava-title-wrap {
+  line-height: 30px;
+  height: 30px;
+}
+.lava-title {
+  line-height: 30px;
+  height: 30px;
+}
+/*
+	Settings
+*/
+.lava-setting {
+  padding-bottom: 20px;
+}
+.fix-bleed {
+  padding-left: 19px;
+  padding-right: 15px;
+}
+.lava-programme-aware {
+  padding-left: 239px;
+}
+/*
+	Ingredients > These are the building blocks for the UI
+*/
+/*
+		.lava-tray
+	*/
+.lava-tray {
+  padding-top: 10px;
+}

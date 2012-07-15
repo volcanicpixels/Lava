@@ -106,6 +106,10 @@ class Lava_Settings extends Lava_Base
 		return $this->_controller_namespace;
 	}
 
+	function _get_setting_name_prefix() {
+		return $this->_controller_namespace . 's'; //should be plural
+	}
+
 	function _get_scene_id_prefix( $append = '' ) {
 		return $this->_controller_namespace;
 	}
@@ -154,6 +158,7 @@ class Lava_Settings extends Lava_Base
 	/*
 		Flow functions
 	*/
+
 
 	function _admin_init() {
 		$this->_add_default_array();

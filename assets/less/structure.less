@@ -47,12 +47,26 @@
 	@height: 30px;
 	border-bottom: 1px solid #ebebeb;
 
+	.lava-actionbar-title {
+		position: absolute;
+		padding-left: 20px;
+		left: 0px;
+		line-height: @height * 2;
+		height: @height * 2;
+		max-width: @programme-width;
+	}
+
 	// This class should be applied to all children of #lava-actionbar and it applies padding and height (to keep it consistent)
-	.ab-block {
+	.lava-actionbar-block {
 		@padding: 15px;
 		height: @height;
 		line-height: @height;
 		padding: @padding;
+
+		&.inactive-descendant {
+			display: none;
+		}
+
 	}
 }
 
@@ -81,6 +95,21 @@
 	Navigation
 */
 
+.lava-nav {
+	li {
+		&.hidden-descendant {
+			display: none;
+		}
+
+		cursor: pointer;
+
+		a {
+			min-width: 100%;
+		}
+	}
+
+}
+
 .lava-nav-google {
 	@height: 30px;
 
@@ -94,6 +123,14 @@
 			line-height: @height;
 		}
 	}
+}
+
+/*
+	Buttons
+*/
+
+.lava-btn {
+	height: 30px;
 }
 
 /*
@@ -130,3 +167,15 @@
 .lava-programme-aware {
 	padding-left: @bleed-left + @programme-width;
 }
+
+/*
+	Ingredients > These are the building blocks for the UI
+*/
+
+	/*
+		.lava-tray
+	*/
+
+	.lava-tray {
+		padding-top: 10px;
+	}

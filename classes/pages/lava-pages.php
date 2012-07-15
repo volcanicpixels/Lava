@@ -207,8 +207,11 @@ class Lava_Pages extends Lava_Base
 	function _add_dependancies() {
 		$this->_add_lava_stylesheet( 'lava', 'lava.css' );
 		$this->_add_lava_script( 'html5shiv', 'html5shiv.js' );
-		$this->_add_lava_script( 'lava', 'lava.js', array( 'jquery' ) );
+		$this->_add_lava_script( 'debug', 'ba-debug.min.js' );
+		$this->_add_lava_script( 'history', 'history.js' );
+		$this->_add_lava_script( 'address', 'address.js' );
 		$this->_add_lava_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
+		$this->_add_lava_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'debug' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'history' ) ) );
 		$this->_do_lava_action( '_add_dependancies' );
 	}
 

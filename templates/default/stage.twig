@@ -1,6 +1,6 @@
 <div id="lava-stage" class="lava-stage">
 	{% for scene in scenes %}
-		{{ scene.do_scene }}
+		{{ scene.do_scene( context ) }}
 	{% endfor %}
 </div>
 <!-- lava-stage -->

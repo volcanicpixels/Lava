@@ -10,6 +10,8 @@
  */
 class Lava_Page extends Lava_Base
 {
+	public $_should_register_action_methods = true;
+
 	protected $_is_network_page = false;
 
 	protected $_page_controller;
@@ -31,8 +33,11 @@ class Lava_Page extends Lava_Base
 	public $_page_scripts = array();
 
 	public $_template_directories = array();
-	public $_twig_config = array();
 	public $_twig_template = 'base.twig';
+
+	// Template manipulation
+
+	public $_show_actionbar = true;
 
 	function _construct( $page_controller, $page_id, $section_id ) {
 		$this->_page_controller = $page_controller;
@@ -62,6 +67,10 @@ class Lava_Page extends Lava_Base
 		
 	*/
 
+	function _admin_menu() {
+		$this->_register_scenes();
+	}
+
 
 
 	
@@ -69,11 +78,12 @@ class Lava_Page extends Lava_Base
 	function _serialize() {
 		$old_vars = parent::_serialize();
 		$new_vars = array(
-			'menu_title' => $this->_get_menu_title(),
-			'page_title' => $this->_get_page_title(),
-			'page_id'    => $this->_get_page_id(),
-			'section_id' => $this->_get_section_id(),
-			'url'        => $this->_get_page_url()
+			'menu_title'     => $this->_get_menu_title(),
+			'page_title'     => $this->_get_page_title(),
+			'page_id'        => $this->_get_page_id(),
+			'section_id'     => $this->_get_section_id(),
+			'url'            => $this->_get_page_url(),
+			'show_actionbar' => $this->_show_actionbar
 		);
 		return array_merge( $old_vars, $new_vars );
 	}
@@ -105,6 +115,13 @@ class Lava_Page extends Lava_Base
 
 	function _get_page_id() {
 		return $this->_page_id;
+	}
+
+	function _get_page_nonce() {
+		if( ! array_key_exists('nonce', $_REQUEST) ) {
+			return '';
+		}
+		return $_REQUEST['nonce'];
 	}
 
 	function _get_page_url() {
@@ -189,6 +206,10 @@ class Lava_Page extends Lava_Base
 		return $this->_r();
 	}
 
+	function _get_scene_( $scene_id ) {
+		return  $this->_page_scenes[ $scene_id ];
+	}
+
 	function _get_default_scene_id() {
 		$scenes = $this->_get_scenes();
 		$default = '';
@@ -242,17 +263,27 @@ class Lava_Page extends Lava_Base
 			$function
 		);
 
+		$this->_register_pagehook_actions();
+
+	}
+
+	function _register_pagehook_actions() {
+		$plugin_page = $this->_page_hook;
+		$this->_add_action( "load-{$plugin_page}", '_do_page_load' );
 	}
 
 	// if the page is accessed without the 'scene' query param then we should add it
 
+	function _do_page_load() {
+	}
 
 	function _do_page() {
 		$hook = $this->_hook( '_do_page' );
 		$this->_do_lava_action( $hook );
 		$this->_initialize_twig();
 		$template = $this->_load_template();
-		$variables = $this->_get_template_variables();
+		$variables = $this->_get_template_variables( $this->_serialize() );
+
 		$template->display( $variables );
 	}
 

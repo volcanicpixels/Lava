@@ -22,6 +22,11 @@ class Lava_Base
 	public $_should_register_action_methods = false;
 
 
+
+	public $_twig_config = array(
+		'debug' => true
+	);
+
 	/**
 	 * Stores the plugin instance into a property so that chaining can be implemented.
 	 *
@@ -224,6 +229,26 @@ class Lava_Base
 
 	function _kill_parent() {
 		return $this->_forget( '_parent' );
+	}
+
+	function _set_twig_context( $context ) {
+		if( ! is_null( $context ) ) {
+			$this->_remember( '_twig_context', $context );
+		}
+	}
+
+	function _get_twig_context( $item = null, $default = array() ) {
+		if( is_null( $item ) ) {
+			return $this->_recall( '_twig_context', $default );
+		} else {
+			$context = $this->_recall( '_twig_context', $default );
+			if( array_key_exists( $item, $context ) ) {
+				return $context[ $item ];
+			} else {
+				return $default;
+			}
+		}
+
 	}
 
 
@@ -438,6 +463,22 @@ class Lava_Base
 		return $namespace . '_' . $string;
 	}
 
+	function _nonce( $action, $nonce = null ) {
+		if( !is_null($nonce) ) {
+			return wp_verify_nonce($nonce, $this->_namespace( $action ));
+		} else {
+			return wp_create_nonce( $this->_namespace( $action ) );
+		}
+	}
+
+	function _request() {
+		if( is_null( $this->_the_plugin->_request_id ) ) {
+			$this->_the_plugin->_request_id = rand( 10000, 99999 );
+		}
+
+		return $this->_the_plugin->_request_id;
+	}
+
 	/*
 		Constructors
 	*/
@@ -456,15 +497,20 @@ class Lava_Base
 
 	function _get_template_variables( $vars = array() ) {
 		$hook = $this->_hook( '_get_template_variables' );
-		return $this->_apply_lava_filters( $hook, $vars );
+		$vars = $this->_apply_lava_filters( $hook, $vars );
+		$vars['context'] = $vars;
+		return $vars;
 	}
 
 	function _initialize_twig() {
-		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
-		$template_directories = $this->_get_template_directories();
+		if( !property_exists($this, '_twig_loader') ) {
+			$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
+			$template_directories = $this->_get_template_directories();
 
-		$this->_twig_loader = new Twig_Loader_Filesystem( $template_directories );
-		$this->_twig_environment = new Twig_Environment( $this->_twig_loader, $this->_twig_config );
+			$this->_twig_loader = new Twig_Loader_Filesystem( $template_directories );
+			$this->_twig_environment = new Twig_Environment( $this->_twig_loader, $this->_twig_config );
+			$this->_twig_environment->addExtension(new Twig_Extension_Debug());
+		}
 	}
 
 	function _load_template( $template = null ) {

@@ -20,6 +20,7 @@ class Lava_Plugin extends Lava_Base
 	public $_plugin_class_prefix = null;
 	public $_plugin_vendor;
 	public $_load_vendor = true;
+	public $_request_id;
 
 	public $_should_register_action_methods = true;
 

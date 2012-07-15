@@ -29,9 +29,52 @@ class Lava_Settings_Scene extends Lava_Scene
 		return $vars;
 	}
 
+	function _get_input_attrs() {
+		$old = parent::_get_input_attrs();
+		$new = array(
+			'form' => 'lava_save_form'
+		);
+		return array_merge( $old, $new );
+	}
+
+	function _get_classes() {
+		$old = parent::_get_classes();
+		$new = array(
+			'lava-settings-scene'
+		);
+		return array_merge( $old, $new );
+	}
+
+
 	/*
 		Flow functions
 	*/
+
+	function _do_actions() {
+		$buttons = parent::_do_actions();
+		$args = array(
+			'type' => 'submit',
+			'text' => $this->__( 'Update Settings' ),
+			'value' => 'save',
+			'attrs' => array(
+				'form' => 'lava_save_form',
+				'name' => 'action'
+			)
+		);
+		$buttons['save'] = $this->_do_button('primary', $args);
+		$args = array(
+			'type' => 'submit',
+			'text' => $this->__( 'Preview' ),
+			'value' => 'preview',
+			'attrs' => array(
+				'form' => 'lava_save_form',
+				'name' => 'action'
+			)
+		);
+		$buttons['save'] = $this->_do_button('default', $args);
+
+		return $buttons;
+	}
 
 
 }
