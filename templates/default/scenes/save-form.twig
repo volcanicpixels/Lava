@@ -3,6 +3,7 @@
 {% block scene %}
 	<form id="{{ form_id | default('lava_save_form') }}" method="post">
 		<!-- This is the actual form that gets submitted-->
-		<input name='nonce' value="{{ nonce }}" />
+		<input type="hidden" name='nonce' value="{{ nonce }}" />
+		{{ macros.input( "nonce[#{scene_context}]", nonce, 'hidden', input_attrs ) }}
 	</form>
 {% endblock %}

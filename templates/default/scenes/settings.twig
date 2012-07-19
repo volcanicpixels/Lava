@@ -2,6 +2,7 @@
 
 {% block scene %}
 	<form method="post">
+		{{ macros.input( "nonce[#{scene_context}]", scene_nonce, 'hidden', input_attrs ) }}
 	{% for setting in settings %}
 		{{ setting.do_setting( context ) }}
 	{% endfor %}

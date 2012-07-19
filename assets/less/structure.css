@@ -32,6 +32,7 @@
   line-height: 50px;
 }
 #lava-actionbar {
+  height: 60px;
   border-bottom: 1px solid #ebebeb;
 }
 #lava-actionbar .lava-actionbar-title {
@@ -45,7 +46,7 @@
 #lava-actionbar .lava-actionbar-block {
   height: 30px;
   line-height: 30px;
-  padding: 15px;
+  padding: 15px 0px;
 }
 #lava-actionbar .lava-actionbar-block.inactive-descendant {
   display: none;
@@ -73,9 +74,6 @@
 }
 .lava-nav li.hidden-descendant {
   display: none;
-}
-.lava-nav li a {
-  min-width: 100%;
 }
 .lava-nav-google li a {
   padding-left: 39px;

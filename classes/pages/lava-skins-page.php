@@ -8,8 +8,10 @@
  *
  * @since 1.0.0
  */
-class Lava_Skins_Page extends Lava_Page
+class Lava_Skins_Page extends Lava_Settings_Page
 {
-
+	function _register_scenes() {
+		$this->_add_scene( 'choose_skin', 'choose_skin' );
+	}
 }
 ?>

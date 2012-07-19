@@ -10,15 +10,17 @@
  */
 class Lava_Settings extends Lava_Base
 {
-	protected $_settings = array();
-	protected $_controller_namespace = 'setting'; //overloaded by sub classes
-	protected $_setting_types = array(
+	public $_settings = array();
+	public $_controller_namespace = 'setting'; //overloaded by sub classes
+	public $_controller_namespace_plural;
+	public $_setting_types = array(
 		'' 			=> ''
 	);
 
 
 
 	function _construct(){
+		$this->_add_lava_action( '_do_save' );
 	}
 
 	/*
@@ -98,6 +100,16 @@ class Lava_Settings extends Lava_Base
 		return $this->_settings;
 	}
 
+	function _get_controller_namespace( $plural = false ) {
+		if( ! $plural ) {
+			return $this->_controller_namespace;
+		} else if( is_null( $this->_controller_namespace_plural ) ) {
+			return $this->_controller_namespace . 's';
+		} else {
+			return $this->_controller_namespace_plural;
+		}
+	}
+
 	/*
 		Sugar functions
 	*/
@@ -107,7 +119,7 @@ class Lava_Settings extends Lava_Base
 	}
 
 	function _get_setting_name_prefix() {
-		return $this->_controller_namespace . 's'; //should be plural
+		return $this->_get_controller_namespace('plural'); //should be plural
 	}
 
 	function _get_scene_id_prefix( $append = '' ) {
@@ -119,11 +131,11 @@ class Lava_Settings extends Lava_Base
 	*/
 
 	function _get_option_id() {
-		return $this->_namespace( $this->_controller_namespace );
+		return  $this->_namespace( $this->_get_controller_namespace('plural') );
 	}
 
 	function _get_option() {
-		return get_option( $this->_get_option_id() );
+		return get_option( $this->_get_option_id(), array() );
 	}
 
 	function _update_option( $settings ) {
@@ -133,7 +145,7 @@ class Lava_Settings extends Lava_Base
 
 
 	function _get_settings_from_db() {
-		return get_option( $this->_namespace( $this->_controller_namespace ) );
+		return get_option( $this->_get_option_id() );
 	}
 
 	function _get_setting_from_db( $setting_key, $default = null ) {
@@ -146,7 +158,7 @@ class Lava_Settings extends Lava_Base
 	}
 
 	function _update_settings_to_db( $settings ) {
-		return update_option( $this->_namespace( $this->_controller_namespace ) );
+		return update_option( $this->_get_option_id() );
 	}
 
 	function _update_setting_to_db( $setting_key, $setting_value ) {
@@ -166,7 +178,23 @@ class Lava_Settings extends Lava_Base
 
 	function _add_default_array() {
 		// adds plugin_name_settings to options database
-		add_option( $this->_namespace( $this->_setting_namespace ), array() );
+		add_option( $this->_get_option_id(), array() );
+	}
+
+	function _do_save() {
+		$key = $this->_namespace( $this->_get_setting_name_prefix( 'plural' ) );
+		if( array_key_exists( $key , $_REQUEST ) ) {
+			$settings = $_REQUEST[$key];
+			foreach( $settings as $setting => $value ) {
+				if( $this->_setting_exists( $setting ) ) {
+					$value = stripslashes( $value ); // http://snippi.com/s/9dl143f
+					$this->_get_setting( $setting )->_set_setting_value( $value );
+				} else {
+					// @todo queue error message
+					die( $setting );
+				}
+			}
+		}
 	}
 }
 ?>

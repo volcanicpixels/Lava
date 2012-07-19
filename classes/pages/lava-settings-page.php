@@ -11,8 +11,7 @@
 class Lava_Settings_Page extends Lava_Page
 {
 
-	public $_show_actionbar = true;
-
+	public $_page_context = 'settings';
 
 	function _register_dependancies(){
 		parent::_register_dependancies();
@@ -44,7 +43,11 @@ class Lava_Settings_Page extends Lava_Page
 	}
 
 	function _do_save() {
-		if( $this->_nonce( 'settings', $this->_get_page_nonce() ) ) {
+		if( $this->_nonce(
+				$this->_get_page_context(),
+				$this->_get_page_nonce()
+			)
+		  ) {
 			//nonce verified
 			$this->_do_lava_action( '_do_save' );
 			$redirect = add_query_arg( 'save', 'done' );

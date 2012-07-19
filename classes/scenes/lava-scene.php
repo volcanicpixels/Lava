@@ -46,13 +46,28 @@ class Lava_Scene extends Lava_Base
 {
 
 	public $_template_directories = array();
-	public $_twig_template = 'default.twig';
+	public $_twig_template;
 	public $_should_hide_scene = false;
+	public $_scene_controller;
+	public $_scene_context; //This allows multiple scenes to collaborate - ie multiple scenes sharing the same submission form
 
 	function _construct( $scene_controller, $scene_id, $scene_scope ) {
 		$this->_scene_controller = $scene_controller;
 		$this->_scene_id = $scene_id;
 		$this->_scene_scope = $scene_scope;
+		$this->_scene_context = $scene_controller->_get_page_context();
+
+		if( is_null( $this->_twig_template ) ) {
+			$class = get_class( $this );
+			if( $class == 'Lava_Scene' ) {
+				$class =  'default';
+			} else {
+				$class = substr( $class, 5, -6 );
+				$class = strtolower( $class );
+				$class = str_replace( '_', '-', $class);
+			}
+			$this->_twig_template = $class . '.twig';
+		}
 
 		$this->_set_return_object( $scene_controller );
 
@@ -69,6 +84,8 @@ class Lava_Scene extends Lava_Base
 			'scene_id'          => $this->_get_scene_id(),
 			'scene_title'       => $this->_get_scene_title(),
 			'scene_url'         => $this->_get_scene_url(),
+			'scene_context'     => $this->_get_scene_context(),
+			'scene_nonce'       => $this->_get_scene_nonce(),
 			'is_selected'       => $this->_is_selected(),
 			'input_attrs'       => $this->_get_input_attrs(),
 			'setting_attrs'     => $this->_get_setting_attrs(),
@@ -98,8 +115,24 @@ class Lava_Scene extends Lava_Base
 		return add_query_arg( 'scene', $this->_get_scene_id(), $root_url );
 	}
 
+	function _get_scene_context() {
+		return $this->_scene_context;
+	}
+
+	function _set_scene_context( $scene_context ) {
+		$this->_scene_context = $scene_context;
+		return $this;
+	}
+
+	function _get_scene_nonce( $context = null ) {
+		if( is_null( $context ) ) {
+			$context = $this->_get_scene_context();
+		}
+		return wp_create_nonce( $this->_namespace( $context ) );		
+	}
+
 	function _get_scene_template() {
-		return 'scenes/' . $this->_scene_template . '.twig';
+		return 'scenes/' . $this->_twig_template . '.twig';
 	}
 
 	function _set_scene_title( $title = '' ) {

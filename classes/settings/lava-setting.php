@@ -99,7 +99,7 @@ class Lava_Setting extends Lava_Base
 	}
 
 	function _get_setting_name() {
-		return $this->_namespace( $this->_setting_controller->_get_setting_name_prefix() . "[{$this->_get_setting_id()}]" );
+		return $this->_namespace( $this->_setting_controller->_get_setting_name_prefix( 'plural' ) . "[{$this->_get_setting_id()}]" );
 	}
 
 	function _get_setting_type() {
@@ -141,8 +141,12 @@ class Lava_Setting extends Lava_Base
 	}
 
 	function _get_setting_value() {
-		return $this->_get_setting_default_value();
 		return $this->_setting_controller->_get_value_for( $this->_get_setting_id(), $this->_get_setting_default_value() );
+	}
+
+	function _set_setting_value( $value ) {
+		$this->_setting_controller->_set_value_for( $this->_get_setting_id(), $value );
+		return $this;
 	}
 
 	function _get_scene_id() {

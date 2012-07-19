@@ -45,6 +45,8 @@
 
 #lava-actionbar {
 	@height: 30px;
+	@padding: 15px;
+	height: @height + 2 * @padding;
 	border-bottom: 1px solid #ebebeb;
 
 	.lava-actionbar-title {
@@ -58,10 +60,9 @@
 
 	// This class should be applied to all children of #lava-actionbar and it applies padding and height (to keep it consistent)
 	.lava-actionbar-block {
-		@padding: 15px;
 		height: @height;
 		line-height: @height;
-		padding: @padding;
+		padding: @padding 0px;
 
 		&.inactive-descendant {
 			display: none;
@@ -103,9 +104,7 @@
 
 		cursor: pointer;
 
-		a {
-			min-width: 100%;
-		}
+	
 	}
 
 }

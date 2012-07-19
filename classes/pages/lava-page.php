@@ -12,22 +12,23 @@ class Lava_Page extends Lava_Base
 {
 	public $_should_register_action_methods = true;
 
-	protected $_is_network_page = false;
+	public $_is_network_page = false;
 
-	protected $_page_controller;
-	protected $_page_id;
-	protected $_section_id;
+	public $_page_controller;
+	public $_page_id;
+	public $_section_id;
+	public $_page_context = 'page';
 
-	protected $_page_scenes = array();
-	protected $_local_scenes = array();
-	protected $_external_scenes = array();
+	public $_page_scenes = array();
+	public $_local_scenes = array();
+	public $_external_scenes = array();
 	public $_default_scene_id;
 
 	public $_scene_types = array(
 
 	);
 
-	protected $_page_hook;
+	public $_page_hook;
 
 	public $_page_styles = array();
 	public $_page_scripts = array();
@@ -81,6 +82,8 @@ class Lava_Page extends Lava_Base
 			'menu_title'     => $this->_get_menu_title(),
 			'page_title'     => $this->_get_page_title(),
 			'page_id'        => $this->_get_page_id(),
+			'page_context'   => $this->_get_page_context(),
+			'page_nonce'     => $this->_get_page_nonce(),
 			'section_id'     => $this->_get_section_id(),
 			'url'            => $this->_get_page_url(),
 			'show_actionbar' => $this->_show_actionbar
@@ -117,11 +120,29 @@ class Lava_Page extends Lava_Base
 		return $this->_page_id;
 	}
 
-	function _get_page_nonce() {
-		if( ! array_key_exists('nonce', $_REQUEST) ) {
-			return '';
+	function _get_page_context() {
+		return $this->_page_context;
+	}
+
+	function _get_page_nonce( $context = null ) {
+		if( is_null( $context ) ) {
+			$context = $this->_get_page_context();
 		}
-		return $_REQUEST['nonce'];
+		return wp_create_nonce( $this->_namespace( $context ) );
+	}
+
+	function _get_request_nonce( $context = null ) {
+		if( is_null( $context ) ) {
+			$context = $this->_get_page_context();
+		}
+
+		if( array_key_exists('nonce', $_REQUEST) ) {
+			if( is_array( $_REQUEST['nonce'] ) and array_key_exists( $context, $_REQUEST['nonce']) ) {
+				return $_REQUEST["nonce"][$context];
+			}
+		}
+
+		return '';
 	}
 
 	function _get_page_url() {
