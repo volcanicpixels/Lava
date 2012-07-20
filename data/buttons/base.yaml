@@ -1,0 +1,19 @@
+default:
+  class: default
+
+primary:
+  class: primary
+
+submit:
+  type: submit
+  name: action
+
+
+update:
+  extends: primary, submit
+  value: save
+  text: Update Settings
+
+preview:
+  extends: default, submit
+  text: Preview Settings

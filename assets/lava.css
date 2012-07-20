@@ -730,12 +730,6 @@ body.js .js-nojs {
   min-width: 60px;
   padding: 0px 10px;
 }
-.lava-cntr .lava-btn .common {
-  -moz-border-radius: 2px;
-  -ms-border-radius: 2px;
-  -o-border-radius: 2px;
-  border-radius: 2px;
-}
 .lava-cntr .lava-btn .common:hover {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -750,10 +744,6 @@ body.js .js-nojs {
   outline: 0 transparent;
 }
 .lava-cntr .lava-btn.lava-btn-default {
-  -moz-border-radius: 2px;
-  -ms-border-radius: 2px;
-  -o-border-radius: 2px;
-  border-radius: 2px;
   background-image: -webkit-linear-gradient(top, whiteSmoke, #f1f1f1);
   background-image: -moz-linear-gradient(top, whiteSmoke, #f1f1f1);
   background-image: -ms-linear-gradient(top, whiteSmoke, #f1f1f1);
@@ -792,10 +782,6 @@ body.js .js-nojs {
   border: 1px solid #C6C6C6;
 }
 .lava-cntr .lava-btn.lava-btn-primary {
-  -moz-border-radius: 2px;
-  -ms-border-radius: 2px;
-  -o-border-radius: 2px;
-  border-radius: 2px;
   background-image: -webkit-linear-gradient(top, #4d90fe, #4787ed);
   background-image: -moz-linear-gradient(top, #4d90fe, #4787ed);
   background-image: -ms-linear-gradient(top, #4d90fe, #4787ed);

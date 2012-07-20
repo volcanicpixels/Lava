@@ -201,7 +201,11 @@ class Lava_Page extends Lava_Base
 		Scene/act functions
 	*/
 
-	function _add_scene( $scene_id, $class = '' , $scope = 'local') {
+	function _add_scene( $class, $scene_id = null , $scope = 'local') {
+		if( is_null( $scene_id ) ) {
+			$scene_id = $class;
+		}
+
 		if( ! $this->_scene_exists( $scene_id ) ){
 			$class_name = $this->_class( $class ) . '_Scene';
 			$args = array(
@@ -261,7 +265,6 @@ class Lava_Page extends Lava_Base
 
 	function _register_scenes() {
 		//should be overloaded to allow the registering of scenes
-		
 	}
 
 	function _register_page() {

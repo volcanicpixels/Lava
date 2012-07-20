@@ -8,10 +8,18 @@
  *
  * @since 1.0.0
  */
-class Lava_Skins_Page extends Lava_Settings_Page
+class Lava_Skins_Page extends Lava_Page
 {
+	public $_page_context = 'skins';
+
 	function _register_scenes() {
-		$this->_add_scene( 'choose_skin', 'choose_skin' );
+		parent::_register_scenes();
+		$this
+			->_add_scene( 'choose_skin' )
+				->_set_scene_title( $this->__( 'Choose Skin' ) )
+			->_add_scene( 'upload_skin' )
+				->_set_scene_title( $this->__( 'Upload Skin' ) )
+		;
 	}
 }
 ?>

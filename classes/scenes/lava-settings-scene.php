@@ -13,6 +13,8 @@ class Lava_Settings_Scene extends Lava_Scene
 {
 	public $_settings = array();
 	public $_twig_template = 'settings.twig';
+	public $_scene_context_action = 'update';
+	public $_scene_form_id = 'lava_save_form';
 
 	function _register_hooks() {
 		parent::_register_hooks();
@@ -49,32 +51,6 @@ class Lava_Settings_Scene extends Lava_Scene
 	/*
 		Flow functions
 	*/
-
-	function _do_actions() {
-		$buttons = parent::_do_actions();
-		$args = array(
-			'type' => 'submit',
-			'text' => $this->__( 'Update Settings' ),
-			'value' => 'save',
-			'attrs' => array(
-				'form' => 'lava_save_form',
-				'name' => 'action'
-			)
-		);
-		$buttons['save'] = $this->_do_button('primary', $args);
-		$args = array(
-			'type' => 'submit',
-			'text' => $this->__( 'Preview' ),
-			'value' => 'preview',
-			'attrs' => array(
-				'form' => 'lava_save_form',
-				'name' => 'action'
-			)
-		);
-		$buttons['save'] = $this->_do_button('default', $args);
-
-		return $buttons;
-	}
 
 
 }

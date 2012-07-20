@@ -163,10 +163,14 @@ class Lava_Setting extends Lava_Base
 		//add relevant scene
 		$scene_id = $this->_get_scene_id();
 
+		if( ! $this->_pages()->_page_exists( 'settings' ) ) {
+			$this->_pages()->_add_page( 'settings', 'settings' ); //@todo Hide page if not registered at admin_menu
+		}
+
 		$this->
 			_pages()
-				->_add_page( 'settings', 'settings' )
-					->_add_scene( $scene_id, 'settings' )
+				->_get_page( 'settings')
+					->_add_scene( 'settings', $scene_id )
 						->_set_scene_title( $this->_recall( '_scene_title' ) )
 						->_add_setting( $this )
 		;

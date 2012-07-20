@@ -9,8 +9,8 @@
  * @since 1.0.0
  */
 
-class Lava_Choose_Skin_Scene extends Lava_Scene
+class Lava_Choose_Skin_Scene extends Lava_Settings_Scene
 {
-
+	public $_scene_context_action = 'update';
 }
 ?>

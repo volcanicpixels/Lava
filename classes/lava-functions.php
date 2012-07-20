@@ -103,6 +103,16 @@ class Lava_Functions extends Lava_Base
 		return array();
 	}
 
+	function _load_data( $file ) {
+		$plugin_file = dirname( $this->_get_plugin_file_path() ) . '/data/' . $file . '.yaml';
+
+		if( file_exists( $plugin_file ) ) {
+			return $this->_load_yaml( 'data/' . $file . '.yaml' );
+		} else {
+			return $this->_load_yaml( 'lava/data/' . $file . '.yaml' );
+		}
+	}
+
 
 
 	/*

@@ -50,22 +50,23 @@ class Lava_Scene extends Lava_Base
 	public $_should_hide_scene = false;
 	public $_scene_controller;
 	public $_scene_context; //This allows multiple scenes to collaborate - ie multiple scenes sharing the same submission form
+	public $_scene_context_action;
+	public $_scene_form_id;
 
 	function _construct( $scene_controller, $scene_id, $scene_scope ) {
 		$this->_scene_controller = $scene_controller;
 		$this->_scene_id = $scene_id;
 		$this->_scene_scope = $scene_scope;
-		$this->_scene_context = $scene_controller->_get_page_context();
+		if( is_null( $this->_scene_context ) ) {
+			$action = '';
+			if( ! is_null( $this->_scene_context_action ) ) {
+				$action = '-' . $this->_scene_context_action;
+			}
+			$this->_scene_context = $scene_controller->_get_page_context() . $action;
+		}
 
 		if( is_null( $this->_twig_template ) ) {
-			$class = get_class( $this );
-			if( $class == 'Lava_Scene' ) {
-				$class =  'default';
-			} else {
-				$class = substr( $class, 5, -6 );
-				$class = strtolower( $class );
-				$class = str_replace( '_', '-', $class);
-			}
+			$class = $this->_get_scene_class();
 			$this->_twig_template = $class . '.twig';
 		}
 
@@ -81,18 +82,18 @@ class Lava_Scene extends Lava_Base
 	function _serialize() {
 		$old = parent::_serialize();
 		$new = array(
-			'scene_id'          => $this->_get_scene_id(),
-			'scene_title'       => $this->_get_scene_title(),
-			'scene_url'         => $this->_get_scene_url(),
-			'scene_context'     => $this->_get_scene_context(),
-			'scene_nonce'       => $this->_get_scene_nonce(),
-			'is_selected'       => $this->_is_selected(),
-			'input_attrs'       => $this->_get_input_attrs(),
-			'setting_attrs'     => $this->_get_setting_attrs(),
-			'classes'           => $this->_get_classes()
+			'scene_id'		  => $this->_get_scene_id(),
+			'scene_title'	   => $this->_get_scene_title(),
+			'scene_url'		 => $this->_get_scene_url(),
+			'scene_context'	 => $this->_get_scene_context(),
+			'scene_nonce'	   => $this->_get_scene_nonce(),
+			'is_selected'	   => $this->_is_selected(),
+			'input_attrs'	   => $this->_get_input_attrs(),
+			'setting_attrs'	 => $this->_get_setting_attrs(),
+			'classes'		   => $this->_get_classes()
 		);
 
-		
+
 
 		return array_merge( $old, $new );
 	}
@@ -104,6 +105,20 @@ class Lava_Scene extends Lava_Base
 
 	function _get_scene_id() {
 		return $this->_scene_id;
+	}
+
+	function _get_scene_class( $class = null ) {
+		if( is_null( $class ) ) {
+			$class = get_class( $this );
+		}
+		if( $class == 'Lava_Scene' ) {
+			$class =  'default';
+		} else {
+			$class = substr( $class, 5, -6 );
+			$class = strtolower( $class );
+			$class = str_replace( '_', '-', $class);
+		}
+		return $class;
 	}
 
 	function _get_scene_title() {
@@ -128,7 +143,7 @@ class Lava_Scene extends Lava_Base
 		if( is_null( $context ) ) {
 			$context = $this->_get_scene_context();
 		}
-		return wp_create_nonce( $this->_namespace( $context ) );		
+		return wp_create_nonce( $this->_namespace( $context ) );
 	}
 
 	function _get_scene_template() {
@@ -169,6 +184,13 @@ class Lava_Scene extends Lava_Base
 		return $classes;
 	}
 
+	function _get_scene_form_id() {
+		if( is_null( $this->_scene_form_id ) ) {
+			return $this->_get_scene_id();
+		}
+		return $this->_scene_form_id;
+	}
+
 
 
 	/*
@@ -190,11 +212,62 @@ class Lava_Scene extends Lava_Base
 
 		$template = $this->_load_template();
 		$variables = $this->_get_template_variables( $this->_serialize() );
-		return $template->display( $variables );
+		return $template->render( $variables );
 	}
 
-	function _do_actions() {
-		return array();
+	function _do_scene_actions() {
+		$buttons = array();
+		foreach( class_parents( $this ) as $parent )
+		{
+			if( substr_count( $parent, 'Scene' ) ) {
+				$buttons = $this->_load_buttons( $this->_get_scene_class( $parent ), $buttons );
+			}
+		}
+		$buttons = $this->_load_buttons( $this->_get_scene_class(), $buttons );
+		return $buttons;
+	}
+
+	function _load_buttons( $file, $buttons = array() ) {
+		$base_buttons = $this->_funcs()->_load_data( 'buttons/base' );
+		$new_buttons = $this->_funcs()->_load_data( "buttons/{$file}" );
+
+		if( is_array( $new_buttons ) ) {
+			foreach( $new_buttons as $button_id => $button_args  ) {
+				$button_args = $this->_load_button( $button_args, $base_buttons );
+				if( array_key_exists( $button_id, $base_buttons) ) {
+					$button_args = array_merge( $this->_load_button( $base_buttons[$button_id] , $base_buttons), $button_args );
+				}
+
+				if( ! array_key_exists( 'class', $button_args ) ) {
+					$button_args['class'] = 'default';
+				}
+				$buttons[$button_id] = $this->_do_button( $button_args['class'], $button_args );
+			}
+		}
+
+
+		return $buttons;
+	}
+
+	function _load_button( $button_args, $base ) {
+		if( ! is_array( $button_args ) ) {
+			$button_args = array();
+		}
+		if( array_key_exists( 'extends', $button_args ) ) {
+			$extends = explode( ',', $button_args['extends'] );
+			foreach( $extends as $extension ) {
+				$extension = trim( $extension );
+				if( array_key_exists( $extension, $base) ) {
+					$button_args = array_merge( $this->_load_button( $base[$extension], $base ), $button_args );
+				}
+			}
+		}
+
+		if( array_key_exists('extends', $button_args)) {
+			unset( $button_args['extends'] );
+		}
+
+		return $button_args;
 	}
 
 	function _do_button( $type = 'default', $args = array() ) {
@@ -202,7 +275,7 @@ class Lava_Scene extends Lava_Base
 		$args = array_merge_recursive($defaults, $args);
 		$this->_initialize_twig();
 		$template = $this->_load_template( 'buttons/' . $type . '.twig' );
-		return $template->display( $args );
+		return $template->render( $args );
 	}
 
 	/*
