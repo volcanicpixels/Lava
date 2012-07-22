@@ -48,7 +48,7 @@ Lava navigation
 ###
 
 
-do ($ = jQuery, window, document) -> # http://snippi.com/s/dp5g8iw
+do ($ = jQuery, window, document) ->
 	
 	methods = {}
 
@@ -110,7 +110,7 @@ do ($ = jQuery) ->
 Scene callbacks
 ###
 
-do ($ = jQuery, window, document) -> # http://snippi.com/s/dp5g8iw
+do ($ = jQuery, window, document) ->
 
 	methods = {}
 
@@ -153,7 +153,7 @@ do ($ = jQuery, window, document) -> # http://snippi.com/s/dp5g8iw
 Settings Scene callbacks
 ###
 
-do ($ = jQuery, window, document) -> # http://snippi.com/s/dp5g8iw
+do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaSettingsScene'
@@ -165,16 +165,33 @@ do ($ = jQuery, window, document) -> # http://snippi.com/s/dp5g8iw
 			$scenes.on "load.lava.#{namespace}", methods.load
 
 
+	lavaBindMethods methods, namespace
+
+###
+Skins Scene callbacks
+###
+
+do ($ = jQuery, window, document) ->
+	methods = {}
+	namespace = 'lavaSkinsScene'
+
+	methods.init = (e, lava) ->
+		$(lava).each () ->
+			$scenes = $(this).find( '.lava-scene.lava-skins-scene' )
+
+			$scenes.on "load.lava.#{namespace}", methods.load
+
+
 
 	methods.load = (e) ->
-		if not $(this).data 'lava.scene.createdSettingButtons'
-			$(this).data 'lava.scene.createdSettingButtons', true
+		if not $(this).data 'lava.scene.formattedSkins'
+			$(this).data 'lava.scene.formattedSkins', true
 			sceneId = $(this).attr 'data-scene-id'
 			$actionBlock = $(".lava-actionbar-block[data-scene-id='#{sceneId}']")
 
 
-	lavaBindMethods methods, namespace
 
+	lavaBindMethods methods, namespace
 
 
 

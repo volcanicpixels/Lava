@@ -20,6 +20,16 @@ ul.no-list-style {
 .no-text-decoration a {
   text-decoration: none;
 }
-body.js .js-nojs {
+body.no-js .js-only {
   display: none;
+}
+body.js .js-nojs,
+body.js .nojs-fallback {
+  display: none;
+}
+.lava-invisible {
+  position: fixed;
+  top: -2000px;
+  left: -2000px;
+  opacity: 0;
 }

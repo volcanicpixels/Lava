@@ -14,7 +14,6 @@ class Lava_Settings_Scene extends Lava_Scene
 	public $_settings = array();
 	public $_twig_template = 'settings.twig';
 	public $_scene_context_action = 'update';
-	public $_scene_form_id = 'lava_save_form';
 
 	function _register_hooks() {
 		parent::_register_hooks();
@@ -34,7 +33,7 @@ class Lava_Settings_Scene extends Lava_Scene
 	function _get_input_attrs() {
 		$old = parent::_get_input_attrs();
 		$new = array(
-			'form' => 'lava_save_form'
+			'form' => $this->_get_scene_form_id()
 		);
 		return array_merge( $old, $new );
 	}

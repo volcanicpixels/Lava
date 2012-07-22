@@ -1,9 +1,7 @@
 {% extends 'default.twig' %}
 
 {% block scene %}
-	<form id="{{ form_id | default('lava_save_form') }}" method="post">
+	<form id="{{ scene_form_id }}" method="post">
 		<!-- This is the actual form that gets submitted-->
-		<input type="hidden" name='nonce' value="{{ nonce }}" />
-		{{ macros.input( "nonce[#{scene_context}]", nonce, 'hidden', input_attrs ) }}
 	</form>
 {% endblock %}

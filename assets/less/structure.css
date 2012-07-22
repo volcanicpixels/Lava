@@ -92,7 +92,6 @@
 */
 .lava-title-wrap {
   line-height: 30px;
-  height: 30px;
 }
 .lava-title {
   line-height: 30px;
@@ -119,4 +118,38 @@
 	*/
 .lava-tray {
   padding-top: 10px;
+}
+/*
+		.lava-object-block
+	*/
+.lava-object-block {
+  margin-right: 20px;
+  margin-bottom: 30px;
+  display: inline-block;
+  position: relative;
+}
+.lava-object-block:hover .lava-object-block-tray {
+  padding: 5px;
+}
+.lava-object-block:hover .lava-object-block-tray .lava-object-block-tray-inner {
+  height: 30px;
+}
+.lava-object-block .lava-object-block-info {
+  padding: 5px;
+}
+.lava-object-block .lava-object-block-info.lava-object-block-clickable {
+  cursor: pointer;
+}
+.lava-object-block .lava-object-block-tray {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: whiteSmoke;
+}
+.lava-object-block .lava-object-block-tray .lava-object-block-tray-inner {
+  padding: 0px;
+  height: 0px;
+  line-height: 30px;
+  overflow: hidden;
 }

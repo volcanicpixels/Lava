@@ -1,7 +1,7 @@
 {% import 'macros.twig' as macros %}
 
 {% block setting_wrap %}
-	<div id="lava-setting_{{ full_setting_id }}" class="lava-setting-wrap lava-setting" data-setting-id="{{ full_setting_id }}">
+	<div id="lava_setting-{{ full_setting_id }}" class="lava-setting-wrap lava-setting{% for class in setting_classes %} {{ class }}{% endfor %}" data-setting-id="{{ full_setting_id }}">
 		{% block setting %}
 			{% block setting_title_wrap %}
 				<div class="lava-title-wrap lava-setting-title-wrap">

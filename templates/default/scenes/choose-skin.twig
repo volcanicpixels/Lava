@@ -1,7 +1,7 @@
 {% extends 'default.twig' %}
 
 {% block scene %}
-	<form method="post">
+	<form method="post" id="{{ form_id }}">
 		{{ macros.input( "nonce[#{scene_context}]", scene_nonce, 'hidden', input_attrs ) }}
 	{% for setting in settings %}
 		{{ setting.do_setting( context ) }}

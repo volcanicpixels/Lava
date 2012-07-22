@@ -11,6 +11,13 @@
 
 class Lava_Choose_Skin_Scene extends Lava_Settings_Scene
 {
-	public $_scene_context_action = 'update';
+
+	function _get_classes() {
+		$old = parent::_get_classes();
+		$new = array(
+			'lava-skins-scene'
+		);
+		return array_merge( $old, $new );
+	}
 }
 ?>

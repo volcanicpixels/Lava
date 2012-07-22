@@ -195,10 +195,29 @@ Global functions
         return $scenes.on("load.lava." + namespace, methods.load);
       });
     };
+    return lavaBindMethods(methods, namespace);
+  })(jQuery, window, document);
+
+  /*
+  Skins Scene callbacks
+  */
+
+
+  (function($, window, document) {
+    var methods, namespace;
+    methods = {};
+    namespace = 'lavaSkinsScene';
+    methods.init = function(e, lava) {
+      return $(lava).each(function() {
+        var $scenes;
+        $scenes = $(this).find('.lava-scene.lava-skins-scene');
+        return $scenes.on("load.lava." + namespace, methods.load);
+      });
+    };
     methods.load = function(e) {
       var $actionBlock, sceneId;
-      if (!$(this).data('lava.scene.createdSettingButtons')) {
-        $(this).data('lava.scene.createdSettingButtons', true);
+      if (!$(this).data('lava.scene.formattedSkins')) {
+        $(this).data('lava.scene.formattedSkins', true);
         sceneId = $(this).attr('data-scene-id');
         return $actionBlock = $(".lava-actionbar-block[data-scene-id='" + sceneId + "']");
       }

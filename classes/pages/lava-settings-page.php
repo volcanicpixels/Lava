@@ -23,7 +23,7 @@ class Lava_Settings_Page extends Lava_Page
 	}
 
 	function _register_scenes() {
-		$this->_add_scene( 'save_form' );
+		$this->_add_scene( 'save_form' )->_set_scene_form_id( 'lava_save_form-global' );
 	}
 
 	function _do_page_load() {

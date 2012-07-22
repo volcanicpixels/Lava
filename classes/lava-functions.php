@@ -15,6 +15,7 @@ class Lava_Functions extends Lava_Base
 			'admin_init' => array(
 				'admin_init',
 				'register_settings',
+				'register_skins',
 				'register_pages',
 			)
 		);

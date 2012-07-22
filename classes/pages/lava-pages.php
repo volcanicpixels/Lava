@@ -78,8 +78,11 @@ class Lava_Pages extends Lava_Base
 		return $this->_r();
 	}
 
-	function _add_page( $page_id, $page_class = '', $section_id = null ) {
+	function _add_page( $page_class, $page_id = null, $section_id = null ) {
 		$this->_kill_child();
+		if( is_null( $page_id ) ) {
+			$page_id = $page_class;
+		}
 
 		// Sinces pages are actually sub pages we need a section to bind it to
 		if( is_null( $section_id ) ){
@@ -178,7 +181,7 @@ class Lava_Pages extends Lava_Base
 
 
 	function _add_settings_page( $page_id = 'settings', $section_id = null ) {
-		$this->_add_page( $page_id, 'settings', $section_id )
+		$this->_add_page( 'settings', $page_id, $section_id )
 				->_set_page_title( $this->__( 'Plugin Settings') )
 		;
 
@@ -186,7 +189,7 @@ class Lava_Pages extends Lava_Base
 	}
 
 	function _add_skins_page( $page_id = 'skins', $section_id = null ) {
-		$this->_add_page( $page_id, 'skins', $section_id )
+		$this->_add_page( 'skins', $page_id,  $section_id )
 				->_set_page_title( $this->__( 'Plugin Skin' ) )
 		;
 

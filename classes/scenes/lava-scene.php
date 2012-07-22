@@ -82,15 +82,16 @@ class Lava_Scene extends Lava_Base
 	function _serialize() {
 		$old = parent::_serialize();
 		$new = array(
-			'scene_id'		  => $this->_get_scene_id(),
-			'scene_title'	   => $this->_get_scene_title(),
+			'scene_id'		 => $this->_get_scene_id(),
+			'scene_title'	 => $this->_get_scene_title(),
 			'scene_url'		 => $this->_get_scene_url(),
 			'scene_context'	 => $this->_get_scene_context(),
-			'scene_nonce'	   => $this->_get_scene_nonce(),
-			'is_selected'	   => $this->_is_selected(),
-			'input_attrs'	   => $this->_get_input_attrs(),
+			'scene_nonce'	 => $this->_get_scene_nonce(),
+			'is_selected'    => $this->_is_selected(),
+			'input_attrs'    => $this->_get_input_attrs(),
 			'setting_attrs'	 => $this->_get_setting_attrs(),
-			'classes'		   => $this->_get_classes()
+			'classes'        => $this->_get_classes(),
+			'scene_form_id'  => $this->_get_scene_form_id()
 		);
 
 
@@ -186,9 +187,14 @@ class Lava_Scene extends Lava_Base
 
 	function _get_scene_form_id() {
 		if( is_null( $this->_scene_form_id ) ) {
-			return $this->_get_scene_id();
+			return 'lava_save_form-' . $this->_get_scene_id();
 		}
 		return $this->_scene_form_id;
+	}
+
+	function _set_scene_form_id( $form_id ) {
+		$this->_scene_form_id = $form_id;
+		return $this->_r();
 	}
 
 
@@ -234,10 +240,10 @@ class Lava_Scene extends Lava_Base
 		if( is_array( $new_buttons ) ) {
 			foreach( $new_buttons as $button_id => $button_args  ) {
 				$button_args = $this->_load_button( $button_args, $base_buttons );
+
 				if( array_key_exists( $button_id, $base_buttons) ) {
 					$button_args = array_merge( $this->_load_button( $base_buttons[$button_id] , $base_buttons), $button_args );
 				}
-
 				if( ! array_key_exists( 'class', $button_args ) ) {
 					$button_args['class'] = 'default';
 				}
@@ -265,6 +271,15 @@ class Lava_Scene extends Lava_Base
 
 		if( array_key_exists('extends', $button_args)) {
 			unset( $button_args['extends'] );
+		}
+
+		
+
+		if( array_key_exists('add_form', $button_args) and $button_args['add_form'] ) {
+				if( ! array_key_exists('attrs', $button_args)) {
+				$button_args['attrs'] = array();
+			}
+			$button_args['attrs']['form'] = $this->_get_scene_form_id();
 		}
 
 		return $button_args;

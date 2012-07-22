@@ -8,7 +8,7 @@
  *
  * @since 1.0.0
  */
-class Lava_Skins_Page extends Lava_Page
+class Lava_Skins_Page extends Lava_Settings_Page
 {
 	public $_page_context = 'skins';
 

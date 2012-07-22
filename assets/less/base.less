@@ -32,9 +32,21 @@ ul {
 }
 
 body {
-	&.js {
-		.js-nojs {
+	&.no-js {
+		.js-only {
 			display: none;
 		}
 	}
+	&.js {
+		.js-nojs, .nojs-fallback {
+			display: none;
+		}
+	}
+}
+
+.lava-invisible {
+	position: fixed;
+	top: -2000px;
+	left: -2000px;
+	opacity: 0;
 }

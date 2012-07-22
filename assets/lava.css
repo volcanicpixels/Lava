@@ -540,8 +540,18 @@ ul.no-list-style {
 .no-text-decoration a {
   text-decoration: none;
 }
-body.js .js-nojs {
+body.no-js .js-only {
   display: none;
+}
+body.js .js-nojs,
+body.js .nojs-fallback {
+  display: none;
+}
+.lava-invisible {
+  position: fixed;
+  top: -2000px;
+  left: -2000px;
+  opacity: 0;
 }
 .no-select {
   -webkit-user-select: none;
@@ -637,7 +647,6 @@ body.js .js-nojs {
 */
 .lava-title-wrap {
   line-height: 30px;
-  height: 30px;
 }
 .lava-title {
   line-height: 30px;
@@ -664,6 +673,40 @@ body.js .js-nojs {
 	*/
 .lava-tray {
   padding-top: 10px;
+}
+/*
+		.lava-object-block
+	*/
+.lava-object-block {
+  margin-right: 20px;
+  margin-bottom: 30px;
+  display: inline-block;
+  position: relative;
+}
+.lava-object-block:hover .lava-object-block-tray {
+  padding: 5px;
+}
+.lava-object-block:hover .lava-object-block-tray .lava-object-block-tray-inner {
+  height: 30px;
+}
+.lava-object-block .lava-object-block-info {
+  padding: 5px;
+}
+.lava-object-block .lava-object-block-info.lava-object-block-clickable {
+  cursor: pointer;
+}
+.lava-object-block .lava-object-block-tray {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background: whiteSmoke;
+}
+.lava-object-block .lava-object-block-tray .lava-object-block-tray-inner {
+  padding: 0px;
+  height: 0px;
+  line-height: 30px;
+  overflow: hidden;
 }
 .lava-topbar {
   background: #f9f9f9;
@@ -730,12 +773,20 @@ body.js .js-nojs {
   min-width: 60px;
   padding: 0px 10px;
 }
+.lava-cntr .lava-btn .common {
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
 .lava-cntr .lava-btn .common:hover {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .lava-cntr .lava-btn .common:active {
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 .lava-cntr .lava-btn .common:focus {
@@ -744,6 +795,10 @@ body.js .js-nojs {
   outline: 0 transparent;
 }
 .lava-cntr .lava-btn.lava-btn-default {
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
   background-image: -webkit-linear-gradient(top, whiteSmoke, #f1f1f1);
   background-image: -moz-linear-gradient(top, whiteSmoke, #f1f1f1);
   background-image: -ms-linear-gradient(top, whiteSmoke, #f1f1f1);
@@ -759,7 +814,9 @@ body.js .js-nojs {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .lava-cntr .lava-btn.lava-btn-default:active {
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 .lava-cntr .lava-btn.lava-btn-default:focus {
@@ -781,7 +838,17 @@ body.js .js-nojs {
 .lava-cntr .lava-btn.lava-btn-default:hover {
   border: 1px solid #C6C6C6;
 }
+.lava-cntr .lava-btn.lava-btn-default:active {
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
 .lava-cntr .lava-btn.lava-btn-primary {
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
   background-image: -webkit-linear-gradient(top, #4d90fe, #4787ed);
   background-image: -moz-linear-gradient(top, #4d90fe, #4787ed);
   background-image: -ms-linear-gradient(top, #4d90fe, #4787ed);
@@ -796,7 +863,9 @@ body.js .js-nojs {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .lava-cntr .lava-btn.lava-btn-primary:active {
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 .lava-cntr .lava-btn.lava-btn-primary:focus {
@@ -830,4 +899,86 @@ body.js .js-nojs {
 */
 .lava-setting {
   border-bottom: 1px solid #eee;
+}
+/*
+		Skin setting
+	*/
+.lava-setting.lava-setting-skin .lava-setting-skin-radio {
+  position: fixed;
+  top: -2000px;
+  left: -2000px;
+  opacity: 0;
+}
+.lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin {
+  border-color: #fd492d;
+  border-width: 6px;
+  /*
+			.box-shadow( inset 0px 0px 4px rgba(0,0,0,0.2) );
+			.lava-object-block-info {
+				background: whiteSmoke;
+				.box-shadow( inset 0px 0px 8px rgba(0,0,0,0.4) );
+			}*/
+
+}
+.lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin:hover .lava-object-block-tray {
+  padding-bottom: 0px;
+}
+.lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin .lava-object-block-info {
+  padding: 0px;
+}
+/*
+	Ingredients > These are the building blocks for the UI
+*/
+/*
+		.lava-object-block
+	*/
+.lava-object-block {
+  background: whiteSmoke;
+  border: 1px solid #BEBEBE;
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.lava-object-block:hover {
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid #919191;
+}
+.lava-object-block:hover .lava-object-block-tray {
+  border-top: 5px white solid;
+}
+.lava-object-block .lava-object-block-info {
+  background: white;
+}
+.lava-object-block .lava-object-block-tray {
+  text-align: center;
+  -moz-box-shadow: inset 0px 4px 6px -4px rgba(0, 0, 0, 0.2);
+  -ms-box-shadow: inset 0px 4px 6px -4px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: inset 0px 4px 6px -4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 4px 6px -4px rgba(0, 0, 0, 0.2);
+  -webkit-transition: padding 0.25s ease-in-out;
+  -moz-transition: padding 0.25s ease-in-out;
+  -ms-transition: padding 0.25s ease-in-out;
+  -o-transition: padding 0.25s ease-in-out;
+  transition: padding 0.25s ease-in-out;
+}
+.lava-object-block .lava-object-block-tray .lava-object-block-tray-inner {
+  -webkit-transition: height 0.25s ease-in-out;
+  -moz-transition: height 0.25s ease-in-out;
+  -ms-transition: height 0.25s ease-in-out;
+  -o-transition: height 0.25s ease-in-out;
+  transition: height 0.25s ease-in-out;
+}
+.lava-object-block .lava-object-block-actions {
+  background: whiteSmoke;
+  min-width: 100px;
+  height: 210px;
+  -moz-box-shadow: inset 4px 0px 6px -4px rgba(0, 0, 0, 0.2);
+  -ms-box-shadow: inset 4px 0px 6px -4px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: inset 4px 0px 6px -4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 4px 0px 6px -4px rgba(0, 0, 0, 0.2);
+  border-left: 5px white solid;
 }

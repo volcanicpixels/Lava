@@ -13,9 +13,7 @@ class Lava_Settings extends Lava_Base
 	public $_settings = array();
 	public $_controller_namespace = 'setting'; //overloaded by sub classes
 	public $_controller_namespace_plural;
-	public $_setting_types = array(
-		'' 			=> ''
-	);
+	public $_should_register_action_methods = true;
 
 
 
@@ -191,6 +189,7 @@ class Lava_Settings extends Lava_Base
 					$this->_get_setting( $setting )->_set_setting_value( $value );
 				} else {
 					// @todo queue error message
+					echo 'there be no setting with that name';
 					die( $setting );
 				}
 			}

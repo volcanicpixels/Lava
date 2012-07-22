@@ -54,14 +54,13 @@ class Lava_Plugin extends Lava_Base
 		//initialise this class so that hooks are registered
 		$this->_register_action_methods( $this );
 
+		$this->_skins();
+
 		if( $this->_load_vendor ) {
 			require_once( dirname( $plugin_file_path ) .  '/vendor.php' );
 			$class_name = $this->_plugin_class( 'Vendor' );
 			$this->_plugin_vendor = $this->_construct_class( $class_name );
 		}
-
-		$this->_add_action( 'init', array( array( $this, 'test') ) );
-		//add_action( 'init', array( $this, 'test' ) );
 	}
 
 	function __call( $method_name, $args ) {
@@ -161,7 +160,7 @@ class Lava_Plugin extends Lava_Base
 			}
 			$this->_pages()
 					->_add_section( $section_title, $section_id )
-					->_add_page( $page_id, $page_class, $section_id )
+					->_add_page( $page_class, $page_id, $section_id )
 						->_parse_vars( $page_vars );
 			;
 		}
@@ -205,6 +204,11 @@ class Lava_Plugin extends Lava_Base
 
 	function _get_lava_path() {
 		return dirname( dirname( __file__ ) );
+	}
+
+	function _get_customisations_file_path() {
+		$upload_dir = wp_upload_dir();
+		return $upload_dir['basedir'] . '/' . $this->_get_plugin_id();
 	}
 
 	function _get_plugin_name() {
