@@ -207,8 +207,7 @@ class Lava_Plugin extends Lava_Base
 	}
 
 	function _get_customisations_file_path() {
-		$upload_dir = wp_upload_dir();
-		return $upload_dir['basedir'] . '/' . $this->_get_plugin_id();
+		return WP_CONTENT_DIR . '/' . $this->_get_plugin_id();
 	}
 
 	function _get_plugin_name() {

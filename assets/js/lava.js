@@ -11,7 +11,8 @@ Global functions
 
 
 (function() {
-  var lavaBindMethods;
+  var lavaBindMethods, result, y,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   lavaBindMethods = function(methods, namespace) {
     if (namespace == null) {
@@ -86,6 +87,85 @@ Global functions
     };
     return lavaBindMethods(methods, 'lavaNav');
   })(jQuery, window, document);
+
+  /*
+  Form Attribute
+  */
+
+
+  (function($, Modernizr) {
+    var methods, namespace;
+    methods = {};
+    namespace = 'lavaPolyfill.lavaFormattrribute';
+    Modernizr.addTest('formattribute', function() {
+      var bool, div, form, id, input;
+      try {
+        form = document.createElement("form");
+        input = document.createElement("input");
+        div = document.createElement("div");
+        id = "formtest";
+        bool = false;
+        form.id = id;
+        input.setAttribute("form", id);
+        div.appendChild(form);
+        div.appendChild(input);
+        document.documentElement.appendChild(div);
+        bool = form.elements.length === 1;
+        div.parentNode.removeChild(div);
+        return bool;
+      } catch (e) {
+        return false;
+      }
+    });
+    methods.init = function(e, lava) {
+      if (!Modernizr.formattribute) {
+        return $(lava).each(function() {
+          $(this).find('*[type="submit"][form]').on("click.lava." + namespace, methods.submitClick);
+          return $(this).find('form[id]').on("submit.lava." + namespace, methods.formSubmit);
+        });
+      }
+    };
+    methods.submitClick = function(e) {
+      var $form_, id;
+      e.preventDefault();
+      id = $(this).attr('form');
+      $form_ = $("#" + id);
+      $(this).attr('data-lava-formattribute', 'yes');
+      $form_.submit();
+      return $(this).removeAttr('data-lava-formattribute');
+    };
+    methods.formSubmit = function(e) {
+      var $form, id;
+      e.preventDefault();
+      id = $(this).attr('id');
+      $form = $(this).clone().removeAttr('id');
+      $("*[form='" + id + "']").each(function() {
+        var $clone;
+        $clone = $(this).clone().removeAttr('form');
+        if ($(this).is(':checked')) {
+          $clone.attr('checked', 'checked');
+        } else {
+          $clone.removeAttr('checked');
+        }
+        return $clone.appendTo($form);
+      });
+      $form.find('*[data-lava-formattribute="yes"]').each(function() {
+        var name, value;
+        value = $(this).val();
+        if (value === void 0) {
+          value = '';
+        }
+        name = $(this).attr('name');
+        if (typeof name !== 'undefined') {
+          return $("<input type='hidden' name='" + name + "' value='" + value + "'>").appendTo($form);
+        }
+      });
+      $form.appendTo(document.documentElement);
+      $form.submit();
+      return $form.remove();
+    };
+    return lavaBindMethods(methods, namespace);
+  })(jQuery, Modernizr);
 
   /*
   HTML5 history
@@ -198,31 +278,30 @@ Global functions
     return lavaBindMethods(methods, namespace);
   })(jQuery, window, document);
 
-  /*
-  Skins Scene callbacks
-  */
+  y = Object;
 
+  y.x = true;
 
-  (function($, window, document) {
+  result = false;
+
+  if (__indexOf.call(y, 'x') >= 0) {
+    result = true;
+  }
+
+  (function($, Modernizr) {
     var methods, namespace;
     methods = {};
-    namespace = 'lavaSkinsScene';
+    namespace = 'lavaPolyfill.lavaImgLabelFix';
     methods.init = function(e, lava) {
       return $(lava).each(function() {
-        var $scenes;
-        $scenes = $(this).find('.lava-scene.lava-skins-scene');
-        return $scenes.on("load.lava." + namespace, methods.load);
+        return $(this).find('label img.js-lava-fix-click').on("click.lava." + namespace, methods.click);
       });
     };
-    methods.load = function(e) {
-      var $actionBlock, sceneId;
-      if (!$(this).data('lava.scene.formattedSkins')) {
-        $(this).data('lava.scene.formattedSkins', true);
-        sceneId = $(this).attr('data-scene-id');
-        return $actionBlock = $(".lava-actionbar-block[data-scene-id='" + sceneId + "']");
-      }
+    methods.click = function(e) {
+      e.preventDefault();
+      return $(this).parents('label').click();
     };
     return lavaBindMethods(methods, namespace);
-  })(jQuery, window, document);
+  })(jQuery, Modernizr);
 
 }).call(this);

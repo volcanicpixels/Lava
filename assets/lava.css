@@ -682,6 +682,9 @@ body.js .nojs-fallback {
   margin-bottom: 30px;
   display: inline-block;
   position: relative;
+  max-width: 30%;
+  min-width: 300px !important;
+  float: left;
 }
 .lava-object-block:hover .lava-object-block-tray {
   padding: 5px;
@@ -694,6 +697,9 @@ body.js .nojs-fallback {
 }
 .lava-object-block .lava-object-block-info.lava-object-block-clickable {
   cursor: pointer;
+}
+.lava-object-block .lava-object-block-info .lava-object-block-thumb img {
+  max-width: 100%;
 }
 .lava-object-block .lava-object-block-tray {
   position: absolute;

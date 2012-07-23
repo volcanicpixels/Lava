@@ -17,8 +17,6 @@ class Lava_Skins_Page extends Lava_Settings_Page
 		$this
 			->_add_scene( 'choose_skin' )
 				->_set_scene_title( $this->__( 'Choose Skin' ) )
-			->_add_scene( 'upload_skin' )
-				->_set_scene_title( $this->__( 'Upload Skin' ) )
 		;
 	}
 }

@@ -13,6 +13,7 @@ class Lava_Skins extends Lava_Settings
 	public $_skins = array();
 	public $_controller_namespace = 'skin';
 
+
 	function _construct() {
 		parent::_construct();
 	}
@@ -52,6 +53,17 @@ class Lava_Skins extends Lava_Settings
 		$skin_id = end( $skin_id );
 		//add option
 		$this->_get_setting( 'active_skin_id' )->_add_setting_option( $skin_id );
+	}
+
+	function _get_template( $template ) {
+		$active_skin_id = $this->_get_active_skin_id();
+		$this->_template_directories = array(
+			$this->_get_customisations_file_path() . '/skins/' . $active_skin_id . '/templates/',
+			$this->_get_plugin_file_path() . '/skins/' . $active_skin_id . '/templates/',
+			$this->_get_plugin_file_path() . '/skins/default/templates/' //if the skin has vanished then fallback to the default skin 
+		);
+		$this->_initialize_twig();
+		return $this->_load_template( $template );
 	}
 
 }

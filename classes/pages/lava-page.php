@@ -306,6 +306,7 @@ class Lava_Page extends Lava_Base
 
 	function _register_pagehook_actions() {
 		$plugin_page = $this->_page_hook;
+		$this->_add_action( "admin_print_styles-{$plugin_page}", '_register_dependancies', 1 );
 		$this->_add_action( "load-{$plugin_page}", '_do_page_load' );
 	}
 
@@ -403,11 +404,13 @@ class Lava_Page extends Lava_Base
 
 	/* Page dependancy functions */
 
+	function _register_dependancies() {
+		$this->_page_controller->_use_lava_stylesheet( 'lava' );
+		$this->_page_controller->_use_lava_script( 'lava' );
+	}
+
 	function _add_dependancies() {
-		$this->_use_lava_stylesheet( 'lava' );
-		$this->_use_lava_script( 'html5shiv' );
-		$this->_use_lava_script( 'lava' );
-		$this->_use_lava_script( 'modernizr' );
+
 	}
 
 
