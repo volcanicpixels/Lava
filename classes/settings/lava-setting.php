@@ -73,6 +73,7 @@ class Lava_Setting extends Lava_Base
 	}
 
 	function _parse_vars( $vars ) {
+		$vars = $this->_setting_controller->_parse_setting_vars( $vars );
 		foreach( $vars as $key => $value ) {
 			switch( $key ) {
 				case 'title':
@@ -199,21 +200,27 @@ class Lava_Setting extends Lava_Base
 		//add settings page
 		//add relevant scene
 		$scene_id = $this->_get_scene_id();
-		$page_id  = $this->_get_page_id();
+		$page_ids  = $this->_get_page_id();
 
-		if( ! $this->_pages()->_page_exists( $page_id ) ) {
-			$this->_pages()->_add_page( $page_id ); //@todo Hide page if not registered at admin_menu
+		if( !is_array( $page_ids ) ) {
+			$page_ids = array( $page_ids );
 		}
 
-		$this->
-			_pages()
-				->_get_page( $page_id )
-					->_add_scene( 'settings', $scene_id )
-						->_set_scene_title( $this->_recall( '_scene_title' ) )
-						->_add_setting( $this )
-		;
+		foreach( $page_ids as $page_id ) {
+			if( ! $this->_pages()->_page_exists( $page_id ) ) {
+				$this->_pages()->_add_page( $page_id ); //@todo Hide page if not registered at admin_menu
+			}
 
-		$this->_pages()->_get_page( $page_id )->_get_scene( $scene_id )->_set_scene_form_id( 'lava_save_form-global' );
+			$this->
+				_pages()
+					->_get_page( $page_id )
+						->_add_scene( 'settings', $scene_id )
+							->_set_scene_title( $this->_recall( '_scene_title' ) )
+							->_add_setting( $this )
+			;
+
+			$this->_pages()->_get_page( $page_id )->_get_scene( $scene_id )->_set_scene_form_id( 'lava_save_form-global' );
+		}
 	}
 
 	function _do_setting( $context = null ) {

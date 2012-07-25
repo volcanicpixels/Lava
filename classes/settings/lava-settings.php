@@ -21,6 +21,10 @@ class Lava_Settings extends Lava_Base
 		$this->_add_lava_action( '_do_save' );
 	}
 
+	function _register_hooks() {
+		$this->_add_lava_action( 'admin_init', '_do_default', 50 );
+	}
+
 	/*
 		Generic functions
 	*/
@@ -124,6 +128,10 @@ class Lava_Settings extends Lava_Base
 		return $this->_controller_namespace;
 	}
 
+	function _parse_setting_vars( $vars ) {
+		return $vars;
+	}
+
 	/*
 		Database Functions
 	*/
@@ -194,6 +202,16 @@ class Lava_Settings extends Lava_Base
 				}
 			}
 		}
+	}
+
+	function _do_default() {
+		$settings = $this->_get_option();
+		foreach( $this->_get_settings() as $setting_id => $setting ) {
+			if( !array_key_exists( $setting_id, $settings ) ) {
+				$settings[$setting_id] = $setting->_get_setting_value();
+			}
+		}
+		$this->_update_option( $settings );
 	}
 }
 ?>

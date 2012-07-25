@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname( __FILE__ ) . '/lava-base.php' );
+require_once( dirname( __FILE__ ) . '/debug.php' );
 
 /**
  * Plugin Class
@@ -22,7 +23,13 @@ class Lava_Plugin extends Lava_Base
 	public $_load_vendor = true;
 	public $_request_id;
 
+	public $_plugin_actions = array();
+	public $_plugin_filters = array();
+
 	public $_should_register_action_methods = true;
+	public $_should_register_plugin_hooks = true;
+
+	static $_plugin_instance;
 
 	/**
 	 * Constructor function called at initialization
@@ -37,6 +44,8 @@ class Lava_Plugin extends Lava_Base
 	 * @since 1.0.0
 	 */
 	function __construct( $plugin_file_path ) {
+		self::$_plugin_instance = $this;
+
 		$plugin_file_path = apply_filters( 'junction_fixer', $plugin_file_path );
 		$this->_the_plugin = $this;
 		$this->_plugin_file_path = $plugin_file_path;
@@ -53,6 +62,8 @@ class Lava_Plugin extends Lava_Base
 
 		//initialise this class so that hooks are registered
 		$this->_register_action_methods( $this );
+		$this->_register_plugin_methods( true );
+		$this->_add_action( 'init', '_do_admin_init', 30 );
 
 		$this->_skins();
 
@@ -114,7 +125,11 @@ class Lava_Plugin extends Lava_Base
 		Hook functions
 	*/
 
-	function _init() {
+	function _testing() {
+		die('testing');
+	}
+
+	function _do_admin_init() {
 		if( is_admin() ) {
 			$this->_do_lava_action( 'admin_init' );
 		}
@@ -202,12 +217,24 @@ class Lava_Plugin extends Lava_Base
 		return $this->_plugin_file_path;
 	}
 
+	function _get_plugin_url( $append ) {
+		return plugins_url( $append, $this->_get_plugin_file_path() );
+	}
+
 	function _get_lava_path() {
 		return dirname( dirname( __file__ ) );
 	}
 
+	function _get_lava_url( $append ) {
+		return $this->_get_plugin_url( '/lava' . $append );
+	}
+
 	function _get_customisations_file_path() {
 		return WP_CONTENT_DIR . '/' . $this->_get_plugin_id();
+	}
+
+	function _get_customisations_url( $append ) {
+		return content_url( '/' . $this->_get_plugin_id() . $append );
 	}
 
 	function _get_plugin_name() {
@@ -255,8 +282,15 @@ class Lava_Plugin extends Lava_Base
 	}
 
 	function _skins( $kill_child = true ) {
+		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
 		$class_name = $this->_lava_class("Skins");
 		return $this->_get_singleton( $class_name, $kill_child );
+	}
+
+
+
+	static function _get_plugin() {
+		return self::$_plugin_instance;
 	}
 
 }

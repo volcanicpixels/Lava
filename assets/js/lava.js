@@ -62,6 +62,58 @@ Global functions
   })(jQuery, window, document);
 
   /*
+  Animations
+  */
+
+
+  (function($) {
+    var methods;
+    methods = {};
+    methods.init = function(e, lava) {
+      return $(lava).each(function() {
+        return $(this).find('.js-lava-animation-slide-right').on('active.lava.lavaAnimation', methods.slideRight);
+      });
+    };
+    methods.slideRight = function() {
+      return $(this).css({
+        'opacity': 0,
+        'position': 'relative',
+        'left': '-10px'
+      }).animate({
+        'opacity': 1,
+        'left': 0
+      }, 200);
+    };
+    return lavaBindMethods(methods, 'lavaAnimations');
+  })(jQuery);
+
+  /*
+  HTML5 history
+  */
+
+
+  (function($) {
+    var methods;
+    methods = {};
+    methods.init = function(e, lava) {
+      if ($('html').hasClass('history')) {
+        return $(lava).each(function() {
+          return $(this).find('a.js-lava-address').on('click.lava.lavaHistory', methods.click);
+        });
+      }
+    };
+    methods.click = function(e) {
+      var url;
+      if (window.History.enabled) {
+        e.preventDefault();
+        url = $(this).attr('href');
+        return window.History.pushState(null, null, url);
+      }
+    };
+    return lavaBindMethods(methods, 'lavaHistory');
+  })(jQuery);
+
+  /*
   Lava navigation
   */
 
@@ -87,6 +139,75 @@ Global functions
     };
     return lavaBindMethods(methods, 'lavaNav');
   })(jQuery, window, document);
+
+  /*
+  Scene callbacks
+  */
+
+
+  (function($, window, document) {
+    var methods;
+    methods = {};
+    methods.init = function(e, lava) {
+      return $(lava).each(function() {
+        var $scenes;
+        $scenes = $(this).find('.lava-scene');
+        $scenes.on('load.lava.lavaScene', methods.load);
+        return $scenes.on('active.lava.lavaScene', methods.active);
+      });
+    };
+    methods.defaultState = function(e, lava) {
+      return $(lava).each(function() {
+        var $scenes;
+        $scenes = $(this).find('.lava-scene');
+        $scenes.trigger('load.lava');
+        return $(this).find('.lava-scene.active-descendant').trigger('active.lava');
+      });
+    };
+    methods.load = function() {
+      var $actionBlock, sceneId;
+      sceneId = $(this).attr('data-scene-id');
+      $actionBlock = $(".lava-actionbar-block[data-scene-id='" + sceneId + "']");
+      return $(this).data('lava.scene.actionBlock', $actionBlock);
+    };
+    methods.active = function() {
+      var $actionBar, $actionBlock;
+      $actionBar = $(".lava-actionbar-cntr");
+      $actionBar.find('.lava-actionbar-block').addClass('inactive-descendant').removeClass('active-descendant');
+      $actionBlock = $(this).data('lava.scene.actionBlock');
+      return $actionBlock.addClass('active-descendant').removeClass('inactive-descendant');
+    };
+    return lavaBindMethods(methods, 'lavaScene');
+  })(jQuery, window, document);
+
+  /*
+  Settings Scene callbacks
+  */
+
+
+  (function($, window, document) {
+    var methods, namespace;
+    methods = {};
+    namespace = 'lavaSettingsScene';
+    methods.init = function(e, lava) {
+      return $(lava).each(function() {
+        var $scenes;
+        $scenes = $(this).find('.lava-scene.lava-settings-scene');
+        return $scenes.on("load.lava." + namespace, methods.load);
+      });
+    };
+    return lavaBindMethods(methods, namespace);
+  })(jQuery, window, document);
+
+  y = Object;
+
+  y.x = true;
+
+  result = false;
+
+  if (__indexOf.call(y, 'x') >= 0) {
+    result = true;
+  }
 
   /*
   Form Attribute
@@ -166,127 +287,6 @@ Global functions
     };
     return lavaBindMethods(methods, namespace);
   })(jQuery, Modernizr);
-
-  /*
-  HTML5 history
-  */
-
-
-  (function($) {
-    var methods;
-    methods = {};
-    methods.init = function(e, lava) {
-      if ($('html').hasClass('history')) {
-        return $(lava).each(function() {
-          return $(this).find('a.js-lava-address').on('click.lava.lavaHistory', methods.click);
-        });
-      }
-    };
-    methods.click = function(e) {
-      var url;
-      if (window.History.enabled) {
-        e.preventDefault();
-        url = $(this).attr('href');
-        return window.History.pushState(null, null, url);
-      }
-    };
-    return lavaBindMethods(methods, 'lavaHistory');
-  })(jQuery);
-
-  /*
-  Animations
-  */
-
-
-  (function($) {
-    var methods;
-    methods = {};
-    methods.init = function(e, lava) {
-      return $(lava).each(function() {
-        return $(this).find('.js-lava-animation-slide-right').on('active.lava.lavaAnimation', methods.slideRight);
-      });
-    };
-    methods.slideRight = function() {
-      return $(this).css({
-        'opacity': 0,
-        'position': 'relative',
-        'left': '-10px'
-      }).animate({
-        'opacity': 1,
-        'left': 0
-      }, 200);
-    };
-    return lavaBindMethods(methods, 'lavaAnimations');
-  })(jQuery);
-
-  /*
-  Scene callbacks
-  */
-
-
-  (function($, window, document) {
-    var methods;
-    methods = {};
-    methods.init = function(e, lava) {
-      return $(lava).each(function() {
-        var $scenes;
-        $scenes = $(this).find('.lava-scene');
-        $scenes.on('load.lava.lavaScene', methods.load);
-        return $scenes.on('active.lava.lavaScene', methods.active);
-      });
-    };
-    methods.defaultState = function(e, lava) {
-      return $(lava).each(function() {
-        var $scenes;
-        $scenes = $(this).find('.lava-scene');
-        $scenes.trigger('load.lava');
-        return $(this).find('.lava-scene.active-descendant').trigger('active.lava');
-      });
-    };
-    methods.load = function() {
-      var $actionBlock, sceneId;
-      sceneId = $(this).attr('data-scene-id');
-      $actionBlock = $(".lava-actionbar-block[data-scene-id='" + sceneId + "']");
-      return $(this).data('lava.scene.actionBlock', $actionBlock);
-    };
-    methods.active = function() {
-      var $actionBar, $actionBlock;
-      $actionBar = $(".lava-actionbar-cntr");
-      $actionBar.find('.lava-actionbar-block').addClass('inactive-descendant').removeClass('active-descendant');
-      $actionBlock = $(this).data('lava.scene.actionBlock');
-      return $actionBlock.addClass('active-descendant').removeClass('inactive-descendant');
-    };
-    return lavaBindMethods(methods, 'lavaScene');
-  })(jQuery, window, document);
-
-  /*
-  Settings Scene callbacks
-  */
-
-
-  (function($, window, document) {
-    var methods, namespace;
-    methods = {};
-    namespace = 'lavaSettingsScene';
-    methods.init = function(e, lava) {
-      return $(lava).each(function() {
-        var $scenes;
-        $scenes = $(this).find('.lava-scene.lava-settings-scene');
-        return $scenes.on("load.lava." + namespace, methods.load);
-      });
-    };
-    return lavaBindMethods(methods, namespace);
-  })(jQuery, window, document);
-
-  y = Object;
-
-  y.x = true;
-
-  result = false;
-
-  if (__indexOf.call(y, 'x') >= 0) {
-    result = true;
-  }
 
   (function($, Modernizr) {
     var methods, namespace;

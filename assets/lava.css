@@ -658,6 +658,21 @@ body.js .nojs-fallback {
 .lava-setting {
   padding-bottom: 20px;
 }
+/*
+		Skin setting
+	*/
+.lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin:hover .lava-object-block-tray .lava-object-block-tray-inner {
+  padding-bottom: 4px;
+}
+.lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin .lava-object-block-info {
+  margin: -1px;
+  border-width: 7px;
+}
+.lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin .lava-object-block-tray {
+  bottom: 6px;
+  right: 6px;
+  left: 6px;
+}
 .fix-bleed {
   padding-left: 19px;
   padding-right: 15px;
@@ -686,14 +701,13 @@ body.js .nojs-fallback {
   min-width: 300px !important;
   float: left;
 }
-.lava-object-block:hover .lava-object-block-tray {
-  padding: 5px;
-}
 .lava-object-block:hover .lava-object-block-tray .lava-object-block-tray-inner {
+  padding: 5px;
+  padding-bottom: 10px;
   height: 30px;
 }
 .lava-object-block .lava-object-block-info {
-  padding: 5px;
+  border: 6px solid transparent;
 }
 .lava-object-block .lava-object-block-info.lava-object-block-clickable {
   cursor: pointer;
@@ -916,8 +930,7 @@ body.js .nojs-fallback {
   opacity: 0;
 }
 .lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin {
-  border-color: #fd492d;
-  border-width: 6px;
+  border-color: transparent ;
   /*
 			.box-shadow( inset 0px 0px 4px rgba(0,0,0,0.2) );
 			.lava-object-block-info {
@@ -930,7 +943,7 @@ body.js .nojs-fallback {
   padding-bottom: 0px;
 }
 .lava-setting.lava-setting-skin .lava-setting-skin-radio:checked + .lava-object-block-skin .lava-object-block-info {
-  padding: 0px;
+  border-color: #fd492d;
 }
 /*
 	Ingredients > These are the building blocks for the UI

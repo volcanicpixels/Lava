@@ -56,6 +56,7 @@ class Lava_Settings_Page extends Lava_Page
 			die;
 		} else {
 			//queue nonce error
+			die('none_error');
 		}
 	}
 

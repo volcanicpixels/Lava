@@ -20,6 +20,7 @@ class Lava_Base
 	public $_should_throw_error_if_method_is_missing = true;
 	/* If this is true then some methods will get auto called at the appropriate time */
 	public $_should_register_action_methods = false;
+	public $_should_register_plugin_hooks   = false;
 
 
 
@@ -50,6 +51,7 @@ class Lava_Base
 		$this->_register_hooks();
 
 		$this->_register_action_methods( $this );
+		$this->_register_plugin_methods();
 	}
 
 	/**
@@ -263,6 +265,29 @@ class Lava_Base
 		}
 	}
 
+	function _register_plugin_methods( $override = false ) {
+		if( $this->_should_register_plugin_hooks ) {
+			if( $override ) { //this is being called from the plugin class
+				$the_plugin = $this;
+			} else {
+				$the_plugin = $this->_the_plugin;
+			}
+			foreach ( $the_plugin->_plugin_actions as $hook ) {
+				if( method_exists( $this, $hook ) ) {
+					$this->_add_plugin_action( $hook );
+				}
+			}
+
+			foreach ( $the_plugin->_plugin_filters as $hook ) {
+				if( method_exists( $this, $hook ) ) {
+					$this->_add_plugin_filter( $hook );
+				}
+			}
+		}
+
+		return $this->_r();
+	}
+
 
 	/**
 	 * Filter and action methods
@@ -299,7 +324,7 @@ class Lava_Base
 					if( $is_filter )
 						add_filter( $hook, $callback, $priority, $how_many_args );
 					else
-						add_action( $hook, $callback );
+						add_action( $hook, $callback, $priority );
 				}
 			}
 		}
@@ -312,8 +337,16 @@ class Lava_Base
 		return $this->_add_action( $hooks, $methods, $priority, $how_many_args, $should_namespace, true );
 	}
 
+	function _add_plugin_action() {
+		return call_user_func_array( array( $this, '_add_lava_action' ), func_get_args() );
+	}
+
 	function _add_lava_action( $hooks, $methods = '', $priority = 10, $how_many_args = 0 ) {
 		return $this->_add_action( $hooks, $methods, $priority, $how_many_args, true );
+	}
+
+	function _add_plugin_filter() {
+		return call_user_func_array( array( $this, '_add_lava_filter' ), func_get_args() );
 	}
 
 	function _add_lava_filter( $hooks, $methods = '', $priority = 10, $how_many_args = 1 ) {
@@ -343,6 +376,10 @@ class Lava_Base
 
 	function _do_lava_action( $hooks, $args = array() ) {
 		return $this->_do_action( $hooks, $args, true );
+	}
+
+	function _do_plugin_action() {
+		return call_user_func_array( array( $this, '_do_lava_action' ), func_get_args() );
 	}
 
 	function _apply_filters_( $hooks, $value, $args = array(), $should_namespace = false ) {
@@ -388,11 +425,15 @@ class Lava_Base
 		return $this->_apply_filters_( $hooks, $value, $args, true );
 	}
 
+	function _apply_plugin_filters() {
+		return call_user_func_array( array( $this, '_apply_lava_filters' ), func_get_args() );
+	}
+
 	function _hook() {
 		$identifier = $this->_get_hook_identifier();
 		$hooks = func_get_args();
 
-		$hook = "{$identifier}";
+		$hook = $this->_get_plugin_id() . "{$identifier}";
 
 		foreach( $hooks as $subhook ) {
 			$hook = $hook . '/' . $subhook;
@@ -444,6 +485,10 @@ class Lava_Base
 		} else {
 			return $this->_lava_class( $string );
 		}
+	}
+
+	function _key_is_true( $arr, $prop ) {
+		return (array_key_exists( $prop, $arr) and $arr[$prop]);
 	}
 
 	function _lava_class( $string ) {
@@ -518,6 +563,19 @@ class Lava_Base
 			$template = $this->_twig_template;
 		}
 		return $this->_twig_environment->loadTemplate( $template );
+	}
+
+	function _add_twig_function( $function, $plugin_call, $options = array() ) {
+		$options = array_merge(array(
+			'should_escape' => true
+		), $options);
+		$class = get_class( $this->_the_plugin );
+		if( $options['should_escape']) {
+			$plugin_call = $class . '::_get_plugin()' . $plugin_call;
+		}
+		$this->_twig_environment->addFunction( 
+			$function,
+			new Twig_Function_Function( $plugin_call, $options ) );
 	}
 
 

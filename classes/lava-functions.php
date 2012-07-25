@@ -3,19 +3,22 @@ class Lava_Functions extends Lava_Base
 {
 	function _register_action_methods( $object ) {
 		$hooks_with_same_method = array(
-			'init',
 			'admin_menu',
-			'admin_bar_menu'
+			'admin_bar_menu',
+			'get_header',
+			'init',
 		);
 
 		$other_hooks = array(
+			'init' => array(
+				'register_widgets'
+			)
 		);
 
 		$lava_hooks = array(
 			'admin_init' => array(
 				'admin_init',
 				'register_settings',
-				'register_skins',
 				'register_pages',
 			)
 		);
@@ -52,6 +55,8 @@ class Lava_Functions extends Lava_Base
 			}
 		}
 	}
+
+	
 
 	function _load_dependancy( $dependancy ) {
 		// allows for a more flexible dependancy loader where filenames do not correspond to class names
@@ -95,9 +100,11 @@ class Lava_Functions extends Lava_Base
 		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
 
-	function _load_yaml( $file ) {
+	function _load_yaml( $file, $absolute_path = false ) {
 		$this->_load_dependancy( 'Spyc' );
-		$file = dirname( $this->_get_plugin_file_path() ) . '/' . $file;
+		if( ! $absolute_path ) {
+			$file = dirname( $this->_get_plugin_file_path() ) . '/' . $file;
+		}
 		if( file_exists( $file ) ) {
 			return Spyc::YAMLLoad( $file );
 		}

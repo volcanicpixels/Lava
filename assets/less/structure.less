@@ -156,6 +156,39 @@
 	padding-bottom: 20px;
 }
 
+	/*
+		Skin setting
+	*/
+	.lava-setting.lava-setting-skin {
+
+
+		.lava-setting-skin-radio:checked + .lava-object-block-skin {
+
+			&:hover {
+				.lava-object-block-info {
+				}
+
+				.lava-object-block-tray {
+					.lava-object-block-tray-inner {
+						padding-bottom: 4px;
+					}
+				}
+			}
+
+			.lava-object-block-info {
+				margin:-1px;
+				border-width: 7px;
+			}
+
+			.lava-object-block-tray {
+				bottom: 6px;
+				right: 6px;
+				left: 6px;
+			}
+			
+		}
+	}
+
 
 // applies padding to return to WordPress default
 .fix-bleed {
@@ -195,8 +228,9 @@
 		&:hover {
 
 			.lava-object-block-tray {
-				padding: 5px;
 				.lava-object-block-tray-inner {
+					padding: 5px;
+					padding-bottom: 10px;
 					height: 30px;
 					//margin-bottom: -50px;
 				}
@@ -204,7 +238,7 @@
 		}
 
 		.lava-object-block-info {
-			padding: 5px;
+			border: 6px solid transparent;
 			&.lava-object-block-clickable {
 				cursor: pointer;
 			}
