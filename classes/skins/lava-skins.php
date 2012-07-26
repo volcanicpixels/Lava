@@ -116,6 +116,8 @@ class Lava_Skins extends Lava_Settings
 		$this->_add_twig_function( 'styles', '->_skins()->_get_skin()->_template_styles', array( 'is_safe' => array('html') )  );
 		$this->_add_twig_function( 'scripts', '->_skins()->_get_skin()->_template_scripts', array( 'is_safe' => array('html') ) );
 		$this->_add_twig_function( 'widget', '->_skins()->_get_skin()->_template_widget', array( 'is_safe' => array('html') ) );
+		$this->_add_twig_function( 'widget_exists', '->_skins()->_get_skin()->_template_widget_exists' );
+		$this->_add_twig_function( 'translate', '->__' );
 		$this->_add_twig_function( 'get_bloginfo', 'get_bloginfo', array('should_escape' => false));
 
 	}

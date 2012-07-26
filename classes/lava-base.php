@@ -447,6 +447,9 @@ class Lava_Base
 
 	function _register_filters( $hook, $filters ) {
 		$full_hook = $this->_hook( $hook );
+		if( !is_array( $filters )) {
+			$filters = array( $filters );
+		}
 		foreach( $filters as $filter ) {
 			$this->_add_lava_filter( $full_hook, "{$hook}__{$filter}" );
 		}

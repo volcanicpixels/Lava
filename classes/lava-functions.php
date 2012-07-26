@@ -54,6 +54,9 @@ class Lava_Functions extends Lava_Base
 				}
 			}
 		}
+		if( method_exists( $object, "_register_widgets" ) ) {
+			$this->_add_action( 'init', '_register_widgets', 5 );//very high priority as the widget may be used in init
+		}
 	}
 
 	

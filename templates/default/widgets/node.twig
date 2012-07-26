@@ -1,0 +1,17 @@
+{% macro node(node) %}
+	{% import 'macros.twig' as macros %}
+	{% if node.node_type == 'input' %}
+		<p>
+			<label>
+				{% if node.input_label %}{{ node.input_label }}<br/>{% endif %}
+				{{ macros.input( node.input_name, node.input_value, node.input_type, node.input_attrs ) }}
+			</label>
+		</p>
+	{% endif %}
+{% endmacro %}
+
+{% block widget %}
+	{% for node in nodes %}
+		{{ _self.node( node ) }}
+	{% endfor %}
+{% endblock %}

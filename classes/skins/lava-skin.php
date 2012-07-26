@@ -103,7 +103,13 @@ class Lava_Skin extends Lava_Extension
 
 	function _template_widget( $widget_id ) {
 		//renders part of the page
+		if( $this->_widgets()->_widget_exists( $widget_id ) ) {
+			return $this->_widgets()->_do_widget( $widget_id );
+		}
+	}
 
+	function _template_widget_exists( $widget_id ) {
+		return $this->_widgets()->_widget_exists( $widget_id );
 	}
 
 	function _get_template_variables__settings( $vars ) {

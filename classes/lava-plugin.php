@@ -106,7 +106,8 @@ class Lava_Plugin extends Lava_Base
 			'scenes',
 			'settings',
 			'skins',
-			'tables'
+			'tables',
+			'widgets'
 		);
 
 
@@ -284,6 +285,12 @@ class Lava_Plugin extends Lava_Base
 	function _skins( $kill_child = true ) {
 		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
 		$class_name = $this->_lava_class("Skins");
+		return $this->_get_singleton( $class_name, $kill_child );
+	}
+
+	function _widgets( $kill_child = true ) {
+		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
+		$class_name = $this->_lava_class("Widgets");
 		return $this->_get_singleton( $class_name, $kill_child );
 	}
 
