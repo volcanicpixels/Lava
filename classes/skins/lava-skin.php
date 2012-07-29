@@ -10,25 +10,9 @@
  */
 class Lava_Skin extends Lava_Extension
 {
-	public $_skin_parent;
-	public $_skin_has_parent = false;
-
 	public $_extension_namespace = 'skin';
 
 
-
-	function _construct( $skin_dir, $skin_id ) {
-		parent::_construct( $skin_dir, $skin_id );
-		$skin_ancestry = explode( '.', $skin_id);
-		if( count( $skin_ancestry ) == 2 ) {
-			$this->_skin_has_parent = true;
-			$this->_skin_parent = $this->_skins()->_get_skin( $skin_ancestry[0] );
-		}
-
-		$this->_register_filters( '_get_template_variables', array(
-			'settings'
-		));
-	}
 
 	/*
 		Accessors
@@ -36,25 +20,30 @@ class Lava_Skin extends Lava_Extension
 
 	function _get_scripts() {
 		$return = array();
-		if( $this->_skin_has_parent ) {
-			$return = $this->_skin_parent->_get_scripts();
-		}
 		if( $this->_file_exists( 'scripts.js' ) ) {
 			$return[] = $this->_get_url( 'scripts.js' );
 		}
 		return $return;
 	}
 
+	function _get_template_directories() {
+		return array(
+			$this->_get_extension_path() . '/templates'
+		);
+	}
+
 	function _get_styles() {
 		$return = array();
-		if( $this->_skin_has_parent ) {
-			$return = $this->_skin_parent->_get_styles();
-		}
 		if( $this->_file_exists( 'styles.css' ) ) {
 			$return[] = $this->_get_url( 'styles.css' );
 		}
 		return $return;
 	}
+
+	function _get_skin_settings() {
+		return $this->_get_extension_settings();
+	}
+
 
 	/*
 		Hook Functions
@@ -66,6 +55,12 @@ class Lava_Skin extends Lava_Extension
 		$this->_register_filters( '_get_template_variables', array(
 			'settings'
 		));
+	}
+
+	function _do_save() {
+		$key = $this->_namespace( $this->_get_setting_name_prefix( 'plural' ) );
+		//print_r( $_REQUEST[$key] );echo $key;exit;
+		parent::_do_save();
 	}
 
 
@@ -114,9 +109,6 @@ class Lava_Skin extends Lava_Extension
 
 	function _get_template_variables__settings( $vars ) {
 		$settings = $this->_get_option();
-		if( $this->_skin_has_parent ) {
-			$settings = array_merge( $this->_skin_parent->_get_template_variables__settings(), $settings );
-		}
 		return array_merge( $settings, $vars ); //a setting should not override another variable
 	}
 }

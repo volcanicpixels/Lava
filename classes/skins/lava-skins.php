@@ -8,100 +8,53 @@
  *
  * @since 1.0.0
  */
-class Lava_Skins extends Lava_Settings
+class Lava_Skins extends Lava_Extensions
 {
-	public $_skin_dirs = array();
-	public $_skins = array();
 	public $_controller_namespace = 'skin';
 
-
 	function _construct() {
-		parent::_construct();
-	}
-
-	function _get_active_skin_id() {
-		return $this->_get_value_for( 'active_skin_id', 'default' );
-	}
-
-	function _init() {
-		parent::_init();
+		call_user_func_array( array( 'parent', '_construct' ), func_get_args() );
 		$args = array(
-			'default' => 'default',
+			'default' => 'plugin.default',
 			'scene'   => 'choose_skin',
 			'page'    => 'skins'
 		);
 		$this->_add_setting( 'active_skin_id', 'skin' )->_parse_vars( $args );
-		$this->_register_skins();
 	}
 
-	function _admin_init() {
-		parent::_admin_init();
+
+	function _get_active_skin_id() {
+		return $this->_get_value_for( 'active_skin_id', 'plugin.default' );
 	}
 
-	function _register_skins() {
-		if( !is_dir( dirname( $this->_get_plugin_file_path() ) . '/skins/default/' ) ) {
-			return;
-		}
-		$plugin_skin_paths = glob( dirname( $this->_get_plugin_file_path() ) . '/skins/*', GLOB_ONLYDIR );
-		$custom_skin_paths = glob( $this->_get_customisations_file_path() . '/skins/*', GLOB_ONLYDIR );
-
-		foreach( $custom_skin_paths as $path ) {
-			$this->_register_skin( $path, false );
-		}
-
-		foreach( $plugin_skin_paths as $path ) {
-			$this->_register_skin( $path );
-		}
-
-		$this->_get_skin();
+	function _get_active_skin_path() {
+		return $this->_get_extension_path( $this->_get_active_skin_id() );
 	}
 
-	function _register_skin( $path, $plugin = true ) {
-		//get skin_id
-		$path = str_replace('\\', '/', $path);
-		$path = str_replace('//', '/', $path);
-		$skin_id = explode( '/', $path );
-		$skin_id = end( $skin_id );
-		//add option
-		$this->_skin_dirs[ $skin_id ] = $path;
-		$this->_get_setting( 'active_skin_id' )->_add_setting_option( $skin_id );
+	
+
+	function _register_extension( $extension_id ) {
+		$this->_get_setting( 'active_skin_id' )->_add_setting_option( $extension_id );
 	}
+
+	function _load_extensions() {
+		$active_skin_id = $this->_get_active_skin_id();
+		$this->_load_extension( $active_skin_id );
+	}
+
 
 	function _get_skin( $skin_id = null ) {
 		if( is_null( $skin_id ) ) {
 			$skin_id = $this->_get_active_skin_id();
 		}
-		if( array_key_exists( $skin_id, $this->_skins ) ) {
-			return $this->_skins[ $skin_id ];
-		} else {
-			$args = array(
-				$this->_skin_dirs[ $skin_id ],
-				$skin_id
-			);
-			return $this->_skins[ $skin_id ] = $this->_construct_class( 'Lava_Skin', $args );
-		}
+		return $this->_get_extension( $skin_id );
 	}
 
 	function _get_template( $template ) {
 		$active_skin_id = $this->_get_active_skin_id();
-		$this->_template_directories = array();
-
-		$try = array(
-			$this->_get_customisations_file_path() . '/skins/' . $active_skin_id . '/templates/',
-			dirname( $this->_get_plugin_file_path() ) . '/skins/' . $active_skin_id . '/templates/'
-		);
-
-		if( $active_skin_id != 'default' ) {
-			$try[] = dirname( $this->_get_plugin_file_path() ) . '/skins/default/templates/'; //if the skin has vanished then fallback to the default skin 
-		}
-
-		foreach( $try as $path ) {
-			if( is_dir( $path ) ) {
-				$this->_template_directories[] = $path;
-			}
-		}
+		$this->_template_directories = $this->_get_skin()->_get_template_directories();
 		$this->_initialize_twig();
-		return $this->_load_template( $template . '.html' );
+		return $this->_load_template( $template . '.twig' );
 	}
 
 	function _display_template( $template, $vars = array() ) {
@@ -118,11 +71,18 @@ class Lava_Skins extends Lava_Settings
 		$this->_add_twig_function( 'widget', '->_skins()->_get_skin()->_template_widget', array( 'is_safe' => array('html') ) );
 		$this->_add_twig_function( 'widget_exists', '->_skins()->_get_skin()->_template_widget_exists' );
 		$this->_add_twig_function( 'translate', '->__' );
+		$this->_add_twig_function( 'namespace', '->_namespace' );
 		$this->_add_twig_function( 'get_bloginfo', 'get_bloginfo', array('should_escape' => false));
 
 	}
 
-	
+
+	function _do_save() {
+		parent::_do_save();
+		$skin = $this->_get_active_skin_id();
+		$this->_get_skin( $skin )->_register_settings()->_do_save();//@todo make bug report
+	}
+
 
 }
 ?>

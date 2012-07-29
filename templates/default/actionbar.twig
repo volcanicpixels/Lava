@@ -2,7 +2,7 @@
 	<div class="lava-actionbar-title">{{ page_title }}</div>
 	<div class="lava-actionbar-cntr">
 		{% for scene in scenes %}
-				<div data-scene-id="{{ scene.get_scene_id }}" class="lava-actionbar-block{% if scene.is_selected %} active-descendant js-default-descendant{% else %} inactive-descendant{% endif %}">
+				<div data-scene-id="{{ scene.get_scene_id }}" class="lava-actionbar-block js-lava-animation-slide-right{% if scene.is_selected %} active-descendant js-default-descendant{% else %} inactive-descendant{% endif %}">
 					{% for action in scene.do_scene_actions %}
 						{{ action | raw }}
 					{% endfor %}

@@ -1,4 +1,5 @@
 @primary-color: #FD492D;
+@disabled-color: #A8A8A8;
 
 
 .lava-topbar {
@@ -47,6 +48,17 @@
 			border-left-color: @primary-color;
 			a {
 				color: @primary-color;
+			}
+		}
+
+		&.lava-disabled {
+			&:hover, &.hover, &:focus {
+				background: white;
+				border-left-color: transparent;
+			}
+
+			a {
+				color: @disabled-color;
 			}
 		}
 

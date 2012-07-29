@@ -11,7 +11,7 @@ do ($ = jQuery, window, document) ->
 		$(lava).each () ->
 			$scenes = $(this).find( '.lava-scene.lava-settings-scene' )
 
-			$scenes.on "load.lava.#{namespace}", methods.load
 
 
 	lavaBindMethods methods, namespace
+

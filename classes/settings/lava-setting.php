@@ -26,13 +26,7 @@ class Lava_Setting extends Lava_Base
 	function _construct( $setting_controller, $setting_id ) {
 		$this->_setting_controller = $setting_controller;
 		$this->_setting_id = $setting_id;
-		$this->_set_return_object( $setting_controller );
-		$this->_add_action( 'admin_menu', '_register_with_scene', 2 );
-
-		if( is_null( $this->_twig_template ) ) {
-			$class = $this->_get_setting_class();
-			$this->_twig_template = $class . '.twig';
-		}
+		$this->_set_parent( $setting_controller );
 
 		$this->_template_directories = array(
 			$this->_get_lava_path() . '/templates/default/settings/',
@@ -196,30 +190,41 @@ class Lava_Setting extends Lava_Base
 		Flow functions
 	*/
 
-	function _register_with_scene() {
+	function _register_setting_with_page( $page_ids = null, $scene_ids = null ) {
 		//add settings page
 		//add relevant scene
-		$scene_id = $this->_get_scene_id();
-		$page_ids  = $this->_get_page_id();
+		if( is_null( $scene_ids ) ) {
+			$scene_ids = $this->_get_scene_id();
+		}
+		if( is_null( $page_ids ) ) {
+			$page_ids  = $this->_get_page_id();
+		}
 
 		if( !is_array( $page_ids ) ) {
 			$page_ids = array( $page_ids );
 		}
+
+		if( !is_array( $scene_ids ) ) {
+			$scene_ids = array( $scene_ids );
+		}
+
 
 		foreach( $page_ids as $page_id ) {
 			if( ! $this->_pages()->_page_exists( $page_id ) ) {
 				$this->_pages()->_add_page( $page_id ); //@todo Hide page if not registered at admin_menu
 			}
 
-			$this->
-				_pages()
-					->_get_page( $page_id )
-						->_add_scene( 'settings', $scene_id )
-							->_set_scene_title( $this->_recall( '_scene_title' ) )
-							->_add_setting( $this )
-			;
+			foreach( $scene_ids as $scene_id ) {
+				$this->
+					_pages()
+						->_get_page( $page_id )
+							->_add_scene( $scene_id, 'settings' )
+								->_set_scene_title( $this->_recall( '_scene_title' ) )
+								->_add_setting( $this )
+				;
 
-			$this->_pages()->_get_page( $page_id )->_get_scene( $scene_id )->_set_scene_form_id( 'lava_save_form-global' );
+				$this->_pages()->_get_page( $page_id )->_get_scene( $scene_id );
+			}
 		}
 	}
 

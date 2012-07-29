@@ -22,6 +22,7 @@ class Lava_Plugin extends Lava_Base
 	public $_plugin_vendor;
 	public $_load_vendor = true;
 	public $_request_id;
+	public $_fingerprint_key;
 
 	public $_plugin_actions = array();
 	public $_plugin_filters = array();
@@ -65,13 +66,12 @@ class Lava_Plugin extends Lava_Base
 		$this->_register_plugin_methods( true );
 		$this->_add_action( 'init', '_do_admin_init', 30 );
 
+		// This ensures that the hooks are added in the right order
+		$this->_ajax();
+		$this->_settings();
 		$this->_skins();
+		$this->_extensions();
 
-		if( $this->_load_vendor ) {
-			require_once( dirname( $plugin_file_path ) .  '/vendor.php' );
-			$class_name = $this->_plugin_class( 'Vendor' );
-			$this->_plugin_vendor = $this->_construct_class( $class_name );
-		}
 	}
 
 	function __call( $method_name, $args ) {
@@ -262,6 +262,16 @@ class Lava_Plugin extends Lava_Base
 	/**
 	 * Methods to access controller classes
 	 */
+
+	function _ajax( $kill_child = true ) {
+		$class_name = $this->_lava_class('Ajax_Handlers');
+		return $this->_get_singleton( $class_name, $kill_child );
+	}
+
+	function _extensions( $kill_child = true ) {
+		$class_name = $this->_lava_class('Extensions');
+		return $this->_get_singleton( $class_name, $kill_child );
+	}
 
 	function _funcs( $kill_child = true ) {
 		return $this->_functions( $kill_child );

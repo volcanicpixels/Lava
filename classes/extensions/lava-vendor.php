@@ -10,9 +10,7 @@
  */
 class Lava_Vendor extends Lava_Extension {
 
-	function _register_settings() {
-		
-	}
+	
 
 }
 ?>

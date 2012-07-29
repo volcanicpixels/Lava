@@ -11,3 +11,30 @@ Filter function naming:
 hook: _get_template_variables
 func: _get_template_variables__plugin_meta
 func: _get_template_variables__plugin_meta__version
+
+
+
+Priority:
+
+init:
+
+	30: admin_init
+
+
+Plugin functions:
+
+check_condition() {
+	// main handler for action
+}
+
+is_condition() {
+	// filter e.g. is_logout_request
+}
+
+do_action() {
+	//action e.g. do_logout
+}
+
+
+Fingerprint:
+ - shouldn't use transient storage as that is not persistent enough (data can go missing)

@@ -39,6 +39,11 @@
 	.lava-nav-pages {
 		height: @height;
 		line-height: @height;
+			a {
+				display: inline-block;
+				height: @height;
+				line-height: @height;
+			}
 	}
 
 }
@@ -87,8 +92,21 @@
 */
 
 .lava-scene {
+	position: relative;
 	&.inactive-descendant {
 		display: none;
+	}
+
+	.lava-scene-inner-abs {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+
+		&.lava-scene-actionbar-replacement {
+			top: -90px;
+		}
 	}
 }
 
@@ -100,6 +118,14 @@
 	li {
 		&.hidden-descendant {
 			display: none;
+		}
+
+		&.lava-disabled {
+			cursor: default;
+
+			a {
+				cursor: default;
+			}
 		}
 
 		cursor: pointer;
@@ -118,7 +144,7 @@
 		a{
 			padding-left: 39px;
 			display: inline-block;
-			height: @height;
+			min-height: @height;
 			line-height: @height;
 		}
 	}
@@ -269,3 +295,27 @@
 
 		}
 	}
+
+
+/*
+	HACKS
+*/
+
+.lava-bleed-top-90 {
+	margin-top: -90px;
+}
+
+
+/*
+	States
+*/
+
+#lava-theatre {
+	&.no-actionbar {
+		#lava-actionbar {
+			display: none;
+		}
+		
+	}
+
+}

@@ -64,12 +64,7 @@ class Lava_Scene extends Lava_Base
 			}
 			$this->_scene_context = $scene_controller->_get_page_context() . $action;
 		}
-
-		if( is_null( $this->_twig_template ) ) {
-			$class = $this->_get_scene_class();
-			$this->_twig_template = $class . '.twig';
-		}
-
+		
 		$this->_set_return_object( $scene_controller );
 
 		$this->_template_directories = array(
@@ -91,6 +86,7 @@ class Lava_Scene extends Lava_Base
 			'input_attrs'    => $this->_get_input_attrs(),
 			'setting_attrs'	 => $this->_get_setting_attrs(),
 			'classes'        => $this->_get_classes(),
+			'attrs'        => $this->_get_attrs(),
 			'scene_form_id'  => $this->_get_scene_form_id()
 		);
 
@@ -110,7 +106,7 @@ class Lava_Scene extends Lava_Base
 
 	function _get_scene_class( $class = null ) {
 		if( is_null( $class ) ) {
-			$class = get_class( $this );
+			$class = $this->_get_class();
 		}
 		if( $class == 'Lava_Scene' ) {
 			$class =  'default';
@@ -174,6 +170,10 @@ class Lava_Scene extends Lava_Base
 		return array_merge( $old, $new );
 	}
 
+	function _get_attrs() {
+		return array();
+	}
+
 	function _get_classes() {
 		$classes = array(
 		);
@@ -187,12 +187,15 @@ class Lava_Scene extends Lava_Base
 
 	function _get_scene_form_id() {
 		if( is_null( $this->_scene_form_id ) ) {
-			return 'lava_save_form-' . $this->_get_scene_id();
+			return $this->_scene_controller->_get_default_scene_form_id();
 		}
 		return $this->_scene_form_id;
 	}
 
-	function _set_scene_form_id( $form_id ) {
+	function _set_scene_form_id( $form_id = null ) {
+		if( is_null( $form_id ) ) {
+			$form_id = 'lava_save_form-' . $this->_get_scene_id();
+		}
 		$this->_scene_form_id = $form_id;
 		return $this->_r();
 	}

@@ -9,7 +9,10 @@ do ($ = jQuery, window, document) ->
 	methods.init = (e, lava) ->
 		$(lava).each () ->
 			$scenes = $(this).find( '.lava-scene' )
+			$scenes.on 'load.lava.lavaScene', methods.load
+			$scenes.on 'active.lava.lavaScene', methods.active
 
+			$scenes = $(this).filter( '.lava-scene' )
 			$scenes.on 'load.lava.lavaScene', methods.load
 			$scenes.on 'active.lava.lavaScene', methods.active
 
@@ -28,9 +31,9 @@ do ($ = jQuery, window, document) ->
 
 	methods.active = () ->
 		$actionBar = $(".lava-actionbar-cntr")
-		$actionBar.find( '.lava-actionbar-block' ).addClass('inactive-descendant').removeClass('active-descendant')
+		$actionBar.find( '.lava-actionbar-block.active-descendant' ).addClass('inactive-descendant').removeClass('active-descendant').trigger( 'inactive.lava' )
 		$actionBlock = $(this).data 'lava.scene.actionBlock'
-		$actionBlock.addClass('active-descendant').removeClass('inactive-descendant')
+		$actionBlock.addClass('active-descendant').removeClass('inactive-descendant').trigger( 'active.lava' )
 
 
 

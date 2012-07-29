@@ -25,8 +25,16 @@ class Lava_Settings_Scene extends Lava_Scene
 		$this->_settings[ $setting->_get_full_setting_id() ] = $setting;
 	}
 
+	function _remove_settings() {
+		$this->_settings = array();
+	}
+
+	function _get_settings() {
+		return $this->_settings;
+	}
+
 	function _get_template_variables__settings( $vars ) {
-		$vars['settings'] = $this->_settings;
+		$vars['settings'] = $this->_get_settings();
 		return $vars;
 	}
 
@@ -43,6 +51,9 @@ class Lava_Settings_Scene extends Lava_Scene
 		$new = array(
 			'lava-settings-scene'
 		);
+		if( count( $this->_get_settings() ) == 0 ) {
+			$new[] = 'hidden-descendant';
+		}
 		return array_merge( $old, $new );
 	}
 

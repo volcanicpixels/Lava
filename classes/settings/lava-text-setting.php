@@ -12,5 +12,6 @@
 class Lava_Text_Setting extends Lava_Setting {
 	public $_setting_type = 'Text';
 	public $_twig_template = 'text.twig';
+
 }
 ?>

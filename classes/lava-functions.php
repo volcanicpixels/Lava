@@ -11,6 +11,10 @@ class Lava_Functions extends Lava_Base
 
 		$other_hooks = array(
 			'init' => array(
+				array(
+					'method' => 'register_public_ajax_handlers',
+					'priority' => 50
+				),
 				'register_widgets'
 			)
 		);
@@ -18,8 +22,14 @@ class Lava_Functions extends Lava_Base
 		$lava_hooks = array(
 			'admin_init' => array(
 				'admin_init',
+				array(
+					'method' => 'register_admin_ajax_handlers',
+					'priority' => 50
+				),
+				'register_extensions',
 				'register_settings',
-				'register_pages',
+				'register_skins',
+				'register_pages'
 			)
 		);
 
@@ -48,14 +58,28 @@ class Lava_Functions extends Lava_Base
 			if( ! is_array( $methods ) )
 				$methods = array( $methods );
 			foreach( $methods as $method ) {
-				if( method_exists( $object, "_{$method}" ) ) {
+				if( is_array( $method ) ) {
+					$method_array = $method;
+					$priority = 10;
+					$method = $method_array['method'];
+					if( array_key_exists( 'priority', $method_array ) ) {
+						$priority = $method_array['priority'];
+					}
+					if( method_exists( $object, "_{$method}" ) ) {
+						$callback = array( array( $object, "_{$method}" ) );
+						$this->_add_lava_action( $hook, $callback, $priority );
+					}
+				}else if( method_exists( $object, "_{$method}" ) ) {
 					$callback = array( array( $object, "_{$method}" ) );
 					$this->_add_lava_action( $hook, $callback );
 				}
 			}
 		}
 		if( method_exists( $object, "_register_widgets" ) ) {
-			$this->_add_action( 'init', '_register_widgets', 5 );//very high priority as the widget may be used in init
+			$object->_add_action( 'init', '_register_widgets', 5 );//very high priority as the widget may be used in init
+		}
+		if( method_exists( $object, "_load_extensions" ) ) {
+			$object->_add_action( 'init', '_load_extensions', 5 );//very high priority as the extensions need to load before majority of init hooks
 		}
 	}
 

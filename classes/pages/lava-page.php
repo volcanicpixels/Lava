@@ -61,16 +61,11 @@ class Lava_Page extends Lava_Base
 
 		$this->_add_lava_action( '_add_dependancies' );
 
-		$this->_load_defaults();
 	}
 
 	/*
 		
 	*/
-
-	function _admin_menu() {
-		$this->_register_scenes();
-	}
 
 
 
@@ -176,6 +171,15 @@ class Lava_Page extends Lava_Base
 		return  $section->_get_section_slug_fragment() . '_' . $this->_get_page_id();
 	}
 
+	function _get_lava_vars() {
+		return array(
+			'plugin_namespace' => $this->_namespace(),
+			'plugin_id'        => $this->_get_plugin_id(),
+			'plugin_name'      => $this->_get_plugin_name(),
+			'plugin_version'   => $this->_get_plugin_version()
+		);
+	}
+
 	/*
 		Hook functions
 	*/
@@ -190,6 +194,8 @@ class Lava_Page extends Lava_Base
 			'pages',
 			'scenes'
 		));
+
+		$this->_add_action( 'admin_menu', 'register_scenes', 2 );
 	}
 
 	function _get_hook_identifier() {
@@ -201,9 +207,9 @@ class Lava_Page extends Lava_Base
 		Scene/act functions
 	*/
 
-	function _add_scene( $class, $scene_id = null , $scope = 'local') {
-		if( is_null( $scene_id ) ) {
-			$scene_id = $class;
+	function _add_scene( $scene_id, $class = null , $scope = 'local') {
+		if( is_null( $class ) ) {
+			$class = $scene_id;
 		}
 
 		if( ! $this->_scene_exists( $scene_id ) ){
@@ -261,6 +267,10 @@ class Lava_Page extends Lava_Base
 		return $this->_recall( '_default_scene_id', $default );
 	}
 
+	function _get_default_scene_form_id() {
+		return 'lava_save_form-' . $this->_get_page_id();
+	}
+
 	function _get_scenes() {
 		return $this->_page_scenes;
 	}
@@ -308,11 +318,25 @@ class Lava_Page extends Lava_Base
 		$plugin_page = $this->_page_hook;
 		$this->_add_action( "admin_print_styles-{$plugin_page}", '_register_dependancies', 1 );
 		$this->_add_action( "load-{$plugin_page}", '_do_page_load' );
+		$this->_add_action( "admin_head-{$plugin_page}", '_do_admin_head' );
 	}
 
 	// if the page is accessed without the 'scene' query param then we should add it
 
 	function _do_page_load() {
+	}
+
+	function _do_admin_head() {
+		$this->_do_lava_vars();
+	}
+
+	function _do_lava_vars() {
+		$lava_vars = $this->_get_lava_vars();
+		?>
+		<script type="text/javascript">
+		var lavaVars = <?php echo json_encode( $lava_vars ) ?>;
+		</script>
+		<?php
 	}
 
 	function _do_page() {

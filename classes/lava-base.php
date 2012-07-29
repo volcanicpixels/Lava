@@ -22,7 +22,8 @@ class Lava_Base
 	public $_should_register_action_methods = false;
 	public $_should_register_plugin_hooks   = false;
 
-
+	public $_twig_template;
+	public $_template_directories = array();
 
 	public $_twig_config = array(
 		'debug' => true
@@ -38,8 +39,12 @@ class Lava_Base
 	 *
 	 * @since 1.0.0
 	 */
-	function __construct( $the_plugin, $args = array() )
+	function __construct( $the_plugin = null, $args = array() )
 	{
+
+		if( is_null( $the_plugin ) ) {
+			die( get_class( $this ) );
+		}
 		$this->_the_plugin = $the_plugin;
 
 		if( method_exists( $this, '_construct' ) )//call the sub classes construct method
@@ -48,6 +53,7 @@ class Lava_Base
 			call_user_func_array( $callback, $args );
 		}
 
+		$this->_load_defaults();
 		$this->_register_hooks();
 
 		$this->_register_action_methods( $this );
@@ -102,6 +108,7 @@ class Lava_Base
 			return call_user_func_array( $callback, $args );
 		}
 
+
 			/* We couldn't find anywhere to send this request */
 
 		if( $this->_should_throw_error_if_method_is_missing ) {
@@ -120,6 +127,10 @@ class Lava_Base
 	}
 
 	function _blank() {
+		
+	}
+
+	function _load_defaults() {
 		
 	}
 
@@ -382,6 +393,36 @@ class Lava_Base
 		return call_user_func_array( array( $this, '_do_lava_action' ), func_get_args() );
 	}
 
+	function _do_action_if( $action, $condition = null, $default = false, $should_terminate = false ) {
+		if( is_null( $condition ) ) {
+			$condition = $action;
+		}
+
+		if( $this->_apply_plugin_filters( 'is_' . $condition, $default ) ) {
+			$this->_do_plugin_action( 'do_' . $action );
+			if( $should_terminate ) {
+				exit();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	function _do_action_unless( $action, $condition = null, $default = true, $should_terminate = false ) {
+		if( is_null( $condition ) ) {
+			$condition = $action;
+		}
+
+		if( ! $this->_apply_plugin_filters( 'is_' . $condition, $default ) ) {
+			$this->_do_plugin_action( 'do_' . $action );
+			if( $should_terminate ) {
+				exit();
+			}
+			return true;
+		}
+		return false;
+	}
+
 	function _apply_filters_( $hooks, $value, $args = array(), $should_namespace = false ) {
 		if( ! is_array( $hooks ) )
 			$hooks = array( $hooks );
@@ -482,16 +523,18 @@ class Lava_Base
 		return implode( ' ', $string );
 	}
 
+	function _path( $path ) {
+		$path = str_replace( '\\', '/', $path );
+		$path = str_replace( '//', '/', $path );
+		return $path;
+	}
+
 	function _class( $string ) {
 		if( substr_count( $string, 'plugin/') == 1 ) {
 			return $this->_plugin_class( str_replace( 'plugin/', '', $string) );
 		} else {
 			return $this->_lava_class( $string );
 		}
-	}
-
-	function _key_is_true( $arr, $prop ) {
-		return (array_key_exists( $prop, $arr) and $arr[$prop]);
 	}
 
 	function _lava_class( $string ) {
@@ -511,12 +554,147 @@ class Lava_Base
 		return $namespace . '_' . $string;
 	}
 
+	function _get_class() {
+		return get_class( $this );
+	}
+
+	function _get_lava_classes() {
+		$classes = array();
+		$current_class = get_class( $this );
+		while( $current_class != 'Lava_Base' ) {
+			$current_class_array = explode( '_', $current_class );
+			if( count( $current_class_array ) <= 2 ) {
+				$classes[] = 'default';
+			} else {
+				unset( $current_class_array[0] );
+				array_pop( $current_class_array );
+				$classes[] = strtolower( implode( '-', $current_class_array ) );
+			}
+			$current_class = get_parent_class( $current_class );
+		}
+		return $classes;
+	}
+
+	function _key_is_true( $arr, $prop ) {
+		return (array_key_exists( $prop, $arr) and $arr[$prop]);
+	}
+
+	function _request_var( $var, $default = false, $namespace = true ) {
+		if( $namespace ) {
+			$var = $this->_namespace( $var );
+		}
+		if( array_key_exists( $var, $_REQUEST ) ) {
+			return $_REQUEST[$var];
+		} else {
+			return $default;
+		}
+	}
+
 	function _nonce( $action, $nonce = null ) {
 		if( !is_null($nonce) ) {
 			return wp_verify_nonce($nonce, $this->_namespace( $action ));
 		} else {
 			return wp_create_nonce( $this->_namespace( $action ) );
 		}
+	}
+
+	/*
+	
+	 - unique
+	 - be editable
+
+	*/
+
+	function _create_plugin_nonce( $expiration, $action ) {
+
+	}
+
+	function _get_fingerprint_key() {
+		if( array_key_exists( $this->_namespace( 'fingerprint' ), $_COOKIE ) ) {
+			return $_COOKIE[ $this->_namespace( 'fingerprint' ) ];
+		} else {
+			if( is_null( $this->_the_plugin->_fingerprint_key ) ) {
+				$key = '';
+				$alpha = str_split( 'abcdefghijklmnopqrstuvwxyz0123456789', 1 );
+				for( $i = 0; $i < 8; $i++ ) {
+					$key .= $alpha[ rand(0,count($alpha) - 1) ];
+				}
+				$this->_the_plugin->_fingerprint_key = md5( $key );
+			}
+			return $this->_the_plugin->_fingerprint_key;
+		}
+	}
+
+	function _set_fingerprint_cookie() {
+		$this->_fingerprint_expiration();
+		if( !headers_sent() ) {
+			setcookie( $this->_namespace( 'fingerprint' ), $this->_get_fingerprint_key(), time() + 60*60*24*30*2, COOKIEPATH, COOKIE_DOMAIN );
+		}
+	}
+
+	function _merge_fingerprint( $new ) {
+		$old = $this->_get_fingerprint();
+		return $this->_set_fingerprint( array_merge( $old, $new ) );
+	}
+
+	function _set_fingerprint( $fingerprint ) {
+		$default = array(
+			'_expiration' => 60*60*24
+		);
+		$fingerprint = array_merge( $default, $fingerprint );
+		$fingerprint_key = $this->_get_fingerprint_key();
+
+		$expiration = current_time( 'timestamp' ) + $fingerprint['_expiration'];
+
+		$fingerprint_expiration = get_option( $this->_namespace( 'fingerprint_expiration' ), array() );
+		$fingerprint_db = get_option( $this->_namespace( 'fingerprint_db' ), array() );
+		$fingerprint_expiration[$fingerprint_key] = $expiration;
+
+		
+
+		$fingerprint_db[ $fingerprint_key ] = $fingerprint;
+
+		update_option( $this->_namespace( 'fingerprint_db' ), $fingerprint_db );
+		update_option( $this->_namespace( 'fingerprint_expiration' ), $fingerprint_expiration );
+
+		return $this->_r();
+	}
+
+	function _get_fingerprint() {
+		$fingerprint_db = get_option( $this->_namespace( 'fingerprint_db' ), array() );
+		$fingerprint_expiration = get_option( $this->_namespace( 'fingerprint_expiration' ), array() );
+		$fingerprint_key = $this->_get_fingerprint_key();
+		if( array_key_exists( $fingerprint_key, $fingerprint_db ) ) {
+			if( $fingerprint_expiration[$fingerprint_key] > current_time( 'timestamp' ) ) {
+				return $fingerprint_db[ $fingerprint_key ];
+			}
+		}
+		return array();
+	}
+
+	function _fingerprint_expiration() {
+		if( rand(0,9) != 1 ) {
+			return;
+		}
+		$fingerprint_key = $this->_get_fingerprint_key();
+		$fingerprint_db = get_option( $this->_namespace( 'fingerprint_db' ), array() );
+		$fingerprint_expiration = get_option( $this->_namespace( 'fingerprint_expiration' ), array() );
+		sort( $fingerprint_expiration );
+		$current_time = current_time( 'timestamp' );
+		foreach( $fingerprint_expiration as $key => $expiration ) {
+			if( $expiration < $current_time ) {
+				unset( $fingerprint_expiration[$key] );
+				if( array_key_exists( $key, $fingerprint_db) ) {
+					unset( $fingerprint_db[$key] );
+				}
+			} else {
+				break;
+			}
+		}
+
+		
+		update_option( $this->_namespace( 'fingerprint_db' ), $fingerprint_db );
+		update_option( $this->_namespace( 'fingerprint_expiration' ), $fingerprint_expiration );
 	}
 
 	function _request() {
@@ -563,7 +741,33 @@ class Lava_Base
 
 	function _load_template( $template = null ) {
 		if( is_null( $template ) ) {
-			$template = $this->_twig_template;
+			if( !is_null( $this->_twig_template ) ) {
+				$template = $this->_twig_template;
+			} else {
+				$classes = $this->_get_lava_classes();
+
+				foreach( $classes as $class ) {
+					foreach( $this->_template_directories as $directory ) {
+						if( file_exists( $directory . $class . '.twig' ) ) {
+							$template = $class . '.twig';
+							break 2;
+						}
+					}
+				}
+
+				if( is_null( $template ) ) {
+					echo 'Could not find any template:';
+					echo '<br/>Looked for:';
+					foreach( $classes as $class ) {
+						echo '<br/>' . $class;
+					}
+					echo '<br/>in:';
+					foreach( $this->_template_directories as $directory ) {
+						echo '<br/>' . $directory;
+					}
+					die;
+				}
+			}
 		}
 		return $this->_twig_environment->loadTemplate( $template );
 	}

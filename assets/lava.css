@@ -586,6 +586,11 @@ body.js .nojs-fallback {
   height: 50px;
   line-height: 50px;
 }
+#lava-topbar .lava-nav-pages a {
+  display: inline-block;
+  height: 50px;
+  line-height: 50px;
+}
 #lava-actionbar {
   height: 60px;
   border-bottom: 1px solid #ebebeb;
@@ -618,8 +623,21 @@ body.js .nojs-fallback {
 /*
 	Scenes
 */
+.lava-scene {
+  position: relative;
+}
 .lava-scene.inactive-descendant {
   display: none;
+}
+.lava-scene .lava-scene-inner-abs {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+.lava-scene .lava-scene-inner-abs.lava-scene-actionbar-replacement {
+  top: -90px;
 }
 /*
 	Navigation
@@ -630,10 +648,16 @@ body.js .nojs-fallback {
 .lava-nav li.hidden-descendant {
   display: none;
 }
+.lava-nav li.lava-disabled {
+  cursor: default;
+}
+.lava-nav li.lava-disabled a {
+  cursor: default;
+}
 .lava-nav-google li a {
   padding-left: 39px;
   display: inline-block;
-  height: 30px;
+  min-height: 30px;
   line-height: 30px;
 }
 /*
@@ -728,6 +752,18 @@ body.js .nojs-fallback {
   line-height: 30px;
   overflow: hidden;
 }
+/*
+	HACKS
+*/
+.lava-bleed-top-90 {
+  margin-top: -90px;
+}
+/*
+	States
+*/
+#lava-theatre.no-actionbar #lava-actionbar {
+  display: none;
+}
 .lava-topbar {
   background: #f9f9f9;
 }
@@ -768,6 +804,15 @@ body.js .nojs-fallback {
 }
 .lava-nav-google li.active-descendant a {
   color: #fd492d;
+}
+.lava-nav-google li.lava-disabled:hover,
+.lava-nav-google li.lava-disabled.hover,
+.lava-nav-google li.lava-disabled:focus {
+  background: white;
+  border-left-color: transparent;
+}
+.lava-nav-google li.lava-disabled a {
+  color: #a8a8a8;
 }
 .lava-nav-google li a {
   color: #222;

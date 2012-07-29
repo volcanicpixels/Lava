@@ -23,6 +23,7 @@ class Lava_Settings extends Lava_Base
 
 	function _register_hooks() {
 		$this->_add_lava_action( 'admin_init', '_do_default', 50 );
+		$this->_add_action( 'admin_menu', '_register_settings_with_page_hook', 3 );
 	}
 
 	/*
@@ -176,6 +177,16 @@ class Lava_Settings extends Lava_Base
 	/*
 		Flow functions
 	*/
+
+	function _register_settings_with_page_hook() {
+		$this->_register_settings_with_page();
+	}
+
+	function _register_settings_with_page( $page_ids = null, $scene_ids = null ) {
+		foreach( $this->_get_settings() as $setting ) {
+			$setting->_register_setting_with_page( $page_ids, $scene_ids );
+		}
+	}
 
 
 	function _admin_init() {
