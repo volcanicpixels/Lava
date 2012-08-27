@@ -28,7 +28,7 @@ class Lava_Radio_Setting extends Lava_Setting {
 	function _get_setting_options() {
 		$setting_options = $this->_setting_options;
 		foreach( $setting_options as $value => $setting_option ) {
-			$setting_options[$value]['setting_attrs']['id'] = 'lava_setting-' . $this->_get_radio_id( $value);
+			$setting_options[$value]['setting_input_attrs']['id'] = 'lava_setting-' . $this->_get_radio_id( $value);
 			$setting_options[$value]['radio_id'] = 'lava_setting-' . $this->_get_radio_id( $value );
 		}
 		$value = $this->_get_setting_value();
@@ -39,14 +39,14 @@ class Lava_Radio_Setting extends Lava_Setting {
 				$this->_add_setting_option( $value );
 			}
 		}
-		$setting_options[$value]['setting_attrs']['checked'] = 'checked';
+		$setting_options[$value]['setting_input_attrs']['checked'] = 'checked';
 		return $setting_options;
 	}
 
 	function _add_setting_option( $value, $args = array() ) {
 		$args['value'] = $value;
-		if( ! array_key_exists( 'setting_attrs', $args ) ) {
-			$args['setting_attrs'] = array();
+		if( ! array_key_exists( 'setting_input_attrs', $args ) ) {
+			$args['setting_input_attrs'] = array();
 		}
 		$this->_setting_options[ $value ] = $args;
 		return $this->_r();

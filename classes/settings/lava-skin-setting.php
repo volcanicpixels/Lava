@@ -10,19 +10,13 @@
  */
 
 class Lava_Skin_Setting extends Lava_Radio_Setting {
-	function _get_setting_classes() {
-		$classes = parent::_get_setting_classes();
-		$classes[] = 'lava-setting-skin';
-		return $classes;
-	}
-
 	function _get_setting_options() {
 		$setting_options = parent::_get_setting_options();
 		foreach( $setting_options as $value => $setting_option ) {
-			if( !array_key_exists('class', $setting_options[$value]['setting_attrs'])) {
-				$setting_options[$value]['setting_attrs']['class'] = '';
+			if( !array_key_exists('class', $setting_options[$value]['setting_input_attrs'])) {
+				$setting_options[$value]['setting_input_attrs']['class'] = '';
 			}
-			$setting_options[$value]['setting_attrs']['class'] .= ' lava-setting-skin-radio';
+			$setting_options[$value]['setting_input_attrs']['class'] .= ' lava-skin-setting-radio';
 		}
 		return $setting_options;
 	}

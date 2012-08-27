@@ -6,26 +6,23 @@ do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaNoActionbarScene'
+	selector = '.lava-scene.lava-scene-no-actionbar'
 
 	methods.init = (e, lava) ->
 		$(lava).each () ->
-			$blocks = $(this).find( '.lava-scene.lava-scene-no-actionbar' )
+			$elems = $(this).find( selector )
+			$.merge $elems, $(this).filter( selector )
 
-			$blocks.on "active.lava.#{namespace}", methods.active
-			$blocks.on "inactive.lava.#{namespace}", methods.inactive
-
-			$blocks = $(this).filter( '.lava-scene.lava-scene-no-actionbar' )
-
-			$blocks.on "active.lava.#{namespace}", methods.active
-			$blocks.on "inactive.lava.#{namespace}", methods.inactive
+			$elems.on "active.lava.#{namespace}", methods.active
+			$elems.on "inactive.lava.#{namespace}", methods.inactive
 
 	methods.active = (e) ->
 		# remove action bar
-		$('#lava-theatre').addClass( 'no-actionbar' )
+		$('#lava_theatre').addClass( 'no-actionbar' )
 
 	methods.inactive = (e) ->
 		# replace actionbar
-		$('#lava-theatre').removeClass( 'no-actionbar' )
+		$('#lava_theatre').removeClass( 'no-actionbar' )
 
 
 	lavaBindMethods methods, namespace

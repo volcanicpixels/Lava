@@ -84,7 +84,7 @@ class Lava_Scene extends Lava_Base
 			'scene_nonce'	 => $this->_get_scene_nonce(),
 			'is_selected'    => $this->_is_selected(),
 			'input_attrs'    => $this->_get_input_attrs(),
-			'setting_attrs'	 => $this->_get_setting_attrs(),
+			'setting_input_attrs'	 => $this->_get_setting_input_attrs(),
 			'classes'        => $this->_get_classes(),
 			'attrs'        => $this->_get_attrs(),
 			'scene_form_id'  => $this->_get_scene_form_id()
@@ -164,8 +164,8 @@ class Lava_Scene extends Lava_Base
 		return array_merge( $old, $new );
 	}
 
-	function _get_setting_attrs() {
-		$old = $this->_get_twig_context( 'setting_attrs', array() );
+	function _get_setting_input_attrs() {
+		$old = $this->_get_twig_context( 'setting_input_attrs', array() );
 		$new = array();
 		return array_merge( $old, $new );
 	}

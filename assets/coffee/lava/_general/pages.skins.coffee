@@ -12,12 +12,14 @@ do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaSkinsPage'
+	selector = '.lava-scene[data-scene-id="choose_skin"] .lava-skin-setting-radio';
 	cache = {}
 
 	methods.init = (e, lava) ->
 		$(lava).each () ->
-			$(this).find( '.lava-scene[data-scene-id="choose_skin"] .lava-setting-skin-radio' ).on "change.lava.#{namespace}", methods.change
-			$(this).filter( '.lava-scene[data-scene-id="choose_skin"] .lava-setting-skin-radio' ).on "change.lava.#{namespace}", methods.change
+			$elems = $(this).find( selector )
+			$.merge $elems, $(this).filter( selector )
+			$elems.on "change.lava.#{namespace}", methods.change
 
 	methods.change = (e) ->
 		###
@@ -45,7 +47,7 @@ do ($ = jQuery, window, document) ->
 	methods.doReplace = (data) ->
 		if 'scene' of data
 			$('.lava-scene[data-scene-id="configure_skin"]').remove()
-			$('#lava-stage').append( data['scene'] )
+			$('#lava_stage').append( data['scene'] )
 			$('.lava-scene[data-scene-id="configure_skin"]').lava().trigger 'load.lava'
 		if 'actions' of data
 			$('.lava-actionbar-block[data-scene-id="configure_skin"]').html( '' )

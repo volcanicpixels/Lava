@@ -11,12 +11,12 @@
 
 
 {% block setting_option %}
-	{{ macros.input( setting_name, setting_option.value , 'radio', setting_attrs_new ) }}
+	{{ macros.input( setting_name, setting_option.value , 'radio', setting_input_attrs_new ) }}
 	<div class="lava-object-block lava-object-block-with-actions lava-object-block-skin">
 		<label for="{{ setting_option.radio_id }}" >
 			<div class="lava-object-block-info lava-object-block-clickable">
 				<div class="lava-object-block-thumb">
-					<img class="js-lava-fix-click" src="http://daniel-pc:8081/wp-content/plugins/privacy-plugin/skins/default/thumb.jpg" />
+					<img class="js-lava-fix-click" src="http://localhost:28166/wp-content/plugins/privacy-plugin/skins/default/thumb.jpg" />
 				</div>
 			</div>
 		</label>

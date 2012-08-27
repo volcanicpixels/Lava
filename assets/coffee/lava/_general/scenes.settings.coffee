@@ -6,10 +6,12 @@ do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaSettingsScene'
+	selector = '.lava-scene.lava-settings-scene'
 
 	methods.init = (e, lava) ->
 		$(lava).each () ->
-			$scenes = $(this).find( '.lava-scene.lava-settings-scene' )
+			$elems = $(this).find( selector )
+			$.merge $elems, $(this).filter( selector )
 
 
 

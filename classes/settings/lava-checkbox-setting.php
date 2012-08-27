@@ -11,8 +11,8 @@
 
 class Lava_Checkbox_Setting extends Lava_Setting {
 
-	function _get_setting_attrs() {
-		$old = parent::_get_setting_attrs();
+	function _get_setting_input_attrs() {
+		$old = parent::_get_setting_input_attrs();
 		$new = array();
 
 		$value = $this->_get_setting_value();

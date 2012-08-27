@@ -67,14 +67,15 @@ Global functions
 
 
   (function($) {
-    var methods;
+    var methods, selector;
     methods = {};
+    selector = '.js-lava-animation-slide-right';
     methods.init = function(e, lava) {
-      var selector;
-      selector = '.js-lava-animation-slide-right';
       return $(lava).each(function() {
-        $(this).find(selector).on('active.lava.lavaAnimation', methods.slideRight);
-        return $(this).filter(selector).on('active.lava.lavaAnimation', methods.slideRight);
+        var $elems;
+        $elems = $(this).find(selector);
+        $.merge($elems, $(this).filter(selector));
+        return $elems.on('active.lava.lavaAnimation', methods.slideRight);
       });
     };
     methods.slideRight = function() {
@@ -155,6 +156,78 @@ Global functions
   })(jQuery, window, document);
 
   /*
+  Skins page callbacks
+  */
+
+
+  /*
+  Only the active skin gets loaded so if a user changes the skin they would have to save before they could configure it.
+  
+  This aims to improve this experience by loading the settings via ajax when the skin is changed
+  */
+
+
+  (function($, window, document) {
+    var cache, methods, namespace, selector;
+    methods = {};
+    namespace = 'lavaSkinsPage';
+    selector = '.lava-scene[data-scene-id="choose_skin"] .lava-skin-setting-radio';
+    cache = {};
+    methods.init = function(e, lava) {
+      return $(lava).each(function() {
+        var $elems;
+        $elems = $(this).find(selector);
+        $.merge($elems, $(this).filter(selector));
+        return $elems.on("change.lava." + namespace, methods.change);
+      });
+    };
+    methods.change = function(e) {
+      /*
+      		Get now checked skin id
+      		check whether skin_id is in cache
+      */
+
+      var cache_element, current_skin, data, skin;
+      skin = $(this).val();
+      current_skin = $('.lava-scene[data-scene-id="configure_skin"]').attr('data-skin-id');
+      cache_element = {
+        'scene': $('.lava-scene[data-scene-id="configure_skin"]').clone(),
+        'actions': $('.lava-actionbar-block[data-scene-id="configure_skin"] *').clone(),
+        'hidden': $('.lava-programme li[data-scene-id="configure_skin"]').hasClass('hidden-descendant')
+      };
+      cache[current_skin] = cache_element;
+      $('.lava-programme li[data-scene-id="configure_skin"]').addClass('hidden-descendant');
+      if (skin in cache) {
+        return methods.doReplace(cache[skin]);
+      } else {
+        data = {
+          'action': lavaVars.plugin_namespace + '_get_skin_settings',
+          'skin': skin
+        };
+        return $.getJSON(ajaxurl, data, methods.doReplace);
+      }
+    };
+    methods.doReplace = function(data) {
+      if ('scene' in data) {
+        $('.lava-scene[data-scene-id="configure_skin"]').remove();
+        $('#lava_stage').append(data['scene']);
+        $('.lava-scene[data-scene-id="configure_skin"]').lava().trigger('load.lava');
+      }
+      if ('actions' in data) {
+        $('.lava-actionbar-block[data-scene-id="configure_skin"]').html('');
+        $('.lava-actionbar-block[data-scene-id="configure_skin"]').append(data['actions']);
+        $('.lava-actionbar-block[data-scene-id="configure_skin"] *').lava().trigger('load.lava');
+      }
+      if ('hidden' in data && !data['hidden']) {
+        return $('.lava-programme li[data-scene-id="configure_skin"]').removeClass('hidden-descendant');
+      } else {
+        return $('.lava-programme li[data-scene-id="configure_skin"]').addClass('hidden-descendant');
+      }
+    };
+    return lavaBindMethods(methods, namespace);
+  })(jQuery, window, document);
+
+  /*
   Scene callbacks
   */
 
@@ -203,16 +276,16 @@ Global functions
 
 
   (function($, window, document) {
-    var methods, namespace;
+    var methods, namespace, selector;
     methods = {};
     namespace = 'lavaHeightAdjust';
+    selector = '.lava-scene.js-height-adjust';
     methods.init = function(e, lava) {
       return $(lava).each(function() {
-        var $blocks;
-        $blocks = $(this).find('.lava-scene.js-height-adjust');
-        $blocks.on("load.lava." + namespace, methods.load);
-        $blocks = $(this).filter('.lava-scene.js-height-adjust');
-        $blocks.on("load.lava." + namespace, methods.load);
+        var $elems;
+        $elems = $(this).find(selector);
+        $.merge($elems, $(this).filter(selector));
+        $elems.on("load.lava." + namespace, methods.load);
         return $(window).on("resize.lava." + namespace, methods.resizeWindow);
       });
     };
@@ -221,7 +294,7 @@ Global functions
       return setTimeout(methods.resizeWindow, 100);
     };
     methods.resizeWindow = function(e) {
-      return $('.lava-scene.js-height-adjust').each(methods.resize);
+      return $(selector).each(methods.resize);
     };
     methods.resize = function() {
       var $this, doc_height, loop_count, min_height, old_doc_height, win_height, _results;
@@ -261,25 +334,24 @@ Global functions
 
 
   (function($, window, document) {
-    var methods, namespace;
+    var methods, namespace, selector;
     methods = {};
     namespace = 'lavaNoActionbarScene';
+    selector = '.lava-scene.lava-scene-no-actionbar';
     methods.init = function(e, lava) {
       return $(lava).each(function() {
-        var $blocks;
-        $blocks = $(this).find('.lava-scene.lava-scene-no-actionbar');
-        $blocks.on("active.lava." + namespace, methods.active);
-        $blocks.on("inactive.lava." + namespace, methods.inactive);
-        $blocks = $(this).filter('.lava-scene.lava-scene-no-actionbar');
-        $blocks.on("active.lava." + namespace, methods.active);
-        return $blocks.on("inactive.lava." + namespace, methods.inactive);
+        var $elems;
+        $elems = $(this).find(selector);
+        $.merge($elems, $(this).filter(selector));
+        $elems.on("active.lava." + namespace, methods.active);
+        return $elems.on("inactive.lava." + namespace, methods.inactive);
       });
     };
     methods.active = function(e) {
-      return $('#lava-theatre').addClass('no-actionbar');
+      return $('#lava_theatre').addClass('no-actionbar');
     };
     methods.inactive = function(e) {
-      return $('#lava-theatre').removeClass('no-actionbar');
+      return $('#lava_theatre').removeClass('no-actionbar');
     };
     return lavaBindMethods(methods, namespace);
   })(jQuery, window, document);
@@ -290,13 +362,15 @@ Global functions
 
 
   (function($, window, document) {
-    var methods, namespace;
+    var methods, namespace, selector;
     methods = {};
     namespace = 'lavaSettingsScene';
+    selector = '.lava-scene.lava-settings-scene';
     methods.init = function(e, lava) {
       return $(lava).each(function() {
-        var $scenes;
-        return $scenes = $(this).find('.lava-scene.lava-settings-scene');
+        var $elems;
+        $elems = $(this).find(selector);
+        return $.merge($elems, $(this).filter(selector));
       });
     };
     return lavaBindMethods(methods, namespace);
@@ -408,69 +482,34 @@ Global functions
   })(jQuery, Modernizr);
 
   /*
-  Skins page callbacks
-  */
-
-
-  /*
-  Only the active skin gets loaded so if a user changes the skin they would have to save before they could configure it.
-  
-  This aims to improve this experience by loading the settings via ajax when the skin is changed
+  Toggle settings callback
   */
 
 
   (function($, window, document) {
-    var cache, methods, namespace;
+    var methods, namespace, selector;
     methods = {};
-    namespace = 'lavaSkinsPage';
-    cache = {};
+    namespace = 'lavaToggleSetting';
+    selector = '.lava-setting.lava-toggle-setting .lava-setting-toggle-input';
     methods.init = function(e, lava) {
       return $(lava).each(function() {
-        $(this).find('.lava-scene[data-scene-id="choose_skin"] .lava-setting-skin-radio').on("change.lava." + namespace, methods.change);
-        return $(this).filter('.lava-scene[data-scene-id="choose_skin"] .lava-setting-skin-radio').on("change.lava." + namespace, methods.change);
+        var $elems;
+        $elems = $(this).find(selector);
+        $.merge($elems, $(this).filter(selector));
+        $elems.on("change.lava." + namespace, methods.change);
+        return $elems.trigger("change.lava." + namespace);
       });
     };
     methods.change = function(e) {
-      /*
-      		Get now checked skin id
-      		check whether skin_id is in cache
-      */
-
-      var cache_element, current_skin, data, skin;
-      skin = $(this).val();
-      current_skin = $('.lava-scene[data-scene-id="configure_skin"]').attr('data-skin-id');
-      cache_element = {
-        'scene': $('.lava-scene[data-scene-id="configure_skin"]').clone(),
-        'actions': $('.lava-actionbar-block[data-scene-id="configure_skin"] *').clone(),
-        'hidden': $('.lava-programme li[data-scene-id="configure_skin"]').hasClass('hidden-descendant')
-      };
-      cache[current_skin] = cache_element;
-      $('.lava-programme li[data-scene-id="configure_skin"]').addClass('hidden-descendant');
-      if (skin in cache) {
-        return methods.doReplace(cache[skin]);
+      var $elems, setting_id;
+      setting_id = $(this).parents('.lava-toggle-setting').attr('data-setting-id');
+      $elems = $(".lava-setting[data-setting-toggle='" + setting_id + "']");
+      if ($(this).is(':checked')) {
+        $(this).parents('.lava-toggle-setting').addClass('lava-setting-no-border');
+        return $elems.removeClass('lava-setting-toggle-hidden').addClass('lava-setting-toggle-visible');
       } else {
-        data = {
-          'action': lavaVars.plugin_namespace + '_get_skin_settings',
-          'skin': skin
-        };
-        return $.getJSON(ajaxurl, data, methods.doReplace);
-      }
-    };
-    methods.doReplace = function(data) {
-      if ('scene' in data) {
-        $('.lava-scene[data-scene-id="configure_skin"]').remove();
-        $('#lava-stage').append(data['scene']);
-        $('.lava-scene[data-scene-id="configure_skin"]').lava().trigger('load.lava');
-      }
-      if ('actions' in data) {
-        $('.lava-actionbar-block[data-scene-id="configure_skin"]').html('');
-        $('.lava-actionbar-block[data-scene-id="configure_skin"]').append(data['actions']);
-        $('.lava-actionbar-block[data-scene-id="configure_skin"] *').lava().trigger('load.lava');
-      }
-      if ('hidden' in data && !data['hidden']) {
-        return $('.lava-programme li[data-scene-id="configure_skin"]').removeClass('hidden-descendant');
-      } else {
-        return $('.lava-programme li[data-scene-id="configure_skin"]').addClass('hidden-descendant');
+        $elems.removeClass('lava-setting-toggle-visible').addClass('lava-setting-toggle-hidden');
+        return $(this).parents('.lava-toggle-setting').removeClass('lava-setting-no-border');
       }
     };
     return lavaBindMethods(methods, namespace);

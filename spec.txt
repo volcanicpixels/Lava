@@ -38,3 +38,8 @@ do_action() {
 
 Fingerprint:
  - shouldn't use transient storage as that is not persistent enough (data can go missing)
+
+Naming settings:
+	for checkboxes that toggle a setting it should be named like so:
+		custom_css
+		custom_css_enabled

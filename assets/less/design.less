@@ -71,7 +71,7 @@
 	}
 }
 
-#lava-actionbar {
+#lava_actionbar {
 	.lava-actionbar-title {
 		color: @primary-color;
 		font-size: 20px;
@@ -182,17 +182,21 @@
 
 .lava-setting {
 	border-bottom: 1px solid #eee;
+
+	&.lava-setting-no-border {
+		border-bottom-color: transparent;
+	}
 }
 
 	/*
 		Skin setting
 	*/
-	.lava-setting.lava-setting-skin {
-		.lava-setting-skin-radio {
+	.lava-setting.lava-skin-setting {
+		.lava-skin-setting-radio {
 			.lava-invisible;
 		}
 
-		.lava-setting-skin-radio:checked + .lava-object-block-skin {
+		.lava-skin-setting-radio:checked + .lava-object-block-skin {
 			border-color:transparent ;
 
 			&:hover {

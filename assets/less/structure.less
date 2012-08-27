@@ -8,12 +8,12 @@
 
 @programme-width: 220px;
 
-#lava-theatre {
+#lava_theatre {
 	margin-left: -@bleed-left;
 	margin-right: -@bleed-right;
 }
 
-#lava-topbar {
+#lava_topbar {
 	@height: 50px;
 
 
@@ -48,7 +48,7 @@
 
 }
 
-#lava-actionbar {
+#lava_actionbar {
 	@height: 30px;
 	@padding: 15px;
 	height: @height + 2 * @padding;
@@ -76,14 +76,14 @@
 	}
 }
 
-#lava-programme {
+#lava_programme {
 	width: @programme-width;
 	margin-left: -(@programme-width + @bleed-left);
 	float: left;
 	padding-top: 30px;
 }
 
-#lava-stage {
+#lava_stage {
 	padding-top: 30px;
 }
 
@@ -180,15 +180,19 @@
 
 .lava-setting {
 	padding-bottom: 20px;
-}
+
+	&.lava-setting-toggle-hidden {
+		display: none;
+	}
+
 
 	/*
 		Skin setting
 	*/
-	.lava-setting.lava-setting-skin {
+	&.lava-skin-setting {
 
 
-		.lava-setting-skin-radio:checked + .lava-object-block-skin {
+		.lava-skin-setting-radio:checked + .lava-object-block-skin {
 
 			&:hover {
 				.lava-object-block-info {
@@ -215,7 +219,18 @@
 		}
 	}
 
+	/*
+		Textarea setting
+	*/
 
+	&.lava-textarea-setting {
+		.actual-input {
+			min-width: 400px;
+			min-height: 150px;
+		}
+	}
+
+}
 // applies padding to return to WordPress default
 .fix-bleed {
 	padding-left: @bleed-left;
@@ -310,9 +325,9 @@
 	States
 */
 
-#lava-theatre {
+#lava_theatre {
 	&.no-actionbar {
-		#lava-actionbar {
+		#lava_actionbar {
 			display: none;
 		}
 		

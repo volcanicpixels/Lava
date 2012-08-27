@@ -45,8 +45,9 @@ class Lava_Setting extends Lava_Base
 			'setting_value'   => $this->_get_setting_value(),
 			'setting_name'    => $this->_get_setting_name(),
 			'input_attrs'     => $this->_get_input_attrs(),
-			'setting_attrs'   => $this->_get_setting_attrs(),
-			'setting_classes' => $this->_get_setting_classes()
+			'setting_input_attrs'   => $this->_get_setting_input_attrs(),
+			'setting_classes' => $this->_get_setting_classes(),
+			'setting_attrs' => $this->_get_setting_attrs()
 		);
 		return array_merge( $old, $new );
 	}
@@ -70,6 +71,8 @@ class Lava_Setting extends Lava_Base
 		$vars = $this->_setting_controller->_parse_setting_vars( $vars );
 		foreach( $vars as $key => $value ) {
 			switch( $key ) {
+				case 'ignore_rest':
+					break 2;
 				case 'title':
 				case 'name':
 					$this->_set_setting_title( $value );
@@ -91,8 +94,12 @@ class Lava_Setting extends Lava_Base
 				case 'page_id':
 					$this->_set_page_id( $value );
 					break;
+				case 'toggle':
+					$this->_remember( '_setting_toggle', $value );
+					break;
 			}
 		}
+		return $vars;
 	}
 
 	function _get_setting_id() { //this is the local id to the controller - e.g. login_duration
@@ -118,7 +125,13 @@ class Lava_Setting extends Lava_Base
 	}
 
 	function _get_setting_classes() {
-		return array();
+		return $this->_get_lava_classes( false );
+	}
+
+	function _get_setting_attrs() {
+		return array(
+			'data-setting-toggle' => $this->_recall( '_setting_toggle', $this->_get_full_setting_id() . '_enabled' )
+		);
 	}
 
 	function _get_setting_name() {
@@ -136,9 +149,9 @@ class Lava_Setting extends Lava_Base
 		return array_merge( $old, $new );
 	}
 
-	function _get_setting_attrs() {
+	function _get_setting_input_attrs() {
 		$input_attrs = $this->_get_input_attrs();
-		$old = $this->_get_twig_context( 'setting_attrs', array() );
+		$old = $this->_get_twig_context( 'setting_input_attrs', array() );
 		$new = array(
 		);
 		return array_merge( $input_attrs, $old, $new );

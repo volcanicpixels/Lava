@@ -69,7 +69,10 @@ class Lava_Skin extends Lava_Extension
 	*/
 
 	function _template_head() {
-		
+		feed_links();
+		wlwmanifest_link();
+		noindex();
+		return $this->_apply_lava_filters( '_template_head', '' );
 	}
 
 	function _template_scripts() {

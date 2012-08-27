@@ -92,6 +92,19 @@ class Lava_Extension extends Lava_Settings {
 	}
 
 	function _parse_settings( $settings ) {
+		$sections = array(
+			'general' => array(
+				'title' => $this->_get_extension_name()
+			)
+		);
+		foreach( $settings as $setting_id => $setting_vars ){
+			if( array_key_exists( 'type', $setting_vars ) and $setting_vars['type'] == 'section' ) {
+				$sections[$setting_id] = array(
+					'title' => $this->_get_element( $setting_vars, 'title', $setting_id . ' settings' )
+				);
+				unset( $settings[ $setting_id ] );
+			}
+		}
 		foreach( $settings as $setting_id => $setting_vars ){
 			$setting_class = '';
 			if( ! is_array( $setting_vars ) ) {
@@ -99,6 +112,14 @@ class Lava_Extension extends Lava_Settings {
 			}
 			if( array_key_exists( 'type', $setting_vars ) ) {
 				$setting_class = $setting_vars[ 'type' ];
+			}
+			if( !array_key_exists( 'section', $setting_vars ) ) {
+				$setting_vars['section'] = 'general';
+			}
+
+			if( array_key_exists( $setting_vars['section'], $sections) ) {
+				$section = $sections[ $setting_vars['section'] ];
+				$setting_vars['section_title'] = $section['title'];
 			}
 			$this
 				->_add_setting( $setting_id, $setting_class )

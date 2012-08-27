@@ -6,14 +6,15 @@ do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaHeightAdjust'
+	selector = '.lava-scene.js-height-adjust'
 
 	methods.init = (e, lava) ->
 		$(lava).each () ->
-			$blocks = $(this).find( '.lava-scene.js-height-adjust' )
-			$blocks.on "load.lava.#{namespace}", methods.load
+			$elems = $(this).find( selector )
+			$.merge $elems, $(this).filter( selector )
 
-			$blocks = $(this).filter( '.lava-scene.js-height-adjust' )
-			$blocks.on "load.lava.#{namespace}", methods.load
+			$elems.on "load.lava.#{namespace}", methods.load
+
 
 			$(window).on "resize.lava.#{namespace}", methods.resizeWindow
 
@@ -23,13 +24,14 @@ do ($ = jQuery, window, document) ->
 		setTimeout methods.resizeWindow, 100
 
 	methods.resizeWindow = (e) ->
-		$( '.lava-scene.js-height-adjust' ).each methods.resize
+		$( selector ).each methods.resize
 
 	methods.resize = () ->
 		$this = $(@)
 		doc_height = $(document).height()
 		win_height = $(window).height()
 		min_height = $this.attr( 'data-height-adjust-min' )
+
 
 		if doc_height is win_height
 			# they are the same so we can make it larger

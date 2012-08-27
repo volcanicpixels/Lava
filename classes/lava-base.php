@@ -558,18 +558,20 @@ class Lava_Base
 		return get_class( $this );
 	}
 
-	function _get_lava_classes() {
+	function _get_lava_classes( $trim = true ) {
 		$classes = array();
 		$current_class = get_class( $this );
 		while( $current_class != 'Lava_Base' ) {
 			$current_class_array = explode( '_', $current_class );
-			if( count( $current_class_array ) <= 2 ) {
-				$classes[] = 'default';
-			} else {
-				unset( $current_class_array[0] );
-				array_pop( $current_class_array );
-				$classes[] = strtolower( implode( '-', $current_class_array ) );
+			if( $trim ) {
+				if( count( $current_class_array ) <= 2 ) {
+					$current_class_array = array( 'default' );
+				} else {
+					unset( $current_class_array[0] );
+					array_pop( $current_class_array );
+				}
 			}
+			$classes[] = strtolower( implode( '-', $current_class_array ) );
 			$current_class = get_parent_class( $current_class );
 		}
 		return $classes;
@@ -577,6 +579,14 @@ class Lava_Base
 
 	function _key_is_true( $arr, $prop ) {
 		return (array_key_exists( $prop, $arr) and $arr[$prop]);
+	}
+
+	function _get_element( $array, $key, $default = '' ) {
+		if( array_key_exists( $key, $array ) ) {
+			return $array[$key];
+		} else {
+			return $default;
+		}
 	}
 
 	function _request_var( $var, $default = false, $namespace = true ) {
@@ -600,20 +610,15 @@ class Lava_Base
 
 	/*
 	
-	 - unique
-	 - be editable
+	 fingerprint key stored as plugin property
 
 	*/
 
-	function _create_plugin_nonce( $expiration, $action ) {
-
-	}
-
 	function _get_fingerprint_key() {
-		if( array_key_exists( $this->_namespace( 'fingerprint' ), $_COOKIE ) ) {
-			return $_COOKIE[ $this->_namespace( 'fingerprint' ) ];
-		} else {
-			if( is_null( $this->_the_plugin->_fingerprint_key ) ) {
+		if( is_null( $this->_the_plugin->_fingerprint_key ) ) {
+			if( array_key_exists( $this->_namespace( 'fingerprint' ), $_COOKIE ) ) {
+				$this->_the_plugin->_fingerprint_key = $_COOKIE[ $this->_namespace( 'fingerprint' ) ];
+			} else {
 				$key = '';
 				$alpha = str_split( 'abcdefghijklmnopqrstuvwxyz0123456789', 1 );
 				for( $i = 0; $i < 8; $i++ ) {
@@ -621,8 +626,8 @@ class Lava_Base
 				}
 				$this->_the_plugin->_fingerprint_key = md5( $key );
 			}
-			return $this->_the_plugin->_fingerprint_key;
 		}
+		return $this->_the_plugin->_fingerprint_key;
 	}
 
 	function _set_fingerprint_cookie() {
@@ -637,21 +642,36 @@ class Lava_Base
 		return $this->_set_fingerprint( array_merge( $old, $new ) );
 	}
 
+
+
+	function _get_fingerprint( $expiration = '_expiration' ) {
+		$fingerprint_db = get_option( $this->_namespace( 'fingerprint_db' ), array() );
+		$fingerprint_key = $this->_get_fingerprint_key();
+
+		//check whether fingerprint exists, and hasn't expired
+		if(
+			!array_key_exists( $fingerprint_key, $fingerprint_db ) or
+			!array_key_exists( $expiration, $fingerprint_db[ $fingerprint_key ] ) or
+			$fingerprint_db[ $fingerprint_key ][ $expiration ] <  current_time( 'timestamp' ) //expired
+		  ) {
+			return array();
+		}
+		return $fingerprint_db[ $fingerprint_key ];
+	}
+
 	function _set_fingerprint( $fingerprint ) {
 		$default = array(
-			'_expiration' => 60*60*24
+			'_expiration' =>  current_time( 'timestamp' ) + 60*60*24
 		);
 		$fingerprint = array_merge( $default, $fingerprint );
 		$fingerprint_key = $this->_get_fingerprint_key();
 
-		$expiration = current_time( 'timestamp' ) + $fingerprint['_expiration'];
+		$expiration = $fingerprint['_expiration'];
 
 		$fingerprint_expiration = get_option( $this->_namespace( 'fingerprint_expiration' ), array() );
 		$fingerprint_db = get_option( $this->_namespace( 'fingerprint_db' ), array() );
+
 		$fingerprint_expiration[$fingerprint_key] = $expiration;
-
-		
-
 		$fingerprint_db[ $fingerprint_key ] = $fingerprint;
 
 		update_option( $this->_namespace( 'fingerprint_db' ), $fingerprint_db );
@@ -660,17 +680,6 @@ class Lava_Base
 		return $this->_r();
 	}
 
-	function _get_fingerprint() {
-		$fingerprint_db = get_option( $this->_namespace( 'fingerprint_db' ), array() );
-		$fingerprint_expiration = get_option( $this->_namespace( 'fingerprint_expiration' ), array() );
-		$fingerprint_key = $this->_get_fingerprint_key();
-		if( array_key_exists( $fingerprint_key, $fingerprint_db ) ) {
-			if( $fingerprint_expiration[$fingerprint_key] > current_time( 'timestamp' ) ) {
-				return $fingerprint_db[ $fingerprint_key ];
-			}
-		}
-		return array();
-	}
 
 	function _fingerprint_expiration() {
 		if( rand(0,9) != 1 ) {
