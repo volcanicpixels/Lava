@@ -8,7 +8,6 @@
  *
  * @since 1.0.0
  */
-if( ! class_exists('Lava_Base') ):
 class Lava_Base
 {
 	protected $_the_plugin;
@@ -606,6 +605,10 @@ class Lava_Base
 		} else {
 			return wp_create_nonce( $this->_namespace( $action ) );
 		}
+	}
+
+	function _get_filepath( $append = '' ) {
+		return dirname( dirname( __FILE__ ) ) . $append;
 	}
 
 	/*

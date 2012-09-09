@@ -1,7 +1,6 @@
 <?php
 
-require_once( dirname( __FILE__ ) . '/lava-base.php' );
-require_once( dirname( __FILE__ ) . '/debug.php' );
+require_once( dirname( __FILE__ ) . '/base.php' );
 
 /**
  * Plugin Class
@@ -12,13 +11,12 @@ require_once( dirname( __FILE__ ) . '/debug.php' );
  *
  * @since 1.0.0
  */
-class Lava_Plugin extends Lava_Base
-{
+
+class Lava_Plugin extends Lava_Base {
 	public $_singletons = array();
 	public $_plugin_name = 'Undefined plugin';
 	public $_plugin_version = 1.0;
 	public $_plugin_id = null;
-	public $_plugin_class_prefix = null;
 	public $_plugin_vendor;
 	public $_load_vendor = true;
 	public $_request_id;
@@ -34,28 +32,15 @@ class Lava_Plugin extends Lava_Base
 
 	/**
 	 * Constructor function called at initialization
-	 *
-	 * @access public
-	 * @param __FILE__ $plugin_file_path
-	 * @param string $plugin_name
-	 * @param float $plugin_version
-	 * @param boolean $load_vendor
-	 * @return void
-	 *
-	 * @since 1.0.0
 	 */
-	function __construct( $plugin_file_path ) {
+	function __construct( $filepath ) {
 		self::$_plugin_instance = $this;
 
-		$plugin_file_path = apply_filters( 'junction_fixer', $plugin_file_path );
 		$this->_the_plugin = $this;
-		$this->_plugin_file_path = $plugin_file_path;
+		$this->_plugin_filepath = $filepath;
 
 		if( is_null( $this->_plugin_id ) )
 			$this->_plugin_id = strtolower( str_replace( ' ', '_', $this->_plugin_name ) );
-
-		if( is_null( $this->_plugin_class_prefix ) )
-			$this->_plugin_class_prefix = get_class( $this );
 
 
 		//Add the class autoloader
@@ -81,43 +66,27 @@ class Lava_Plugin extends Lava_Base
 
 	/**
 	 * Defines what to do when a non-declared class is referenced
-	 *
-	 * @access public
-	 * @param string $className
-	 * @return void
-	 *
 	 * @since 1.0.0
 	 */
 	function __autoload( $class_name )
 	{
-		$file_name = strtolower( str_replace( '_' , '-', $class_name ) );
-		$main_dirs = array(
-			dirname( $this->_get_plugin_file_path() ) . '/classes',		//check plugin _classes folder and sub dirs
-			dirname( __FILE__ )   //check lava _classes folder and sub dirs
+		/*
+			Logic:
+				Check whether the class starts with the plugin prefix
+				if it does then make it lower case and substitute underscores for slashes and include it
+		*/
 
-		);
+		$class_namespace = $this->_get_class_namespace();
 
-		$sub_dirs = array(
-			'',
-			'ajax',
-			'extensions',
-			'external',
-			'pages',
-			'scenes',
-			'settings',
-			'skins',
-			'tables',
-			'widgets'
-		);
+		if( substr_count( $class_name, $class_namespace ) > 0 ) {
+			$filepath = str_replace( $class_namespace, '', $class_name );
+			$filepath = strtolower( $filepath );
+			$filepath = str_replace( '_', '/', $filepath );
+			$filepath = '/classes' . $filepath . '.php';
+			$filepath = $this->_get_filepath( $filepath );
 
-
-
-		foreach( $main_dirs as $main_dir ) {
-			foreach( $sub_dirs as $sub_dir ) {
-				$file_path = "{$main_dir}/{$sub_dir}/{$file_name}.php";
-				if( file_exists( $file_path ) and ! class_exists( $class_name ) ) {
-					include_once( $file_path );
-				}
+			if( file_exists( $filepath ) ) {
+				include_once( $filepath );
 			}
 		}
 	}
@@ -226,25 +195,21 @@ class Lava_Plugin extends Lava_Base
 		return $namespace;
 	}
 
-	function _get_plugin_class_prefix( $append = '' ) {
-		if( empty( $append ) )
-			return $this->_plugin_class_prefix;
-		else
-			return $this->_plugin_class_prefix . '_' . $append;
-	}
-
-
 
 	/**
 	 * Accessor methods for plugin data
 	 */
 
-	function _get_plugin_file_path() {
-		return $this->_plugin_file_path;
+	function _get_plugin_dir() {
+		return dirname( dirname( __FILE__ ) );
+	}
+
+	function _get_plugin_filepath() {
+		return $this->_plugin_filepath;
 	}
 
 	function _get_plugin_url( $append ) {
-		return plugins_url( $append, $this->_get_plugin_file_path() );
+		return plugins_url( $append, $this->_get_plugin_filepath() );
 	}
 
 	function _get_lava_path() {
@@ -255,7 +220,7 @@ class Lava_Plugin extends Lava_Base
 		return $this->_get_plugin_url( '/lava' . $append );
 	}
 
-	function _get_customisations_file_path() {
+	function _get_customisations_filepath() {
 		return WP_CONTENT_DIR . '/' . $this->_get_plugin_id();
 	}
 
@@ -289,12 +254,12 @@ class Lava_Plugin extends Lava_Base
 	 */
 
 	function _ajax( $kill_child = true ) {
-		$class_name = $this->_lava_class('Ajax_Handlers');
+		$class_name = $this->_class('Ajax_Handlers');
 		return $this->_get_singleton( $class_name, $kill_child );
 	}
 
 	function _extensions( $kill_child = true ) {
-		$class_name = $this->_lava_class('Extensions');
+		$class_name = $this->_class('Extensions');
 		return $this->_get_singleton( $class_name, $kill_child );
 	}
 
@@ -303,12 +268,12 @@ class Lava_Plugin extends Lava_Base
 	}
 
 	function _functions( $kill_child = true ) {
-		$class_name = $this->_lava_class('Functions');
+		$class_name = $this->_class('Functions');
 		return $this->_get_singleton( $class_name, $kill_child );
 	}
 
 	function _pages( $kill_child = true ) {
-		$class_name = $this->_lava_class('Pages');
+		$class_name = $this->_class('Pages');
 		return $this->_get_singleton( $class_name, $kill_child );
 	}
 

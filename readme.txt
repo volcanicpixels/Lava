@@ -1,1 +1,0 @@
-Lava is a framework for creating WordPress plugins
