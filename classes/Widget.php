@@ -23,9 +23,9 @@ class Lava_Widget extends Lava_Base
 		}
 
 		$this->_template_directories = array(
-			$this->_get_lava_path() . '/templates/default/widgets/',
-			$this->_get_lava_path() . '/templates/default/',
-			$this->_get_lava_path() . '/templates/'
+			$this->_get_plugin_dir() . '/templates/default/widgets/',
+			$this->_get_plugin_dir() . '/templates/default/',
+			$this->_get_plugin_dir() . '/templates/'
 		);
 	}
 

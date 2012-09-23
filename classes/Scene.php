@@ -68,9 +68,9 @@ class Lava_Scene extends Lava_Base
 		$this->_set_return_object( $scene_controller );
 
 		$this->_template_directories = array(
-			$this->_get_lava_path() . '/templates/default/scenes/',
-			$this->_get_lava_path() . '/templates/default/',
-			$this->_get_lava_path() . '/templates/'
+			$this->_get_plugin_dir() . '/templates/default/scene/',
+			$this->_get_plugin_dir() . '/templates/default/',
+			$this->_get_plugin_dir() . '/templates/'
 		);
 	}
 
@@ -175,8 +175,7 @@ class Lava_Scene extends Lava_Base
 	}
 
 	function _get_classes() {
-		$classes = array(
-		);
+		$classes = parent::_get_classes();
 
 		if( $this->_should_hide_scene ) {
 			$classes[] = 'hidden-descendant';

@@ -48,9 +48,7 @@ class Lava_Scene_Settings extends Lava_Scene
 
 	function _get_classes() {
 		$old = parent::_get_classes();
-		$new = array(
-			'lava-settings-scene'
-		);
+		$new = array();
 		if( count( $this->_get_settings() ) == 0 ) {
 			$new[] = 'hidden-descendant';
 		}

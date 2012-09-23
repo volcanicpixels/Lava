@@ -46,8 +46,8 @@ class Lava_Page extends Lava_Base
 		$this->_section_id = $section_id;
 
 		$this->_template_directories = array(
-			$this->_get_lava_path() . '/templates/default/',
-			$this->_get_lava_path() . '/templates/'
+			$this->_get_plugin_dir() . '/templates/default/',
+			$this->_get_plugin_dir() . '/templates/'
 		);
 		$plugin_dir = dirname ( $this->_get_filepath() ) . '/templates/';
 		if ( is_dir( $plugin_dir ) ) {
@@ -429,8 +429,8 @@ class Lava_Page extends Lava_Base
 	/* Page dependancy functions */
 
 	function _register_dependancies() {
-		$this->_page_controller->_use_lava_stylesheet( 'lava' );
-		$this->_page_controller->_use_lava_script( 'lava' );
+		$this->_page_controller->_use_plugin_stylesheet( 'lava' );
+		$this->_page_controller->_use_plugin_script( 'lava' );
 	}
 
 	function _add_dependancies() {

@@ -6,7 +6,7 @@ do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaSettingsScene'
-	selector = '.lava-scene.lava-settings-scene'
+	selector = '.lava-scene.lava-scene-settings'
 
 	methods.init = (e, lava) ->
 		$(lava).each () ->

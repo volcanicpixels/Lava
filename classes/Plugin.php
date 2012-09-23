@@ -211,15 +211,7 @@ class Lava_Plugin extends Lava_Base {
 		return plugins_url( $append, $this->_get_plugin_filepath() );
 	}
 
-	function _get_lava_path() {
-		return dirname( dirname( __file__ ) );
-	}
-
-	function _get_lava_url( $append ) {
-		return $this->_get_plugin_url( '/lava' . $append );
-	}
-
-	function _get_customisations_filepath( $append = '' ) {
+	function _get_customisations_dir( $append = '' ) {
 		return WP_CONTENT_DIR . '/' . $this->_get_plugin_id() . $append;
 	}
 

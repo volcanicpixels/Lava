@@ -208,68 +208,43 @@ class Lava_Page_Controller extends Lava_Base {
 	*/
 
 	function _add_dependancies() {
-		$this->_add_lava_stylesheet( 'lava', 'lava.css' );
-		$this->_add_lava_script( 'debug', 'ba-debug.min.js' );
-		$this->_add_lava_script( 'history', 'history.js' );
-		$this->_add_lava_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
-		$this->_add_lava_script( 'modernizr', 'modernizr-2.6.1.js', array(), '2.6.1' );
-		$this->_add_lava_script( 'selectivizr', 'selectivizr-min.js', array() );
-		$this->_add_lava_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'debug' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'selectivizr' ), $this->_namespace( 'history' ) ) );
+		$this->_add_plugin_stylesheet( 'lava', 'lava.css' );
+		$this->_add_plugin_script( 'debug', 'ba-debug.min.js' );
+		$this->_add_plugin_script( 'history', 'history.js' );
+		$this->_add_plugin_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
+		$this->_add_plugin_script( 'modernizr', 'modernizr-2.6.1.js', array(), '2.6.1' );
+		$this->_add_plugin_script( 'selectivizr', 'selectivizr-min.js', array() );
+		$this->_add_plugin_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'debug' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'selectivizr' ), $this->_namespace( 'history' ) ) );
 		$this->_do_lava_action( '_add_dependancies' );
 	}
 
-	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
-		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue );
-		return $this->_r();
-	}
-
-	function _add_lava_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = false ) {
-		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, true, 'lava/assets/' );
-		return $this->_r();
-	}
-
 	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
-		$this->_add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, true, 'assets/' );
-		return $this->_r();
+		$src = $this->_get_plugin_url( '/assets/css/' . $src );
+		$handle = $this->_namespace( $handle );
+		return $this->_add_stylesheet( $handle, $src, $deps, $ver, $media, $should_enqueue );
 	}
 
-	function _add_stylesheet_( $handle, $src, $deps, $ver, $media, $should_enqueue, $should_namespace = false, $asset_folder = false ) {
-		if( $should_namespace ) {
-			$handle = $this->_namespace( $handle );
-		}
-
-		if( $asset_folder ) {
-			$src = plugins_url( $asset_folder . $src, $this->_get_plugin_filepath() );
-		}
+	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
 		$style = compact( 'handle', 'src', 'deps', 'ver', 'media', 'should_enqueue' );
 		$this->_styles[ $handle ] = $style;
+		return $this->_r();
 	}
 
 	function _stylesheet_exists( $handle ) {
 		return array_key_exists( $handle, $this->_styles );
 	}
 
-	function _use_stylesheet( $handle, $should_namespace = false ) {
-		if( $should_namespace ) {
-			$handle = $this->_namespace( $handle );
-		}
+	function _use_plugin_stylesheet( $handle ) {
+		$handle = $this->_namespace( $handle );
+		return $this->_use_stylesheet( $handle );
+	}
 
+	function _use_stylesheet( $handle ) {
 		if( $this->_stylesheet_exists( $handle ) ) {
 			$this->_styles[ $handle ]['should_enqueue'] = true;
 		}
 		return $this->_r();
 	}
-
-	function _use_lava_stylesheet( $handle ) {
-		$this->_use_stylesheet( $handle, true );
-		return $this->_r();
-	}
-
-	function _use_plugin_stylesheet( $handle ) {
-		$this->_use_stylesheet( $handle, true );
-		return $this->_r();
-	}
-
 
 	function _register_styles() {
 		foreach( $this->_styles as $style ) {
@@ -287,55 +262,31 @@ class Lava_Page_Controller extends Lava_Base {
 		}
 	}
 
-	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
-		$this->_add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue );
-		return $this->_r();
-	}
-
-	function _add_lava_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = false ) {
-		$this->_add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue, true, 'lava/assets/js/' );
-		return $this->_r();
-	}
-
 	function _add_plugin_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
-		$this->_add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue, true, 'assets/js/' );
-		return $this->_r();
+		$src = $this->_get_plugin_url( '/assets/js/' . $src );
+		$handle = $this->_namespace( $handle );
+		return $this->_add_script( $handle, $src, $deps, $ver, $in_footer, $should_enqueue );
 	}
 
-	function _add_script_( $handle, $src, $deps, $ver, $in_footer, $should_enqueue, $should_namespace = false, $asset_folder = false ) {
-		if( $should_namespace ) {
-			$handle = $this->_namespace( $handle );
-		}
-
-		if( $asset_folder ) {
-			$src = plugins_url( $asset_folder . $src, $this->_get_plugin_filepath() );
-		}
+	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
 		$script = compact( 'handle', 'src', 'deps', 'ver', 'in_footer', 'should_enqueue' );
 		$this->_scripts[ $handle ] = $script;
+		return $this->_r();
 	}
 
 	function _script_exists( $handle ) {
 		return array_key_exists( $handle, $this->_scripts );
 	}
 
-	function _use_script( $handle, $should_namespace = false ) {
-		if( $should_namespace ) {
-			$handle = $this->_namespace( $handle );
-		}
+	function _use_plugin_script( $handle ) {
+		$handle = $this->_namespace( $handle );
+		return $this->_use_script( $handle );
+	}
 
+	function _use_script( $handle ) {
 		if( $this->_script_exists( $handle ) ) {
 			$this->_scripts[ $handle ]['should_enqueue'] = true;
 		}
-		return $this->_r();
-	}
-
-	function _use_lava_script( $handle ) {
-		$this->_use_script( $handle, true );
-		return $this->_r();
-	}
-
-	function _use_plugin_script( $handle ) {
-		$this->_use_script( $handle, true );
 		return $this->_r();
 	}
 

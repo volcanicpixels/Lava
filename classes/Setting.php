@@ -29,9 +29,9 @@ class Lava_Setting extends Lava_Base
 		$this->_set_parent( $setting_controller );
 
 		$this->_template_directories = array(
-			$this->_get_lava_path() . '/templates/default/settings/',
-			$this->_get_lava_path() . '/templates/default/',
-			$this->_get_lava_path() . '/templates/'
+			$this->_get_plugin_dir() . '/templates/default/setting/',
+			$this->_get_plugin_dir() . '/templates/default/',
+			$this->_get_plugin_dir() . '/templates/'
 		);
 	}
 
@@ -125,7 +125,7 @@ class Lava_Setting extends Lava_Base
 	}
 
 	function _get_setting_classes() {
-		return $this->_get_lava_classes( false );
+		return $this->_get_classes();
 	}
 
 	function _get_setting_attrs() {

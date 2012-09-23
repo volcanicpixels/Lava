@@ -543,20 +543,26 @@ class Lava_Base {
 		return get_class( $this );
 	}
 
-	function _get_lava_classes( $trim = true ) {
+	function _get_classes() {
+		return $this->_get_lava_classes( 'lava', true );
+	}
+
+	function _get_lava_classes( $prefix = '', $lowercase = false ) {
+		if( !empty( $prefix ) ) {
+			$prefix .= '-';
+		}
 		$classes = array();
 		$current_class = get_class( $this );
-		while( $current_class != 'Lava_Base' ) {
-			$current_class_array = explode( '_', $current_class );
-			if( $trim ) {
-				if( count( $current_class_array ) <= 2 ) {
-					$current_class_array = array( 'default' );
-				} else {
-					unset( $current_class_array[0] );
-					array_pop( $current_class_array );
-				}
+		$base_class = $this->_class( 'Base' );
+		$namespace = $this->_class();
+
+		while( $current_class != $base_class ) {
+			$lava_class = explode( '_', str_replace( $namespace . '_', '', $current_class) );
+			if( $lowercase ) {
+				$classes[] = strtolower( $prefix . implode( '-', $lava_class ) );
+			} else {
+				$classes[] = $prefix . implode( '-', $lava_class );
 			}
-			$classes[] = strtolower( implode( '-', $current_class_array ) );
 			$current_class = get_parent_class( $current_class );
 		}
 		return $classes;
@@ -745,6 +751,7 @@ class Lava_Base {
 				$classes = $this->_get_lava_classes();
 
 				foreach( $classes as $class ) {
+					$class = str_replace( '-', '/', $class);
 					foreach( $this->_template_directories as $directory ) {
 						if( file_exists( $directory . $class . '.twig' ) ) {
 							$template = $class . '.twig';
@@ -757,6 +764,7 @@ class Lava_Base {
 					echo 'Could not find any template:';
 					echo '<br/>Looked for:';
 					foreach( $classes as $class ) {
+					$class = str_replace( '-', '/', $class);
 						echo '<br/>' . $class;
 					}
 					echo '<br/>in:';

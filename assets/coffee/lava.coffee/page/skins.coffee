@@ -12,7 +12,7 @@ do ($ = jQuery, window, document) ->
 
 	methods = {}
 	namespace = 'lavaSkinsPage'
-	selector = '.lava-scene[data-scene-id="choose_skin"] .lava-skin-setting-radio';
+	selector = '.lava-scene[data-scene-id="Settings_Skins"] .lava-setting-skin-radio';
 	cache = {}
 
 	methods.init = (e, lava) ->
