@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-class Lava_Message_Setting extends Lava_Textarea_Setting {
+class Lava_Setting_Message extends Lava_Setting_Textarea {
 
 }
 ?>

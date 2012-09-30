@@ -7,14 +7,13 @@
  * @since 1.0.0
  */
 class Lava_Extension_Controller extends Lava_Setting_Controller {
-
 	public $_extensions = array();
 	public $_controller_namespace = 'extension';
 
 
 
 
-	function _parent__get_extension_dir( $extension_id ) {
+	function _parent__get_extension_dirname( $extension_id ) {
 		$extension = explode( '.', $extension_id );
 		unset( $extension[0] );
 		return implode('.', $extension);
@@ -22,18 +21,19 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 
 	function _parent__get_extension_path( $extension_id, $append = '' ) {
 		$extension_debris = explode( '.', $extension_id );
+		$append = '/' . $this->_get_controller_namespace( true ) . '/' . $this->_get_extension_dirname( $extension_id ) . $append;
+
 		if( $extension_debris[0] == 'plugin' ) {
-			$path = dirname( $this->_get_filepath() );
+			return $this->_get_plugin_path( $append );
 		} else {
-			$path = $this->_get_customisations_filepath();
+			$path = $this->_get_customisations_path();
 		}
 
-		return $path . '/' . $this->_get_controller_namespace( true ) . '/' . $this->_get_extension_dir( $extension_id ) . $append;
 	}
 
 	function _get_extension_url( $extension_id, $append = '' ) {
 		$extension_id_debris = explode( '.', $extension_id );
-		$append = '/' . $this->_get_controller_namespace( true ) . '/' . $this->_get_extension_dir( $extension_id ) . $append;
+		$append = '/' . $this->_get_controller_namespace( true ) . '/' . $this->_get_extension_dirname( $extension_id ) . $append;
 		if( $extension_id_debris[0] == 'plugin' ) {
 			return $this->_get_plugin_url( $append );
 		} else {
@@ -83,8 +83,9 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 	}
 
 	function _register_extensions() {
-		$plugin_extension_paths = glob( $this->_get_plugin_dir() . '/' . $this->_get_controller_namespace( true ) . '/*', GLOB_ONLYDIR );
-		$custom_extension_paths = glob( $this->_get_customisations_dir() . '/' . $this->_get_controller_namespace( true ) . '/*', GLOB_ONLYDIR );
+		$append = '/' . $this->_get_controller_namespace( true ) . '/*';
+		$plugin_extension_paths = glob( $this->_get_plugin_path( $append ), GLOB_ONLYDIR );
+		$custom_extension_paths = glob( $this->_get_customisations_path( $append ), GLOB_ONLYDIR );
 
 		foreach( $plugin_extension_paths as $path ) {
 			$path = explode( '/', $this->_path( $path ) );

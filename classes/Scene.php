@@ -42,9 +42,7 @@
 
 
 */
-class Lava_Scene extends Lava_Base
-{
-
+class Lava_Scene extends Lava_Base {
 	public $_template_directories = array();
 	public $_twig_template;
 	public $_should_hide_scene = false;
@@ -225,10 +223,12 @@ class Lava_Scene extends Lava_Base
 
 	function _do_scene_actions() {
 		$buttons = array();
-		foreach( class_parents( $this ) as $parent )
-		{
-			if( substr_count( $parent, 'Scene' ) ) {
-				$buttons = $this->_load_buttons( $this->_get_scene_class( $parent ), $buttons );
+		$classes = $this->_get_lava_classes();
+		$classes = array_reverse($classes);
+		foreach( $classes as $class ) {
+			if( substr_count( $class, 'Scene' ) ) {
+				$class = str_replace( '-', '/', $class);
+				$buttons = $this->_load_buttons( $class, $buttons );
 			}
 		}
 		$buttons = $this->_load_buttons( $this->_get_scene_class(), $buttons );
@@ -291,7 +291,7 @@ class Lava_Scene extends Lava_Base
 		$defaults = array();
 		$args = array_merge_recursive($defaults, $args);
 		$this->_initialize_twig();
-		$template = $this->_load_template( 'buttons/' . $type . '.twig' );
+		$template = $this->_load_template( 'Button/' . $type . '.twig' );
 		return $template->render( $args );
 	}
 

@@ -81,7 +81,7 @@ class Lava_Plugin extends Lava_Base {
 			$filepath = strtolower( $filepath );
 			$filepath = str_replace( '_', '/', $filepath );
 			$filepath = '/classes' . $filepath . '.php';
-			$filepath = $this->_get_filepath( $filepath );
+			$filepath = $this->_get_plugin_path( $filepath );
 
 			if( file_exists( $filepath ) ) {
 				include_once( $filepath );
@@ -211,7 +211,11 @@ class Lava_Plugin extends Lava_Base {
 		return plugins_url( $append, $this->_get_plugin_filepath() );
 	}
 
-	function _get_customisations_dir( $append = '' ) {
+	function _get_plugin_path( $append = '' ) {
+		return dirname( $this->_get_plugin_filepath() ) . $append;
+	}
+
+	function _get_customisations_path( $append = '' ) {
 		return WP_CONTENT_DIR . '/' . $this->_get_plugin_id() . $append;
 	}
 

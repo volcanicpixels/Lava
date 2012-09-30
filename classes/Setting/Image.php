@@ -9,6 +9,6 @@
  * @since 1.0.0
  */
 
-class Lava_Image_Setting extends Lava_Setting {
+class Lava_Setting_Image extends Lava_Setting {
 }
 ?>

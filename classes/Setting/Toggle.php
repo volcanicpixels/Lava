@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-class Lava_Toggle_Setting extends Lava_Checkbox_Setting {
+class Lava_Setting_Toggle extends Lava_Setting_Checkbox {
 	function _get_setting_attrs() {
 		$attrs = parent::_get_setting_attrs();
 		if( array_key_exists( 'data-setting-toggle', $attrs ) ) {

@@ -20,22 +20,23 @@ class Lava_Skin extends Lava_Extension
 
 	function _get_scripts() {
 		$return = array();
-		if( $this->_file_exists( 'scripts.js' ) ) {
-			$return[] = $this->_get_url( 'scripts.js' );
+		if( $this->_extension_file_exists( '/assets/js/scripts.js' ) ) {
+			$return[] = $this->_get_extension_url( '/assets/js/scripts.js' );
 		}
 		return $return;
 	}
 
 	function _get_template_directories() {
-		return array(
-			$this->_get_extension_path() . '/templates'
+		$new = array(
+			$this->_get_extension_path( '/templates' )
 		);
+		return $new;
 	}
 
 	function _get_styles() {
 		$return = array();
-		if( $this->_file_exists( 'styles.css' ) ) {
-			$return[] = $this->_get_url( 'styles.css' );
+		if( $this->_extension_file_exists( '/assets/css/styles.css' ) ) {
+			$return[] = $this->_get_extension_url( '/assets/css/styles.css' );
 		}
 		return $return;
 	}
@@ -67,6 +68,10 @@ class Lava_Skin extends Lava_Extension
 	/*
 		Template functions
 	*/
+
+	function _template_get( $variable ) {
+		return array_key_exists( $variable, $_GET );
+	}
 
 	function _template_head() {
 		feed_links();

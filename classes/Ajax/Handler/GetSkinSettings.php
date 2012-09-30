@@ -9,9 +9,9 @@
 class Lava_Ajax_Handler_GetSkinSettings extends Lava_Ajax_Handler {
 	function _do_ajax_data() {
 		$skin_id = $_REQUEST['skin'];
-		$this->_pages()->_get_page( 'skins' )->_add_scene( 'configure_skin' )->_set_skin_id( $skin_id );
+		$this->_pages()->_get_page( 'skins' )->_add_scene( 'Settings_Skin' )->_set_skin_id( $skin_id );
 
-		$scene = $this->_pages()->_get_page( 'skins' )->_get_scene_( 'configure_skin' );
+		$scene = $this->_pages()->_get_page( 'skins' )->_get_scene_( 'Settings_Skin' );
 
 		$scene_html = $scene->_do_scene();
 		$scene_actions = implode( '', $scene->_do_scene_actions() );

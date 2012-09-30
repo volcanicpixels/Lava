@@ -36,7 +36,7 @@ class Lava_Extension extends Lava_Setting_Controller {
 	}
 
 
-	function _get_extension_dir() {
+	function _get_extension_dirname() {
 		return $this->_extension_controller->_get_extension_dir( $this->_get_extension_id() );
 	}
 
@@ -48,22 +48,16 @@ class Lava_Extension extends Lava_Setting_Controller {
 		return $this->_get_extension_id();
 	}
 
-	function _get_extension_path() {
-		return $this->_extension_path;
+	function _get_extension_path( $append = '' ) {
+		return $this->_extension_controller->_get_extension_path( $this->_get_extension_id(), $append );
 	}
 
 	function _get_extension_scene_id() {
 		return $this->_extension_namespace . '-' . $this->_get_extension_slug();
 	}
 
-	function _get_url( $path ) {
-		$path = '/' . $this->_extension_namespace . 's/' . $this->_get_extension_dir() . '/' . $path;
-		//@todo - must be a better way of determining whether this is a plugin skin or custom one
-		if( substr_count( $this->_get_extension_id(), 'plugin') ) {
-			return $this->_get_plugin_url( $path );
-		} else {
-			return $this->_get_customisations_url( $path );
-		}
+	function _get_extension_url( $append = '' ) {
+		return $this->_extension_controller->_get_extension_url( $this->_get_extension_id(), $append );
 	}
 
 	/*
@@ -75,8 +69,8 @@ class Lava_Extension extends Lava_Setting_Controller {
 	}
 
 
-	function _file_exists( $file ) {
-		return file_exists( $this->_get_extension_path() . '/' . $file );
+	function _extension_file_exists( $file ) {
+		return file_exists( $this->_get_extension_path( $file ) );
 	}
 
 	/*
@@ -135,7 +129,7 @@ class Lava_Extension extends Lava_Setting_Controller {
 		}
 
 		if( $this->_key_is_true( $vars, 'get_url' ) ) {
-			$vars['default'] = $this->_get_url( $vars['default'] );
+			$vars['default'] = $this->_get_extension_url( $vars['default'] );
 		}
 		$extension_namespace = $this->_capitalize( $this->_extension_namespace );
 		$defaults = array(

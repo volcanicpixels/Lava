@@ -8,7 +8,7 @@
  *
  * @since 1.0.0
  */
-class Lava_Widgets extends Lava_Base
+class Lava_Widget_Controller extends Lava_Base
 {
 	public $_widgets = array();
 

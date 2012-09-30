@@ -11,7 +11,7 @@ This aims to improve this experience by loading the settings via ajax when the s
 do ($ = jQuery, window, document) ->
 
 	methods = {}
-	namespace = 'lavaSkinsPage'
+	namespace = 'lavaPageSkins'
 	selector = '.lava-scene[data-scene-id="Settings_Skins"] .lava-setting-skin-radio';
 	cache = {}
 
@@ -27,14 +27,14 @@ do ($ = jQuery, window, document) ->
 		check whether skin_id is in cache
 		###
 		skin = $(this).val()
-		current_skin = $('.lava-scene[data-scene-id="configure_skin"]').attr( 'data-skin-id' );
+		current_skin = $('.lava-scene[data-scene-id="Settings_Skin"]').attr( 'data-skin-id' );
 		cache_element = {
-			'scene': $('.lava-scene[data-scene-id="configure_skin"]').clone(),
-			'actions': $('.lava-actionbar-block[data-scene-id="configure_skin"] *').clone(),
-			'hidden' : $('.lava-programme li[data-scene-id="configure_skin"]').hasClass( 'hidden-descendant' )
+			'scene': $('.lava-scene[data-scene-id="Settings_Skin"]').clone(),
+			'actions': $('.lava-actionbar-block[data-scene-id="Settings_Skin"] *').clone(),
+			'hidden' : $('.lava-programme li[data-scene-id="Settings_Skin"]').hasClass( 'hidden-descendant' )
 		}
 		cache[current_skin] = cache_element
-		$('.lava-programme li[data-scene-id="configure_skin"]').addClass( 'hidden-descendant' )
+		$('.lava-programme li[data-scene-id="Settings_Skin"]').addClass( 'hidden-descendant' )
 		if skin of cache
 			methods.doReplace( cache[skin] )
 		else
@@ -46,17 +46,17 @@ do ($ = jQuery, window, document) ->
 
 	methods.doReplace = (data) ->
 		if 'scene' of data
-			$('.lava-scene[data-scene-id="configure_skin"]').remove()
+			$('.lava-scene[data-scene-id="Settings_Skin"]').remove()
 			$('#lava_stage').append( data['scene'] )
-			$('.lava-scene[data-scene-id="configure_skin"]').lava().trigger 'load.lava'
+			$('.lava-scene[data-scene-id="Settings_Skin"]').lava().trigger 'load.lava'
 		if 'actions' of data
-			$('.lava-actionbar-block[data-scene-id="configure_skin"]').html( '' )
-			$('.lava-actionbar-block[data-scene-id="configure_skin"]').append( data['actions'] )
-			$('.lava-actionbar-block[data-scene-id="configure_skin"] *').lava().trigger 'load.lava'
+			$('.lava-actionbar-block[data-scene-id="Settings_Skin"]').html( '' )
+			$('.lava-actionbar-block[data-scene-id="Settings_Skin"]').append( data['actions'] )
+			$('.lava-actionbar-block[data-scene-id="Settings_Skin"] *').lava().trigger 'load.lava'
 		if 'hidden' of data and not data['hidden']
-			$('.lava-programme li[data-scene-id="configure_skin"]').removeClass( 'hidden-descendant' )
+			$('.lava-programme li[data-scene-id="Settings_Skin"]').removeClass( 'hidden-descendant' )
 		else
-			$('.lava-programme li[data-scene-id="configure_skin"]').addClass( 'hidden-descendant' )
+			$('.lava-programme li[data-scene-id="Settings_Skin"]').addClass( 'hidden-descendant' )
 
 
 

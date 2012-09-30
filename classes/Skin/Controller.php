@@ -8,8 +8,7 @@
  *
  * @since 1.0.0
  */
-class Lava_Skin_Controller extends Lava_Extension_Controller
-{
+class Lava_Skin_Controller extends Lava_Extension_Controller {
 	public $_controller_namespace = 'skin';
 
 	function _construct() {
@@ -74,6 +73,7 @@ class Lava_Skin_Controller extends Lava_Extension_Controller
 	function _initialize_twig() {
 		parent::_initialize_twig();
 		$this->_add_twig_function( 'head', '->_skins()->_get_skin()->_template_head', array( 'is_safe' => array('html') ) );
+		$this->_add_twig_function( 'get', '->_skins()->_get_skin()->_template_get' );
 		$this->_add_twig_function( 'styles', '->_skins()->_get_skin()->_template_styles', array( 'is_safe' => array('html') )  );
 		$this->_add_twig_function( 'scripts', '->_skins()->_get_skin()->_template_scripts', array( 'is_safe' => array('html') ) );
 		$this->_add_twig_function( 'widget', '->_skins()->_get_skin()->_template_widget', array( 'is_safe' => array('html') ) );
