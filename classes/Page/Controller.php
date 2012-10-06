@@ -58,8 +58,6 @@ class Lava_Page_Controller extends Lava_Base {
 
 	function _add_section(  $section_title = 'Undefined Section', $section_id = 'default' ) {
 
-		trigger_error();
-
 		if( $this->_section_exists( $section_id ) ) {
 			return $this->_r();
 		}
