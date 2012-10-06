@@ -152,6 +152,7 @@ class Lava_Plugin extends Lava_Base {
 		$pages = $this->_funcs()->_load_yaml( 'admin_pages.yaml' );
 
 		foreach( $pages as $page_id => $page_vars ){
+			exit('this is a test');
 			$page_class = '';
 			if( ! is_array( $page_vars ) ) {
 				$page_vars = array();

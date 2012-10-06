@@ -97,6 +97,9 @@ class Lava_Setting extends Lava_Base
 				case 'toggle':
 					$this->_remember( '_setting_toggle', $value );
 					break;
+				case 'hidden':
+					$this->_remember( '_setting_hidden', $value );
+					break;
 			}
 		}
 		return $vars;
@@ -203,7 +206,20 @@ class Lava_Setting extends Lava_Base
 		Flow functions
 	*/
 
+	function _should_register_with_page() {
+
+		if( $this->_recall( '_setting_hidden', false ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	function _register_setting_with_page( $page_ids = null, $scene_ids = null ) {
+
+		if( !$this->_should_register_with_page() ) {
+			return;
+		}
 		//add settings page
 		//add relevant scene
 		if( is_null( $scene_ids ) ) {

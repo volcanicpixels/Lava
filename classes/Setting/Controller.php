@@ -183,7 +183,8 @@ class Lava_Setting_Controller extends Lava_Base
 	}
 
 	function _register_settings_with_page( $page_ids = null, $scene_ids = null ) {
-		foreach( $this->_get_settings() as $setting ) {
+		$settings = $this->_get_settings();
+		foreach( $settings as $setting_id => $setting ) {
 			$setting->_register_setting_with_page( $page_ids, $scene_ids );
 		}
 	}
