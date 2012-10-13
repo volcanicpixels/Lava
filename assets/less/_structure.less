@@ -229,6 +229,28 @@
 		}
 	}
 
+	/* Extension setting */
+
+	&.lava-setting-extension {
+		.no-select;
+		float: left;
+		.lava-setting-extension-checkbox:checked + .lava-object-block-extension {
+			.lava-object-block-info {
+				margin:-1px;
+				border-width: 7px;
+			}
+			.lava-object-block-info {
+				.lava-object-block-description {
+					&.lava-object-block-inset {
+						margin-left: 0px;
+						margin-right: 0px;
+						margin-bottom: 0px;
+					}
+				}
+			}
+		}
+	}
+
 	/*
 		Textarea setting
 	*/
@@ -274,7 +296,7 @@
 		position: relative;
 		max-width: 30%;
 		min-width: 300px !important;
-		float: left;
+
 
 		&:hover {
 
@@ -287,6 +309,7 @@
 				}
 			}
 		}
+
 
 		.lava-object-block-info {
 			border: 6px solid transparent;

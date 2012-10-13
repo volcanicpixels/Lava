@@ -224,6 +224,24 @@
 		}
 	}
 
+	/*
+		Extension setting
+	*/
+
+	.lava-setting-extension {
+		.lava-setting-extension-checkbox {
+			.lava-invisible;
+		}
+
+		.lava-setting-extension-checkbox:checked + .lava-object-block-extension {
+			border-color: transparent;
+
+			.lava-object-block-info {
+				border-color: @primary-color;
+			}
+		}
+	}
+
 
 /*
 	Ingredients > These are the building blocks for the UI
@@ -247,6 +265,8 @@
 			.lava-object-block-tray {
 				border-top: 5px white solid;
 			}
+
+			
 		}
 
 		.lava-object-block-info {
@@ -257,6 +277,26 @@
 
 				}
 			}
+
+			.lava-object-block-title {
+				padding: 0px 5px;
+				font-size: 14px;
+			}
+
+			.lava-object-block-description {
+				padding: 0px 5px;
+
+				&.lava-object-block-inset {
+					margin-left: -6px;
+					margin-right: -6px;
+					margin-bottom: -6px;
+				}
+			}
+		}
+
+		.lava-object-block-inset {
+			.box-shadow( inset 0px 4px 6px -4px rgba(0,0,0,0.2) );
+			background: whiteSmoke;
 		}
 
 		.lava-object-block-tray {

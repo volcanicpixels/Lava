@@ -1,0 +1,4 @@
+# A list of domains from which updates can be downloaded without asking user consent (prevents plugin hijacking)
+volcanicpixels.com
+*.volcanicpixels.com
+github.com
