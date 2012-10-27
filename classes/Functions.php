@@ -7,6 +7,7 @@ class Lava_Functions extends Lava_Base
 			'admin_bar_menu',
 			'get_header',
 			'init',
+			'wp_head'
 		);
 
 		$other_hooks = array(
