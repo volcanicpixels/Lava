@@ -211,20 +211,19 @@ class Lava_Page_Controller extends Lava_Base {
 		$this->_add_plugin_stylesheet( 'lava', 'lava.css' );
 		$this->_add_plugin_script( 'debug', 'ba-debug.min.js' );
 		$this->_add_plugin_script( 'history', 'history.js' );
-		$this->_add_plugin_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
 		$this->_add_plugin_script( 'modernizr', 'modernizr-2.6.1.js', array(), '2.6.1' );
 		$this->_add_plugin_script( 'selectivizr', 'selectivizr-min.js', array() );
 		$this->_add_plugin_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'debug' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'selectivizr' ), $this->_namespace( 'history' ) ) );
 		$this->_do_lava_action( '_add_dependancies' );
 	}
 
-	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
+	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = false ) {
 		$src = $this->_get_plugin_url( '/assets/css/' . $src );
 		$handle = $this->_namespace( $handle );
 		return $this->_add_stylesheet( $handle, $src, $deps, $ver, $media, $should_enqueue );
 	}
 
-	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
+	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = false ) {
 		$style = compact( 'handle', 'src', 'deps', 'ver', 'media', 'should_enqueue' );
 		$this->_styles[ $handle ] = $style;
 		return $this->_r();
@@ -262,13 +261,13 @@ class Lava_Page_Controller extends Lava_Base {
 		}
 	}
 
-	function _add_plugin_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
+	function _add_plugin_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = false ) {
 		$src = $this->_get_plugin_url( '/assets/js/' . $src );
 		$handle = $this->_namespace( $handle );
 		return $this->_add_script( $handle, $src, $deps, $ver, $in_footer, $should_enqueue );
 	}
 
-	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
+	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = false ) {
 		$script = compact( 'handle', 'src', 'deps', 'ver', 'in_footer', 'should_enqueue' );
 		$this->_scripts[ $handle ] = $script;
 		return $this->_r();
