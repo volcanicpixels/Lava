@@ -15,9 +15,10 @@ class Lava_Skin_Controller extends Lava_Extension_Controller {
 		$args = func_get_args();
 		call_user_func_array( array( 'parent', '_construct' ), $args );
 		$args = array(
-			'default' => 'plugin.default',
-			'scene'   => 'Settings_Skins',
-			'page'    => 'skins'
+			'default'	=> 'plugin.default',
+			'scene'		=> 'Settings_Skins',
+			'page'		=> 'skins',
+			'hidden'	=> true
 		);
 		$this->_add_setting( 'active_skin_id', 'skin' )->_parse_vars( $args );
 	}

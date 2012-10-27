@@ -211,20 +211,19 @@ class Lava_Page_Controller extends Lava_Base {
 		$this->_add_plugin_stylesheet( 'lava', 'lava.css' );
 		$this->_add_plugin_script( 'debug', 'ba-debug.min.js' );
 		$this->_add_plugin_script( 'history', 'history.js' );
-		$this->_add_plugin_script( 'modernizr', 'modernizr-2.5.3.js', array(), '2.5.3' );
 		$this->_add_plugin_script( 'modernizr', 'modernizr-2.6.1.js', array(), '2.6.1' );
 		$this->_add_plugin_script( 'selectivizr', 'selectivizr-min.js', array() );
 		$this->_add_plugin_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'debug' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'selectivizr' ), $this->_namespace( 'history' ) ) );
 		$this->_do_lava_action( '_add_dependancies' );
 	}
 
-	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
+	function _add_plugin_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = false ) {
 		$src = $this->_get_plugin_url( '/assets/css/' . $src );
 		$handle = $this->_namespace( $handle );
 		return $this->_add_stylesheet( $handle, $src, $deps, $ver, $media, $should_enqueue );
 	}
 
-	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = true ) {
+	function _add_stylesheet( $handle, $src, $deps = array(), $ver = false, $media = false, $should_enqueue = false ) {
 		$style = compact( 'handle', 'src', 'deps', 'ver', 'media', 'should_enqueue' );
 		$this->_styles[ $handle ] = $style;
 		return $this->_r();
@@ -262,13 +261,13 @@ class Lava_Page_Controller extends Lava_Base {
 		}
 	}
 
-	function _add_plugin_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
+	function _add_plugin_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = false ) {
 		$src = $this->_get_plugin_url( '/assets/js/' . $src );
 		$handle = $this->_namespace( $handle );
 		return $this->_add_script( $handle, $src, $deps, $ver, $in_footer, $should_enqueue );
 	}
 
-	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = true ) {
+	function _add_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false, $should_enqueue = false ) {
 		$script = compact( 'handle', 'src', 'deps', 'ver', 'in_footer', 'should_enqueue' );
 		$this->_scripts[ $handle ] = $script;
 		return $this->_r();
@@ -304,238 +303,6 @@ class Lava_Page_Controller extends Lava_Base {
 				wp_enqueue_script( $handle );
 			}
 		}
-	}
-		
-
-
-
-
-
-
-
-
-
-
-
-
-	function addPageFromTemplate( $slug, $template )
-	{
-		return $this->addPage( $slug );
-	}
-
-
-	/**
-	 * addAboutPage function.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	function addAboutPage( $slug = "about" )
-	{
-		$this   ->addPage( $slug, "About" )
-					->setTitle( sprintf( __( "About %s", $this->_framework() ), $this->_name() ) );
-		return $this;
-	}
-
-	/**
-	 * addSettingsPage function.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	function addSettingsPage( $slug = "settings" )
-	{
-		$this   ->addPage( $slug, "Settings" )
-					/* translators: This is the title of the settings page */
-					->setTitle( __( "Plugin Settings", $this->_framework() ) )
-		;
-
-		$page = $this->fetchPage( $slug );
-
-		$this	->_misc()
-					->addPluginLink( __( 'Settings', $this->_framework() ), $page->getUrl() )
-		;
-
-		return $this;
-
-		//add Link to plugin page
-
-
-	}
-
-	/**
-	 * addSkinsPage function.
-	 *
-	 * @param string $slug (default: "skins") - to be appended to the plugin slug to make the url
-	 * @return void
-	 */
-	function addSkinsPage( $slug = "skins" )
-	{
-		$this->_skins( false );
-
-		$this   ->addPage( $slug, "Skins" )
-					/* translators: This is the title of the settings page */
-					->setTitle( __( "Skins", $this->_framework() ) )
-		;
-
-		return $this;
-	}
-
-
-	/**
-	 * addTablePage function.
-	 *
-	 * @access public
-	 * @param mixed $slug (default: "table") - to be appended to the plugin slug to make the url
-	 * @return void
-	 * @since 1.0.0
-	 */
-	function addTablePage( $slug = "table" )
-	{
-		$this   ->addPage( $slug, "Table" )
-					->setTitle( __( "Table", $this->_framework() ) )
-		;
-		return $this;
-	}
-
-
-
-
-
-	/**
-	 * defaultPage function.
-	 *  Sets the currently chained page as the one to be displayed when the top-level page is clicked.
-	 *
-	 * @return void
-	 * @since 1.0.0
-	 */
-	function defaultPage()
-	{
-		if( isset( $this->chain[ "current" ] ) )
-		{
-			$this->defaultPage = $this->chain[ "current" ];
-		}
-
-		return $this;
-	}
-
-	/**
-	 * registerPages function.
-	 *  Registers each of the admin pages
-	 *
-	 * @return void
-	 * @since 1.0.0
-	 */
-	function registerPages()
-	{
-		$defaultPage = $this->defaultPage;
-		//register the main page
-		add_menu_page( $defaultPage->get( "title" ),  $this->_name(), $defaultPage->get( "capability" ), $defaultPage->get( "slug" ), array( $defaultPage, "doPage" ) );
-
-		$parentSlug = $defaultPage->get( "slug" );
-
-		//register each foreacheh
-		
-
-	}
-
-	/**
-	 * registerNetworkPages function.
-	 *  Registers each of the admin pages
-	 *
-	 * @return void
-	 * @since 1.0.0
-	 */
-	function registerNetworkPages()
-	{
-		$defaultPage = $this->defaultPage;
-		//register the main page
-		add_menu_page( $defaultPage->get( "title" ),  $this->_name(), $defaultPage->get( "capability" ), $defaultPage->get( "slug" ), array( $this, "blank" ) );
-
-		$parentSlug = $defaultPage->get( "slug" );
-
-		//register each subpage
-		foreach( $this->adminPages as $page )
-		{
-			if( true === $page->multisiteSupport )//if they support multisite
-			{
-				$page->registerPage( $parentSlug );
-			}
-		}
-	}
-
-
-
-
-
-	function addStyle( $name, $path = "" )
-	{
-		$include = array(
-			'path' => $path
-		);
-
-		$this->styles[ $name ] = $include;
-		return $this;
-	}
-
-	function addScript( $name, $path = "", $dependencies = array() )
-	{
-		$include = array(
-			'path' => $path,
-			'dependencies' => $dependencies
-		);
-
-		$this->scripts[ $name ] = $include;
-		return $this;
-	}
-
-	/**
-	 * lavaPages::registerIncludes()
-	 *
-	 * @return void
-	 */
-	function registerIncludes()
-	{
-		foreach( $this->scripts as $name => $include )
-		{
-			$path		 = $include['path'];
-			$dependencies = $include['dependencies'];
-
-			if( !empty( $path ) )
-			{
-				if( strpos( $path, 'http' ) === false ) {
-					$path = plugins_url( $path, $this->_file() );
-				}
-				wp_register_script( $name, $path, $dependencies );
-			}
-		}
-		foreach( $this->styles as $name => $include )
-		{
-			$path = $include['path'];
-
-			if( !empty( $path ) )
-			{
-				if( strpos( $path, "http" ) === false ) {
-					$path = plugins_url( $path, $this->_file() );
-				}
-				wp_register_style( $name, $path );
-			}
-		}
-	}
-
-
-
-
-	function addCustomStyles()
-	{
-		$this->addStyle( $this->_slug( "Pluginstyles" ), "_static/styles.css" );
-		return $this;
-	}
-
-	function addCustomScripts()
-	{
-		$this->addScript($this->_slug( "pluginScripts" ), "_static/scripts.js");
-		return $this;
 	}
 
 }
