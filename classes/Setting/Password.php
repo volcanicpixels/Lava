@@ -11,6 +11,6 @@
 
 class Lava_Setting_Password extends Lava_Setting {
 	public $_setting_type = 'Password';
-	public $_twig_template = 'password.twig';
+	public $_twig_template = 'Password.twig';
 }
 ?>

@@ -1,4 +1,4 @@
-{% import 'macros.twig' as macros %}
+{% import 'Macros.twig' as macros %}
 
 {% block setting_wrap %}
 	<div id="lava_setting-{{ full_setting_id }}" class="lava-setting-wrap{% for class in setting_classes %} {{ class }}{% endfor %}" data-setting-id="{{ full_setting_id }}" {% for attr, value in setting_attrs %} {{ attr }}="{{ value }}"{% endfor %}>

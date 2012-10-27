@@ -12,7 +12,7 @@
 class Lava_Scene_Settings extends Lava_Scene
 {
 	public $_settings = array();
-	public $_twig_template = 'settings.twig';
+	public $_twig_template = 'Settings.twig';
 	public $_scene_context_action = 'update';
 
 	function _register_hooks() {

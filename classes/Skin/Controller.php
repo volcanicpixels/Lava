@@ -12,7 +12,8 @@ class Lava_Skin_Controller extends Lava_Extension_Controller {
 	public $_controller_namespace = 'skin';
 
 	function _construct() {
-		call_user_func_array( array( 'parent', '_construct' ), func_get_args() );
+		$args = func_get_args();
+		call_user_func_array( array( 'parent', '_construct' ), $args );
 		$args = array(
 			'default' => 'plugin.default',
 			'scene'   => 'Settings_Skins',

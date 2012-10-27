@@ -34,7 +34,7 @@ class Lava_Page extends Lava_Base
 	public $_page_scripts = array();
 
 	public $_template_directories = array();
-	public $_twig_template = 'base.twig';
+	public $_twig_template = 'Base.twig';
 
 	// Template manipulation
 

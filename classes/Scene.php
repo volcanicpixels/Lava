@@ -66,7 +66,7 @@ class Lava_Scene extends Lava_Base {
 		$this->_set_return_object( $scene_controller );
 
 		$this->_template_directories = array(
-			$this->_get_plugin_dir() . '/templates/default/scene/',
+			$this->_get_plugin_dir() . '/templates/default/Scene/',
 			$this->_get_plugin_dir() . '/templates/default/',
 			$this->_get_plugin_dir() . '/templates/'
 		);

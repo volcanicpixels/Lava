@@ -1,6 +1,6 @@
 <?php
 
-require_once( dirname( __FILE__ ) . '/base.php' );
+require_once( dirname( __FILE__ ) . '/Base.php' );
 
 /**
  * Plugin Class
@@ -30,12 +30,20 @@ class Lava_Plugin extends Lava_Base {
 
 	static $_plugin_instance;
 
+	static function _set_plugin( $plugin ) {
+		self::$_plugin_instance = $plugin;
+	}
+
+	static function _get_plugin() {
+		return self::$_plugin_instance;
+	}
+
 	/**
 	 * Constructor function called at initialization
 	 */
 	function __construct( $filepath ) {
-		self::$_plugin_instance = $this;
-
+		self::_set_plugin( $this );
+ 
 		$this->_the_plugin = $this;
 		$this->_plugin_filepath = $filepath;
 
@@ -78,7 +86,6 @@ class Lava_Plugin extends Lava_Base {
 
 		if( substr_count( $class_name, $this->_class() ) > 0 ) {
 			$filepath = str_replace( $this->_class(), '', $class_name );
-			$filepath = strtolower( $filepath );
 			$filepath = str_replace( '_', '/', $filepath );
 			$filepath = '/classes' . $filepath . '.php';
 			$filepath = $this->_get_plugin_path( $filepath );
@@ -199,6 +206,10 @@ class Lava_Plugin extends Lava_Base {
 	 * Accessor methods for plugin data
 	 */
 
+	function _get_the_plugin() {
+		return $this;
+	}
+
 	function _get_plugin_dir() {
 		return dirname( dirname( __FILE__ ) );
 	}
@@ -287,12 +298,6 @@ class Lava_Plugin extends Lava_Base {
 		$this->_funcs()->_load_dependancy( 'Twig_Autoloader' );
 		$class_name = $this->_class("Widget_Controller");
 		return $this->_get_singleton( $class_name, $kill_child );
-	}
-
-
-
-	static function _get_plugin() {
-		return self::$_plugin_instance;
 	}
 
 }

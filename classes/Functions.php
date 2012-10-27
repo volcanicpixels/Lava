@@ -7,6 +7,7 @@ class Lava_Functions extends Lava_Base
 			'admin_bar_menu',
 			'get_header',
 			'init',
+			'wp_head'
 		);
 
 		$other_hooks = array(
@@ -15,7 +16,8 @@ class Lava_Functions extends Lava_Base
 					'method' => 'register_public_ajax_handlers',
 					'priority' => 50
 				),
-				'register_widgets'
+				'register_widgets',
+				'deregister_hooks'
 			)
 		);
 
@@ -88,7 +90,7 @@ class Lava_Functions extends Lava_Base
 	function _load_dependancy( $dependancy ) {
 		// allows for a more flexible dependancy loader where filenames do not correspond to class names
 		$dependancies = array(
-			'Twig_Autoloader' => dirname( __file__ ) . '/twig/Autoloader.php',
+			'Twig_Autoloader' => dirname( __file__ ) . '/Twig/Autoloader.php',
 			'Spyc' => dirname( __file__ ) . '/spyc/spyc.php'
 		);
 

@@ -306,7 +306,6 @@ class Lava_Base {
 	 * If the hook name is the same as the method then the method parameter can be ommitted
 	 */
 	function _add_action( $hooks, $methods = '', $priority = 10, $how_many_args = 0, $should_namespace = false, $is_filter = false ) {
-		$debug = false;
 		if( !is_array( $hooks ) )
 			$hooks = array( $hooks );
 
@@ -339,6 +338,39 @@ class Lava_Base {
 		return $this;
 	}
 
+	function _remove_action( $hooks, $methods = '', $priority = 10, $how_many_args = 0, $should_namespace = false, $is_filter = false ) {
+		if( !is_array( $hooks ) )
+			$hooks = array( $hooks );
+
+		if( !is_array( $methods ) )
+			$methods = array( $methods );
+
+		foreach( $hooks as $hook ) {
+
+			foreach( $methods as $method ) {
+				if( empty( $method ) )
+					$method = $hook;
+
+				if( $should_namespace ) {
+					$hook = $this->_namespace( $hook );
+				}
+
+				$callback = $method;
+
+				if( ! is_array( $callback ) ) {
+					$callback = array( $this, $callback );
+				}
+				if( is_callable( $callback ) ) {
+					if( $is_filter )
+						remove_filter( $hook, $callback, $priority, $how_many_args );
+					else
+						remove_action( $hook, $callback, $priority );
+				}
+			}
+		}
+		return $this;
+	}
+
 
 
 	function _add_filter( $hooks, $methods = '', $priority = 10, $how_many_args = 1, $should_namespace = false ) {
@@ -346,15 +378,26 @@ class Lava_Base {
 	}
 
 	function _add_plugin_action() {
-		return call_user_func_array( array( $this, '_add_lava_action' ), func_get_args() );
+		$args = func_get_args();
+		return call_user_func_array( array( $this, '_add_lava_action' ), $args );
+	}
+
+	function _remove_plugin_action() {
+		$args = func_get_args();
+		return call_user_func_array( array( $this, '_remove_lava_action' ), $args );
 	}
 
 	function _add_lava_action( $hooks, $methods = '', $priority = 10, $how_many_args = 0 ) {
 		return $this->_add_action( $hooks, $methods, $priority, $how_many_args, true );
 	}
 
+	function _remove_lava_action( $hooks, $methods = '', $priority = 10, $how_many_args = 0 ) {
+		return $this->_remove_action( $hooks, $methods, $priority, $how_many_args, true );
+	}
+
 	function _add_plugin_filter() {
-		return call_user_func_array( array( $this, '_add_lava_filter' ), func_get_args() );
+		$args = func_get_args();
+		return call_user_func_array( array( $this, '_add_lava_filter' ), $args );
 	}
 
 	function _add_lava_filter( $hooks, $methods = '', $priority = 10, $how_many_args = 1 ) {
@@ -387,7 +430,8 @@ class Lava_Base {
 	}
 
 	function _do_plugin_action() {
-		return call_user_func_array( array( $this, '_do_lava_action' ), func_get_args() );
+		$args = func_get_args();
+		return call_user_func_array( array( $this, '_do_lava_action' ), $args );
 	}
 
 	function _do_action_if( $action, $condition = null, $default = false, $should_terminate = false ) {
@@ -464,7 +508,8 @@ class Lava_Base {
 	}
 
 	function _apply_plugin_filters() {
-		return call_user_func_array( array( $this, '_apply_lava_filters' ), func_get_args() );
+		$args = func_get_args();
+		return call_user_func_array( array( $this, '_apply_lava_filters' ), $args );
 	}
 
 	function _hook() {

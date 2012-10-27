@@ -1,4 +1,4 @@
-{% extends 'radio.twig' %}
+{% extends 'Radio.twig' %}
 
 
 {# because we use floats we need to add a clearfix class #}
@@ -22,7 +22,7 @@
 		</label>
 		<div class="lava-object-block-tray">
 			<div class="lava-object-block-tray-inner">
-				{{ skin_name | default( setting_option.value ) }}
+				{{ setting_option.skin_name | default( setting_option.value ) }}
 			</div>
 		</div>
 	</div>

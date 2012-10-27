@@ -11,8 +11,13 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 	public $_extension_meta = array();
 	public $_extension_paths = array();
 	public $_controller_namespace = 'extension';
+	public $_extension_dropins = array();
 
 
+	function _init_extension( $class_name ) {
+		$args = $this->_recall( 'extension_args' );
+		$args[0]->_extensions[ $args[2] ] = $this->_construct_class( $class_name, $args );
+	}
 
 
 	function _parent__get_extension_dirname( $extension_id ) {
@@ -69,6 +74,26 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 		}
 	}
 
+	function _load_extension( $extension_id ) {
+		$path = $this->_get_extension_path( $extension_id );
+		//check whether an extension.php file exists
+		
+		$args = array(
+			$this,
+			$path,
+			$extension_id
+		);
+		$extension_path = $this->_get_extension_path( $extension_id, '/' . $this->_get_controller_namespace() . '.php' );
+		if( file_exists( $extension_path ) ) {
+			$this->_extensions()->_remember( 'extension_args', $args );
+			require_once( $extension_path );
+		}
+		if( !array_key_exists( $extension_id, $this->_extensions ) ) {
+			$class_name = $this->_class( $this->_get_controller_namespace() );
+			$this->_extensions[ $extension_id ] = $this->_construct_class( $class_name, $args );
+		}
+	}
+
 	function _get_extension( $extension_id ) {
 		if( !array_key_exists( $extension_id, $this->_extensions ) ) {
 			$this->_load_extension( $extension_id );
@@ -97,19 +122,6 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 		return $meta;
 	}
 
-	function _load_extension( $extension_id ) {
-		$path = $this->_get_extension_path( $extension_id );
-		//check whether an extension.php file exists
-		
-		$class_name = $this->_class( $this->_get_controller_namespace() );
-		$args = array(
-			$this,
-			$path,
-			$extension_id
-		);
-		$this->_extensions[ $extension_id ] = $this->_construct_class( $class_name, $args );
-	}
-
 	function _register_extensions() {
 		$append = '/' . $this->_get_controller_namespace( true ) . '/*';
 		$plugin_extension_paths = glob( $this->_get_plugin_path( $append ), GLOB_ONLYDIR );
@@ -119,14 +131,20 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 			if( file_exists( $path . '/' . $this->_get_controller_namespace() . '.yaml' ) ) {
 				
 				$path_debris = explode( '/', $this->_path( $path ) );
-				$extension_id = 'plugin.' . end( $path_debris );
-				//@todo - remove vendor from list
-				$this->_extension_paths[ $extension_id ] = $path;
-				if( $extension_id != 'plugin.vendor' ) {
-					$this->_register_extension( $extension_id );
+				$extension_dir_name = end( $path_debris );
+				if( substr( $extension_dir_name, 0, 1) != '_') {
+					$extension_id = 'plugin.' . $extension_dir_name;
+					//@todo - remove vendor from list
+					$this->_extension_paths[ $extension_id ] = $path;
+					if( $extension_id != 'plugin.vendor' ) {
+						$this->_register_extension( $extension_id );
+					}
 				}
-				
 			}
+		}
+
+		if( !is_array( $custom_extension_paths ) ) {
+			$custom_extension_paths = array($custom_extension_paths);
 		}
 
 		foreach( $custom_extension_paths as $path ) {
@@ -148,7 +166,13 @@ class Lava_Extension_Controller extends Lava_Setting_Controller {
 	}
 
 
+	function _add_dropin( $dropin ) {
+		$this->_extension_dropins[ $dropin ] = true;
+	}
 
+	function _dropin_exists( $dropin ) {
+		return array_key_exists( $dropin, $this->_extension_dropins );
+	}
 
 	
 

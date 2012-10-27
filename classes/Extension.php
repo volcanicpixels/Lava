@@ -17,6 +17,13 @@ class Lava_Extension extends Lava_Setting_Controller {
 
 
 	public $_should_register_action_methods = true;
+	public $_should_register_plugin_hooks = true;
+
+	static function _init_extension( $class ) {
+		{{ lava.class_namespace }}::_get_plugin()->_extensions()->_init_extension( $class );
+
+
+	}
 
 	function _construct( $extension_controller, $extension_path, $extension_id ) {
 		parent::_construct();
@@ -25,6 +32,21 @@ class Lava_Extension extends Lava_Setting_Controller {
 		$this->_extension_controller = $extension_controller;
 		$this->_extension_slug = strtolower( str_replace( '.', '_', $extension_id ) );
 		$this->_controller_namespace_plural = $this->_controller_namespace = $this->_extension_namespace . '-' . $this->_get_extension_slug();
+		$this->_register_dropins();
+		$this->_init();
+	}
+
+	function _init() {
+		
+	}
+
+	function _register_dropins() {
+
+	}
+
+	function _add_dropin( $dropin ) {
+		$this->_extension_controller->_add_dropin( $dropin );
+		return $this->_r();
 	}
 
 	function _get_extension_settings() {
@@ -92,6 +114,9 @@ class Lava_Extension extends Lava_Setting_Controller {
 			)
 		);
 		foreach( $settings as $setting_id => $setting_vars ){
+			if( ! is_array( $setting_vars ) ) {
+				$setting_vars = array();
+			}
 			if( array_key_exists( 'type', $setting_vars ) and $setting_vars['type'] == 'section' ) {
 				$sections[$setting_id] = array(
 					'title' => $this->_get_element( $setting_vars, 'title', $setting_id . ' settings' )
@@ -100,7 +125,7 @@ class Lava_Extension extends Lava_Setting_Controller {
 			}
 		}
 		foreach( $settings as $setting_id => $setting_vars ){
-			$setting_class = '';
+			$setting_class = 'text';
 			if( ! is_array( $setting_vars ) ) {
 				$setting_vars = array();
 			}

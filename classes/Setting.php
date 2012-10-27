@@ -29,7 +29,7 @@ class Lava_Setting extends Lava_Base
 		$this->_set_parent( $setting_controller );
 
 		$this->_template_directories = array(
-			$this->_get_plugin_dir() . '/templates/default/setting/',
+			$this->_get_plugin_dir() . '/templates/default/Setting/',
 			$this->_get_plugin_dir() . '/templates/default/',
 			$this->_get_plugin_dir() . '/templates/'
 		);

@@ -27,6 +27,8 @@ class Lava_Setting_Skin extends Lava_Setting_Radio {
 			} else {
 				$setting_options[$value]['thumbnail_url'] = $default_thumbnail;
 			}
+			$meta = $this->_skins()->_get_extension_meta( $value );
+			$setting_options[$value]['skin_name'] = $meta['title'];
 		}
 		return $setting_options;
 	}
