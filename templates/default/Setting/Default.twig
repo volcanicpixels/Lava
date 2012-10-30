@@ -1,0 +1,22 @@
+{% import 'Macros.twig' as macros %}
+
+{% block setting_wrap %}
+	<div id="lava_setting-{{ full_setting_id }}" class="lava-setting-wrap{% for class in setting_classes %} {{ class }}{% endfor %}" data-setting-id="{{ full_setting_id }}" {% for attr, value in setting_attrs %} {{ attr }}="{{ value }}"{% endfor %}>
+		{% block setting %}
+			{% block setting_title_wrap %}
+				<div class="lava-title-wrap lava-setting-title-wrap">
+					{% block setting_title %}
+						<span class="lava-title lava-title-sect lava-setting-title">{{ setting_title }}</span>
+					{% endblock %}
+				</div>
+			{% endblock %}
+			{% block setting_value_wrap %}
+				<div class="lava-setting-value-wrap">
+					{% block setting_value %}
+						{{ macros.input( setting_name, setting_value, setting_type, setting_input_attrs ) }}
+					{% endblock %}
+				</div>
+			{% endblock %}
+		{% endblock %}
+	</div>
+{% endblock %}

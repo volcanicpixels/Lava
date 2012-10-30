@@ -1,0 +1,6 @@
+{% extends 'Default.twig' %}
+
+{% block setting_value %}
+	{{ macros.input( setting_name, 'off', 'hidden', input_attrs ) }}
+	{{ macros.input( setting_name, 'on' , 'checkbox', setting_input_attrs ) }}
+{% endblock %}

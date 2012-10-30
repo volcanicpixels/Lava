@@ -1,0 +1,16 @@
+{% extends 'default.twig' %}
+
+{% block scene %}
+	<form method="post">
+		{{ macros.input( "nonce[#{scene_context}]", scene_nonce, 'hidden', input_attrs ) }}
+	{% for setting in settings %}
+		{{ setting.do_setting( context ) }}
+	{% endfor %}
+	<div class="lava-tray lava-settings-tray js-nojs">
+
+		{{ macros.input( 'action', 'Save', 'submit', input_attrs ) }}
+		{{ macros.input( 'action', 'Preview', 'submit', input_attrs ) }}
+
+	</div>
+	</form>
+{% endblock %}

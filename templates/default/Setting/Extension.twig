@@ -1,0 +1,20 @@
+{% extends 'Checkbox.twig' %}
+
+
+{% block setting_title_wrap %}
+{% endblock %}
+
+
+{% block setting_value %}
+	{{ macros.input( setting_name, 'off', 'hidden', input_attrs ) }}
+	{{ macros.input( setting_name, 'on' , 'checkbox', setting_input_attrs ) }}
+	<div class="lava-object-block lava-object-block-with-actions lava-object-block-extension">
+		<label for="{{ setting_input_attrs.id }}" >
+			<div class="lava-object-block-info lava-object-block-clickable">
+				<div class="lava-object-block-title lava-title lava-title-sect">
+					{{ setting_title }}
+				</div>
+			</div>
+		</label>
+	</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% macro input(name, value, type, attrs) %}
+    <input type="{{ type }}" name="{{ name }}" value="{{ value | e }}" {% for attr, value in attrs %} {{ attr }}="{{ value }}"{% endfor %} />
+{% endmacro %}
+
+{% macro textarea(name, value, attrs) %}
+    <textarea name="{{ name }}" {% for attr, the_value in attrs %} {{ attr }}="{{ the_value }}"{% endfor %}>
+    	{{- value -}}
+    </textarea>
+{% endmacro %}

@@ -1,0 +1,17 @@
+{% extends 'default.twig' %}
+
+{% block scene %}
+	<div class="lava-scene-inner-abs">
+		{% block iframe %}
+			<iframe id="{{ iframe.id }}"
+				class="{{ iframe.class }}"
+				src="{{ iframe.url }}"
+				scrolling="{{ iframe.scrolling }}"
+				frameborder="0"
+				width="{{ iframe.width }}"
+				height="{{ iframe.height }}"
+				style="background:white">
+			</iframe>
+		{% endblock %}
+	</div>
+{% endblock %}

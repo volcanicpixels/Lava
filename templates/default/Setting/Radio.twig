@@ -1,0 +1,15 @@
+{% extends 'Default.twig' %}
+
+{% block setting_value %}
+	{% for setting_option in setting_options %}
+		{% set setting_input_attrs_new = setting_input_attrs | merge(setting_option.setting_input_attrs) %}
+		{% block setting_option %}
+			<div>
+				<label>
+					{{ macros.input( setting_name, setting_option.value , 'radio', setting_input_attrs_new ) }}
+					<span class="setting-label">{{ setting_option.label | default( setting_option.value ) | title }}</span>
+				</label>
+			</div>
+		{% endblock %}
+	{% endfor %}
+{% endblock %}

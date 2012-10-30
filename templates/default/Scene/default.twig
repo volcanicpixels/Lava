@@ -1,0 +1,9 @@
+{% import 'Macros.twig' as macros %}
+
+{% block scene_wrap %}
+	<div id="lava-scene_{{ scene_id }}" class="lava-scene-wrap js-lava-nav-target js-lava-animation-slide-right{% if is_selected %} active-descendant{% else %} inactive-descendant{% endif %}{% for class in classes %} {{ class }}{% endfor %}" data-scene-id="{{ scene_id }}" {% for attr, value in attrs %} {{ attr }}="{{ value }}"{% endfor %}>
+		{% block scene %}
+			{{ scene_title }}
+		{% endblock %}
+	</div>
+{% endblock %}
