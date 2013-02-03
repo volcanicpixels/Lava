@@ -1,5 +1,5 @@
 {% block button %}
-	<button type="{{ type }}" name="{{ name }}" class="{% block class %}lava-btn{% endblock%}" value="{{ value }}" {% for attr, value in attrs %} {{ attr }}="{{ value | e }}"{% endfor %}>
+	<button type="{{ type }}" name="{{ name }}" class="{% block class %}cinder-btn{% endblock%}" value="{{ value }}" {% for attr, value in attrs %} {{ attr }}="{{ value | e }}"{% endfor %}>
 		{{ text | default( 'undefined' ) }}
 	</button>
 {% endblock %}

@@ -20,7 +20,7 @@ class Lava_Extension extends Lava_Setting_Controller {
 	public $_should_register_plugin_hooks = true;
 
 	static function _init_extension( $class ) {
-		{{ lava.class_namespace }}::_get_plugin()->_extensions()->_init_extension( $class );
+		{{ plugin.class_prefix }}::_get_plugin()->_extensions()->_init_extension( $class );
 
 
 	}

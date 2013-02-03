@@ -205,8 +205,7 @@ class Lava_Setting_Controller extends Lava_Base
 			$settings = $_REQUEST[$key];
 			foreach( $settings as $setting => $value ) {
 				if( $this->_setting_exists( $setting ) ) {
-					$value = stripslashes( $value ); // http://snippi.com/s/9dl143f
-					$this->_get_setting( $setting )->_set_setting_value( $value );
+					$this->_get_setting( $setting )->_set_setting_value_from_request( $settings );
 				} else {
 					// @todo queue error message
 					echo 'there be no setting with that name';

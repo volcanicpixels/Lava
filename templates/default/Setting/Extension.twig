@@ -8,10 +8,10 @@
 {% block setting_value %}
 	{{ macros.input( setting_name, 'off', 'hidden', input_attrs ) }}
 	{{ macros.input( setting_name, 'on' , 'checkbox', setting_input_attrs ) }}
-	<div class="lava-object-block lava-object-block-with-actions lava-object-block-extension">
+	<div class="cinder-object-block cinder-object-block-with-actions cinder-object-block-extension">
 		<label for="{{ setting_input_attrs.id }}" >
-			<div class="lava-object-block-info lava-object-block-clickable">
-				<div class="lava-object-block-title lava-title lava-title-sect">
+			<div class="cinder-object-block-info cinder-object-block-clickable">
+				<div class="cinder-object-block-title cinder-title cinder-title-sect">
 					{{ setting_title }}
 				</div>
 			</div>

@@ -4,7 +4,7 @@ Form Attribute
 
 do ($ = jQuery, Modernizr) ->
 	methods = {}
-	namespace = 'lavaPolyfill.lavaFormattrribute'
+	namespace = 'cinderPolyfill.cinderFormattrribute'
 
 	Modernizr.addTest( 'formattribute', () ->
 		try
@@ -28,19 +28,19 @@ do ($ = jQuery, Modernizr) ->
 			return false
 	)
 
-	methods.init = (e, lava) ->
+	methods.init = (e, cinder) ->
 		if not Modernizr.formattribute
-			$(lava).each () ->
-				$(@).find( '*[type="submit"][form]' ).on "click.lava.#{namespace}", methods.submitClick
-				$(@).find( 'form[id]' ).on "submit.lava.#{namespace}", methods.formSubmit
+			$(cinder).each () ->
+				$(@).find( '*[type="submit"][form]' ).on "click.cinder.#{namespace}", methods.submitClick
+				$(@).find( 'form[id]' ).on "submit.cinder.#{namespace}", methods.formSubmit
 
 	methods.submitClick = (e) ->
 		e.preventDefault()
 		id = $(@).attr('form')
 		$form_ = $( "##{id}" )
-		$(@).attr 'data-lava-formattribute', 'yes'
+		$(@).attr 'data-cinder-formattribute', 'yes'
 		$form_.submit()
-		$(@).removeAttr 'data-lava-formattribute'
+		$(@).removeAttr 'data-cinder-formattribute'
 
 	methods.formSubmit = (e) ->
 		e.preventDefault()
@@ -55,7 +55,7 @@ do ($ = jQuery, Modernizr) ->
 			else
 				$clone.removeAttr('checked')
 			$clone.appendTo $form
-		$form.find('*[data-lava-formattribute="yes"]').each () ->
+		$form.find('*[data-cinder-formattribute="yes"]').each () ->
 			value = $(@).val()
 			if value is undefined
 				value = ''
@@ -68,4 +68,4 @@ do ($ = jQuery, Modernizr) ->
 
 
 
-	lavaBindMethods methods, namespace
+	cinder methods, namespace

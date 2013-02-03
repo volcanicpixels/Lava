@@ -1,22 +1,21 @@
 ###
-Lava provides all of the lovely UI stuff
+Cinder is the javascript UI framework
 ###
 
-
 ###
-Global functions
+It is an event driven framework, each module defines a 
 ###
 
-lavaBindMethods = (methods, namespace = 'general') ->
+cinder = window.cinder = (methods, namespace = 'general') ->
 	if methods['ready']
-		jQuery(document).on "ready.lava.#{namespace}", methods['ready']
+		jQuery(document).on "ready.cinder.#{namespace}", methods['ready']
 	if methods['init']
-		jQuery(document).on "init.lava.#{namespace}", methods['init']
+		jQuery(document).on "init.cinder.#{namespace}", methods['init']
 	if methods['defaultState']
-		jQuery(document).on "defaultState.lava.#{namespace}", methods['defaultState']
+		jQuery(document).on "defaultState.cinder.#{namespace}", methods['defaultState']
 
 jQuery(document).ready () ->
-	jQuery('.lava-cntr').lava()
+	jQuery('.cinder-cntr').cinder()
 
 ###
 Main methods
@@ -27,18 +26,17 @@ do ($ = jQuery, window, document) -> # http://snippi.com/s/dp5g8iw
 	methods = {}
 
 	methods.init = () ->
-		$(this).trigger "init.lava", this
-		$(this).trigger "defaultState.lava", this
+		$(this).trigger "init.cinder", this
+		$(this).trigger "defaultState.cinder", this
 		return this
 
 	# Adds plugin object to jQuery
 	$.fn.extend
-		# Change pluginName to your plugin's name.
-		lava: (method) ->
+		cinder: (method) ->
 			if methods[method]
 				args =  Array.prototype.slice.call arguments, 1
 				return methods[method].apply this, args
 			else if typeof method is 'object' or not method
 				return methods.init.apply this, arguments
 			else
-				debug.error 'Lava call failed', method, methods
+				console.error 'Cinder call failed', method, methods

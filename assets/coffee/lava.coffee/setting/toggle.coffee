@@ -5,26 +5,26 @@ Toggle settings callback
 do ($ = jQuery, window, document) ->
 
 	methods = {}
-	namespace = 'lavaSettingToggle'
-	selector = '.lava-setting.lava-setting-toggle .lava-setting-toggle-input'
+	namespace = 'cinderSettingToggle'
+	selector = '.cinder-setting.cinder-setting-toggle .cinder-setting-toggle-input'
 
-	methods.init = (e, lava) ->
-		$(lava).each () ->
+	methods.init = (e, cinder) ->
+		$(cinder).each () ->
 			$elems = $(this).find( selector )
 			$.merge $elems, $(this).filter( selector )
 
-			$elems.on "change.lava.#{namespace}", methods.change
-			$elems.trigger "change.lava.#{namespace}"
+			$elems.on "change.cinder.#{namespace}", methods.change
+			$elems.trigger "change.cinder.#{namespace}"
 
 	methods.change = (e) ->
-		setting_id = $(this).parents( '.lava-setting-toggle' ).attr( 'data-setting-id' )
-		$elems = $( ".lava-setting[data-setting-toggle='#{setting_id}']" )
+		setting_id = $(this).parents( '.cinder-setting-toggle' ).attr( 'data-setting-id' )
+		$elems = $( ".cinder-setting[data-setting-toggle='#{setting_id}']" )
 		if $(this).is ':checked'
-			$(this).parents( '.lava-setting-toggle' ).addClass( 'lava-setting-no-border' )
-			$elems.removeClass( 'lava-setting-toggle-hidden' ).addClass( 'lava-setting-toggle-visible' )
+			$(this).parents( '.cinder-setting-toggle' ).addClass( 'cinder-setting-no-border' )
+			$elems.removeClass( 'cinder-setting-toggle-hidden' ).addClass( 'cinder-setting-toggle-visible' )
 		else
-			$elems.removeClass( 'lava-setting-toggle-visible' ).addClass( 'lava-setting-toggle-hidden' )
-			$(this).parents( '.lava-setting-toggle' ).removeClass( 'lava-setting-no-border' )
+			$elems.removeClass( 'cinder-setting-toggle-visible' ).addClass( 'cinder-setting-toggle-hidden' )
+			$(this).parents( '.cinder-setting-toggle' ).removeClass( 'cinder-setting-no-border' )
 
 
-	lavaBindMethods methods, namespace
+	cinder methods, namespace

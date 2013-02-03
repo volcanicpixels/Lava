@@ -11,15 +11,15 @@ This aims to improve this experience by loading the settings via ajax when the s
 do ($ = jQuery, window, document) ->
 
 	methods = {}
-	namespace = 'lavaPageSkins'
-	selector = '.lava-scene[data-scene-id="Settings_Skins"] .lava-setting-skin-radio';
+	namespace = 'cinderPageSkins'
+	selector = '.cinder-scene[data-scene-id="Settings_Skins"] .cinder-setting-skin-radio';
 	cache = {}
 
-	methods.init = (e, lava) ->
-		$(lava).each () ->
+	methods.init = (e, cinder) ->
+		$(cinder).each () ->
 			$elems = $(this).find( selector )
 			$.merge $elems, $(this).filter( selector )
-			$elems.on "change.lava.#{namespace}", methods.change
+			$elems.on "change.cinder.#{namespace}", methods.change
 
 	methods.change = (e) ->
 		###
@@ -27,39 +27,39 @@ do ($ = jQuery, window, document) ->
 		check whether skin_id is in cache
 		###
 		skin = $(this).val()
-		current_skin = $('.lava-scene[data-scene-id="Settings_Skin"]').attr( 'data-skin-id' );
+		current_skin = $('.cinder-scene[data-scene-id="Settings_Skin"]').attr( 'data-skin-id' );
 		cache_element = {
-			'scene': $('.lava-scene[data-scene-id="Settings_Skin"]').clone(),
-			'actions': $('.lava-actionbar-block[data-scene-id="Settings_Skin"] *').clone(),
-			'hidden' : $('.lava-programme li[data-scene-id="Settings_Skin"]').hasClass( 'hidden-descendant' )
+			'scene': $('.cinder-scene[data-scene-id="Settings_Skin"]').clone(),
+			'actions': $('.cinder-actionbar-block[data-scene-id="Settings_Skin"] *').clone(),
+			'hidden' : $('.cinder-programme li[data-scene-id="Settings_Skin"]').hasClass( 'hidden-descendant' )
 		}
 		cache[current_skin] = cache_element
-		$('.lava-programme li[data-scene-id="Settings_Skin"]').addClass( 'hidden-descendant' )
+		$('.cinder-programme li[data-scene-id="Settings_Skin"]').addClass( 'hidden-descendant' )
 		if skin of cache
 			methods.doReplace( cache[skin] )
 		else
 			data = {
-				'action' : lavaVars.plugin_namespace + '_get_skin_settings',
+				'action' : cinderVars.plugin_namespace + '_get_skin_settings',
 				'skin' : skin
 			}
 			$.getJSON( ajaxurl, data, methods.doReplace )
 
 	methods.doReplace = (data) ->
 		if 'scene' of data
-			$('.lava-scene[data-scene-id="Settings_Skin"]').remove()
-			$('#lava_stage').append( data['scene'] )
-			$('.lava-scene[data-scene-id="Settings_Skin"]').lava().trigger 'load.lava'
+			$('.cinder-scene[data-scene-id="Settings_Skin"]').remove()
+			$('#cinder_stage').append( data['scene'] )
+			$('.cinder-scene[data-scene-id="Settings_Skin"]').cinder().trigger 'load.cinder'
 		if 'actions' of data
-			$('.lava-actionbar-block[data-scene-id="Settings_Skin"]').html( '' )
-			$('.lava-actionbar-block[data-scene-id="Settings_Skin"]').append( data['actions'] )
-			$('.lava-actionbar-block[data-scene-id="Settings_Skin"] *').lava().trigger 'load.lava'
+			$('.cinder-actionbar-block[data-scene-id="Settings_Skin"]').html( '' )
+			$('.cinder-actionbar-block[data-scene-id="Settings_Skin"]').append( data['actions'] )
+			$('.cinder-actionbar-block[data-scene-id="Settings_Skin"] *').cinder().trigger 'load.cinder'
 		if 'hidden' of data and not data['hidden']
-			$('.lava-programme li[data-scene-id="Settings_Skin"]').removeClass( 'hidden-descendant' )
+			$('.cinder-programme li[data-scene-id="Settings_Skin"]').removeClass( 'hidden-descendant' )
 		else
-			$('.lava-programme li[data-scene-id="Settings_Skin"]').addClass( 'hidden-descendant' )
+			$('.cinder-programme li[data-scene-id="Settings_Skin"]').addClass( 'hidden-descendant' )
 
 
 
 
 
-	lavaBindMethods methods, namespace
+	cinder methods, namespace

@@ -5,24 +5,24 @@ No actionbar callbacks
 do ($ = jQuery, window, document) ->
 
 	methods = {}
-	namespace = 'lavaNoActionbarScene'
-	selector = '.lava-scene.lava-scene-no-actionbar'
+	namespace = 'cinderNoActionbarScene'
+	selector = '.cinder-scene.cinder-scene-no-actionbar'
 
-	methods.init = (e, lava) ->
-		$(lava).each () ->
+	methods.init = (e, cinder) ->
+		$(cinder).each () ->
 			$elems = $(this).find( selector )
 			$.merge $elems, $(this).filter( selector )
 
-			$elems.on "active.lava.#{namespace}", methods.active
-			$elems.on "inactive.lava.#{namespace}", methods.inactive
+			$elems.on "active.cinder.#{namespace}", methods.active
+			$elems.on "inactive.cinder.#{namespace}", methods.inactive
 
 	methods.active = (e) ->
 		# remove action bar
-		$('#lava_theatre').addClass( 'no-actionbar' )
+		$('#cinder_theatre').addClass( 'no-actionbar' )
 
 	methods.inactive = (e) ->
 		# replace actionbar
-		$('#lava_theatre').removeClass( 'no-actionbar' )
+		$('#cinder_theatre').removeClass( 'no-actionbar' )
 
 
-	lavaBindMethods methods, namespace
+	cinder methods, namespace

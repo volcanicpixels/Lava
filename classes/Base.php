@@ -589,7 +589,7 @@ class Lava_Base {
 	}
 
 	function _get_classes() {
-		return $this->_get_lava_classes( 'lava', true );
+		return $this->_get_lava_classes( 'cinder', true );
 	}
 
 	function _get_lava_classes( $prefix = '', $lowercase = false ) {

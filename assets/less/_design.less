@@ -3,7 +3,7 @@
 @import "_mixins.less";
 
 
-.lava-topbar {
+.cinder-topbar {
 	background: #f9f9f9;
 
 
@@ -13,7 +13,7 @@
 	Navigation
 */
 
-.lava-nav-main {
+.cinder-nav-main {
 	a {
 		color: #333;
 		font-size: 12px;
@@ -31,7 +31,7 @@
 	}
 }
 
-.lava-nav-google {
+.cinder-nav-google {
 
 	.selected {
 		color: @primary-color;
@@ -52,7 +52,7 @@
 			}
 		}
 
-		&.lava-disabled {
+		&.cinder-disabled {
 			&:hover, &.hover, &:focus {
 				background: white;
 				border-left-color: transparent;
@@ -72,8 +72,8 @@
 	}
 }
 
-#lava_actionbar {
-	.lava-actionbar-title {
+#cinder_actionbar {
+	.cinder-actionbar-title {
 		color: @primary-color;
 		font-size: 20px;
 	}
@@ -83,7 +83,7 @@
 	Buttons
 */
 
-.lava-cntr .lava-btn {
+.cinder-cntr .cinder-btn {
 
 	margin-right: 15px;
 	font-family: Arial, Helvetica, sans-serif;
@@ -111,7 +111,7 @@
 		}
 	}
 
-	.lava-btn-builder-text( @text1, @text2) {
+	.cinder-btn-builder-text( @text1, @text2) {
 		color: @text1;
 
 		&:hover {
@@ -119,7 +119,7 @@
 		}
 	}
 
-	.lava-btn-builder-background( @color1, @color2, @color3, @color4) {
+	.cinder-btn-builder-background( @color1, @color2, @color3, @color4) {
 		.common;
 		background-image: -webkit-linear-gradient(top,@color1,@color2);
 		background-image: -moz-linear-gradient(top,@color1,@color2);
@@ -138,9 +138,9 @@
 		}
 	}
 
-	&.lava-btn-default {
-		.lava-btn-builder-background( whiteSmoke, #f1f1f1, #f8f8f8, #f1f1f1 );
-		.lava-btn-builder-text( #666, #333 );
+	&.cinder-btn-default {
+		.cinder-btn-builder-background( whiteSmoke, #f1f1f1, #f8f8f8, #f1f1f1 );
+		.cinder-btn-builder-text( #666, #333 );
 		border: 1px solid gainsboro;
 		border: 1px solid rgba(0, 0, 0, 0.1);
 
@@ -153,9 +153,9 @@
 		}
 	}
 
-	&.lava-btn-primary {
-		.lava-btn-builder-background( #4D90FE, #4787ED, #4D90FE, #357AE8 );
-		.lava-btn-builder-text( white, white );
+	&.cinder-btn-primary {
+		.cinder-btn-builder-background( #4D90FE, #4787ED, #4D90FE, #357AE8 );
+		.cinder-btn-builder-text( white, white );
 		border: 1px solid #3079ED;
 
 		&:hover {
@@ -168,11 +168,11 @@
 	Titles
 */
 
-.lava-title {
+.cinder-title {
 
 }
 
-.lava-title-sect {
+.cinder-title-sect {
 	font-size: 13px;
 	font-weight: bold;
 }
@@ -181,10 +181,10 @@
 	Settings
 */
 
-.lava-setting {
+.cinder-setting {
 	border-bottom: 1px solid #eee;
 
-	&.lava-setting-no-border {
+	&.cinder-setting-no-border {
 		border-bottom-color: transparent;
 	}
 }
@@ -192,32 +192,32 @@
 	/*
 		Skin setting
 	*/
-	.lava-setting.lava-setting-skin {
-		.lava-setting-skin-radio {
-			.lava-invisible;
+	.cinder-setting.cinder-setting-skin {
+		.cinder-setting-skin-radio {
+			.cinder-invisible;
 		}
 
-		.lava-setting-skin-radio:checked + .lava-object-block-skin {
+		.cinder-setting-skin-radio:checked + .cinder-object-block-skin {
 			border-color:transparent ;
 
 			&:hover {
-				.lava-object-block-info {
+				.cinder-object-block-info {
 					//padding-bottom: 5px;
 				}
 
-				.lava-object-block-tray {
+				.cinder-object-block-tray {
 					padding-bottom: 0px;
 				}
 			}
 
-			.lava-object-block-info {
+			.cinder-object-block-info {
 				border-color: @primary-color;
 			}
 
 
 			/*
 			.box-shadow( inset 0px 0px 4px rgba(0,0,0,0.2) );
-			.lava-object-block-info {
+			.cinder-object-block-info {
 				background: whiteSmoke;
 				.box-shadow( inset 0px 0px 8px rgba(0,0,0,0.4) );
 			}*/
@@ -228,15 +228,15 @@
 		Extension setting
 	*/
 
-	.lava-setting-extension {
-		.lava-setting-extension-checkbox {
-			.lava-invisible;
+	.cinder-setting-extension {
+		.cinder-setting-extension-checkbox {
+			.cinder-invisible;
 		}
 
-		.lava-setting-extension-checkbox:checked + .lava-object-block-extension {
+		.cinder-setting-extension-checkbox:checked + .cinder-object-block-extension {
 			border-color: transparent;
 
-			.lava-object-block-info {
+			.cinder-object-block-info {
 				border-color: @primary-color;
 			}
 		}
@@ -249,10 +249,10 @@
 
 
 	/*
-		.lava-object-block
+		.cinder-object-block
 	*/
 
-	.lava-object-block {
+	.cinder-object-block {
 		background: whiteSmoke;
 		//.border-radius( 2px );
 		border: 1px solid #BEBEBE;
@@ -262,31 +262,31 @@
 			.box-shadow( 0 1px 3px rgba(0, 0, 0, .3) );
 			border: 1px solid #919191;
 
-			.lava-object-block-tray {
+			.cinder-object-block-tray {
 				border-top: 5px white solid;
 			}
 
 			
 		}
 
-		.lava-object-block-info {
+		.cinder-object-block-info {
 			background: white;
 
-			.lava-object-block-thumb {
+			.cinder-object-block-thumb {
 				img {
 
 				}
 			}
 
-			.lava-object-block-title {
+			.cinder-object-block-title {
 				padding: 0px 5px;
 				font-size: 14px;
 			}
 
-			.lava-object-block-description {
+			.cinder-object-block-description {
 				padding: 0px 5px;
 
-				&.lava-object-block-inset {
+				&.cinder-object-block-inset {
 					margin-left: -6px;
 					margin-right: -6px;
 					margin-bottom: -6px;
@@ -294,21 +294,21 @@
 			}
 		}
 
-		.lava-object-block-inset {
+		.cinder-object-block-inset {
 			.box-shadow( inset 0px 4px 6px -4px rgba(0,0,0,0.2) );
 			background: whiteSmoke;
 		}
 
-		.lava-object-block-tray {
+		.cinder-object-block-tray {
 			text-align: center;
 			.box-shadow( inset 0px 4px 6px -4px rgba(0,0,0,0.2) );
 			.transition( padding 0.25s ease-in-out );
-			.lava-object-block-tray-inner {
+			.cinder-object-block-tray-inner {
 				.transition( height 0.25s ease-in-out );
 			}
 		}
 
-		.lava-object-block-actions {
+		.cinder-object-block-actions {
 			background: whiteSmoke;
 			min-width:100px;
 			height: 210px;

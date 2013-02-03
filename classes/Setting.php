@@ -183,6 +183,14 @@ class Lava_Setting extends Lava_Base
 		return $this->_setting_controller->_get_value_for( $this->_get_setting_id(), $this->_get_setting_default_value() );
 	}
 
+
+	// this allows settings like time-periods to process input first
+	function _set_setting_value_from_request( $settings ) {
+		$value = $settings[$this->_get_setting_id()];
+		$value = stripslashes( $value ); // http://snippi.com/s/9dl143f
+		$this->_set_setting_value( $value );
+	}
+
 	function _set_setting_value( $value ) {
 		$this->_setting_controller->_set_value_for( $this->_get_setting_id(), $value );
 		return $this;

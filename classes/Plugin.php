@@ -45,7 +45,7 @@ class Lava_Plugin extends Lava_Base {
 		self::_set_plugin( $this );
  
 		$this->_the_plugin = $this;
-		$this->_plugin_filepath = $filepath;
+		$this->_plugin_filepath = apply_filters('junction_link_fix', $filepath);
 
 		if( is_null( $this->_plugin_id ) )
 			$this->_plugin_id = strtolower( str_replace( ' ', '_', $this->_plugin_name ) );

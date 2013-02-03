@@ -20,7 +20,7 @@ class Lava_Setting_Extension extends Lava_Setting_Checkbox {
 		if( !array_key_exists( 'class', $old ) ) {
 			$old['class'] = '';
 		}
-		$old['class'] .= ' lava-setting-extension-checkbox';
+		$old['class'] .= ' cinder-setting-extension-checkbox';
 		$new = array(
 		);
 		return array_merge( $old, $new );
@@ -32,7 +32,7 @@ class Lava_Setting_Extension extends Lava_Setting_Checkbox {
 
 	function _get_setting_classes() {
 		$classes = parent::_get_setting_classes();
-		$classes[] = 'lava-setting-no-border';
+		$classes[] = 'cinder-setting-no-border';
 		return $classes;
 	}
 }

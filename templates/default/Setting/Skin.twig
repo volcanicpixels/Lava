@@ -3,7 +3,7 @@
 
 {# because we use floats we need to add a clearfix class #}
 {% block setting_value_wrap %}
-	<div class="lava-setting-value-wrap clearfix">
+	<div class="cinder-setting-value-wrap clearfix">
 		{{ block('setting_value') }}
 	</div>
 {% endblock %}
@@ -12,16 +12,16 @@
 
 {% block setting_option %}
 	{{ macros.input( setting_name, setting_option.value , 'radio', setting_input_attrs_new ) }}
-	<div class="lava-object-block multiple-blocks lava-object-block-with-actions lava-object-block-skin">
+	<div class="cinder-object-block multiple-blocks cinder-object-block-with-actions cinder-object-block-skin">
 		<label for="{{ setting_option.radio_id }}" >
-			<div class="lava-object-block-info lava-object-block-clickable">
-				<div class="lava-object-block-thumb">
-					<img class="js-lava-fix-click" src="{{ setting_option.thumbnail_url }}" />
+			<div class="cinder-object-block-info cinder-object-block-clickable">
+				<div class="cinder-object-block-thumb">
+					<img class="js-cinder-fix-click" src="{{ setting_option.thumbnail_url }}" />
 				</div>
 			</div>
 		</label>
-		<div class="lava-object-block-tray">
-			<div class="lava-object-block-tray-inner">
+		<div class="cinder-object-block-tray">
+			<div class="cinder-object-block-tray-inner">
 				{{ setting_option.skin_name | default( setting_option.value ) }}
 			</div>
 		</div>

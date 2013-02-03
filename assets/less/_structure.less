@@ -1,5 +1,5 @@
 /*
-	Defines structure for LAVA framework
+	Defines structure for cinder framework
 */
 
 // The number of pixels which we the theatre has outgrown (that need to applied as padding)
@@ -8,12 +8,12 @@
 
 @programme-width: 220px;
 
-#lava_theatre {
+#cinder_theatre {
 	margin-left: -@bleed-left;
 	margin-right: -@bleed-right;
 }
 
-#lava_topbar {
+#cinder_topbar {
 	@height: 50px;
 
 
@@ -36,7 +36,7 @@
 		border-right-color: #999;
 	}
 
-	.lava-nav-pages {
+	.cinder-nav-pages {
 		height: @height;
 		line-height: @height;
 			a {
@@ -48,13 +48,13 @@
 
 }
 
-#lava_actionbar {
+#cinder_actionbar {
 	@height: 30px;
 	@padding: 15px;
 	height: @height + 2 * @padding;
 	border-bottom: 1px solid #ebebeb;
 
-	.lava-actionbar-title {
+	.cinder-actionbar-title {
 		position: absolute;
 		padding-left: 20px;
 		left: 0px;
@@ -63,8 +63,8 @@
 		max-width: @programme-width;
 	}
 
-	// This class should be applied to all children of #lava-actionbar and it applies padding and height (to keep it consistent)
-	.lava-actionbar-block {
+	// This class should be applied to all children of #cinder-actionbar and it applies padding and height (to keep it consistent)
+	.cinder-actionbar-block {
 		height: @height;
 		line-height: @height;
 		padding: @padding 0px;
@@ -76,14 +76,14 @@
 	}
 }
 
-#lava_programme {
+#cinder_programme {
 	width: @programme-width;
 	margin-left: -(@programme-width + @bleed-left);
 	float: left;
 	padding-top: 30px;
 }
 
-#lava_stage {
+#cinder_stage {
 	padding-top: 30px;
 }
 
@@ -91,20 +91,20 @@
 	Scenes
 */
 
-.lava-scene {
+.cinder-scene-wrap {
 	position: relative;
 	&.inactive-descendant {
 		display: none;
 	}
 
-	.lava-scene-inner-abs {
+	.cinder-scene-inner-abs {
 		position: absolute;
 		top: 0px;
 		left: 0px;
 		right: 0px;
 		bottom: 0px;
 
-		&.lava-scene-actionbar-replacement {
+		&.cinder-scene-actionbar-replacement {
 			top: -90px;
 		}
 	}
@@ -114,13 +114,13 @@
 	Navigation
 */
 
-.lava-nav {
+.cinder-nav {
 	li {
 		&.hidden-descendant, &.hidden-descendant_x {
 			display: none;
 		}
 
-		&.lava-disabled {
+		&.cinder-disabled {
 			cursor: default;
 
 			a {
@@ -135,7 +135,7 @@
 
 }
 
-.lava-nav-google {
+.cinder-nav-google {
 	@height: 30px;
 
 	li {
@@ -154,7 +154,7 @@
 	Buttons
 */
 
-.lava-btn {
+.cinder-btn {
 	height: 30px;
 }
 
@@ -162,13 +162,13 @@
 	Titles
 */
 
-.lava-title-wrap {
+.cinder-title-wrap {
 	@height: 30px;
 	line-height: @height;
 	//height: @height;
 }
 
-.lava-title {
+.cinder-title {
 	@height: 30px;
 	line-height: @height;
 	height: @height;
@@ -178,10 +178,10 @@
 	Settings
 */
 
-.lava-setting {
+.cinder-setting {
 	padding-bottom: 20px;
 
-	&.lava-setting-toggle-hidden {
+	&.cinder-setting-toggle-hidden {
 		display: none;
 	}
 
@@ -189,12 +189,12 @@
 	/*
 		Skin setting
 	*/
-	&.lava-setting-skin {
+	&.cinder-setting-skin {
 
-		.lava-object-block-skin {
-			.lava-object-block-info {
+		.cinder-object-block-skin {
+			.cinder-object-block-info {
 				border-width: 6px;
-				.lava-object-block-thumb {
+				.cinder-object-block-thumb {
 					img {
 						width:450px;
 						height: 200px;
@@ -202,25 +202,25 @@
 				}
 			}
 		}
-		.lava-setting-skin-radio:checked + .lava-object-block-skin {
+		.cinder-setting-skin-radio:checked + .cinder-object-block-skin {
 
 			&:hover {
-				.lava-object-block-info {
+				.cinder-object-block-info {
 				}
 
-				.lava-object-block-tray {
-					.lava-object-block-tray-inner {
+				.cinder-object-block-tray {
+					.cinder-object-block-tray-inner {
 						padding-bottom: 4px;
 					}
 				}
 			}
 
-			.lava-object-block-info {
+			.cinder-object-block-info {
 				margin:-1px;
 				border-width: 7px;
 			}
 
-			.lava-object-block-tray {
+			.cinder-object-block-tray {
 				bottom: 6px;
 				right: 6px;
 				left: 6px;
@@ -231,17 +231,17 @@
 
 	/* Extension setting */
 
-	&.lava-setting-extension {
+	&.cinder-setting-extension {
 		.no-select;
 		float: left;
-		.lava-setting-extension-checkbox:checked + .lava-object-block-extension {
-			.lava-object-block-info {
+		.cinder-setting-extension-checkbox:checked + .cinder-object-block-extension {
+			.cinder-object-block-info {
 				margin:-1px;
 				border-width: 7px;
 			}
-			.lava-object-block-info {
-				.lava-object-block-description {
-					&.lava-object-block-inset {
+			.cinder-object-block-info {
+				.cinder-object-block-description {
+					&.cinder-object-block-inset {
 						margin-left: 0px;
 						margin-right: 0px;
 						margin-bottom: 0px;
@@ -255,7 +255,7 @@
 		Textarea setting
 	*/
 
-	&.lava-textarea-setting {
+	&.cinder-textarea-setting {
 		.actual-input {
 			min-width: 400px;
 			min-height: 150px;
@@ -269,7 +269,7 @@
 	padding-right: @bleed-right;
 }
 
-.lava-programme-aware {
+.cinder-programme-aware {
 	padding-left: @bleed-left + @programme-width;
 }
 
@@ -278,18 +278,18 @@
 */
 
 	/*
-		.lava-tray
+		.cinder-tray
 	*/
 
-	.lava-tray {
+	.cinder-tray {
 		padding-top: 10px;
 	}
 
 	/*
-		.lava-object-block
+		.cinder-object-block
 	*/
 
-	.lava-object-block {
+	.cinder-object-block {
 		margin-right: 20px;
 		margin-bottom: 30px;
 		display: inline-block;
@@ -300,8 +300,8 @@
 
 		&:hover {
 
-			.lava-object-block-tray {
-				.lava-object-block-tray-inner {
+			.cinder-object-block-tray {
+				.cinder-object-block-tray-inner {
 					padding: 5px;
 					padding-bottom: 10px;
 					height: 30px;
@@ -311,26 +311,26 @@
 		}
 
 
-		.lava-object-block-info {
+		.cinder-object-block-info {
 			border: 6px solid transparent;
-			&.lava-object-block-clickable {
+			&.cinder-object-block-clickable {
 				cursor: pointer;
 			}
-			.lava-object-block-thumb {
+			.cinder-object-block-thumb {
 				img {
 					max-width: 100%;
 				}
 			}
 		}
 
-		.lava-object-block-tray {
+		.cinder-object-block-tray {
 			position: absolute;
 			bottom: 0px;
 			left: 0px;
 			right: 0px;
 			background: whiteSmoke;
 
-			.lava-object-block-tray-inner {
+			.cinder-object-block-tray-inner {
 				padding: 0px;
 				height: 0px;
 				line-height: 30px;
@@ -339,7 +339,7 @@
 		}
 
 
-		.lava-object-block-actions {
+		.cinder-object-block-actions {
 
 		}
 	}
@@ -349,7 +349,7 @@
 	HACKS
 */
 
-.lava-bleed-top-90 {
+.cinder-bleed-top-90 {
 	margin-top: -90px;
 }
 
@@ -358,9 +358,9 @@
 	States
 */
 
-#lava_theatre {
+#cinder_theatre {
 	&.no-actionbar {
-		#lava_actionbar {
+		#cinder_actionbar {
 			display: none;
 		}
 		

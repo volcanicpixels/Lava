@@ -1,15 +1,15 @@
 do ($ = jQuery, Modernizr) ->
 	methods = {}
-	namespace = 'lavaPolyfill.lavaImgLabelFix'
+	namespace = 'cinderPolyfill.cinderImgLabelFix'
 
 
-	methods.init = (e, lava) ->
-		$(lava).each () ->
-			$(@).find( 'label img.js-lava-fix-click' ).on "click.lava.#{namespace}", methods.click
+	methods.init = (e, cinder) ->
+		$(cinder).each () ->
+			$(@).find( 'label img.js-cinder-fix-click' ).on "click.cinder.#{namespace}", methods.click
 
 	methods.click = (e) ->
 		e.preventDefault()
 		$(@).parents('label').click()
 
 
-	lavaBindMethods methods, namespace
+	cinder methods, namespace

@@ -19,7 +19,7 @@ class Lava_Setting_Toggle extends Lava_Setting_Checkbox {
 	function _get_setting_input_attrs() {
 		$attrs = parent::_get_setting_input_attrs();
 		$class = $this->_get_element( $attrs, 'class' );
-		$class .= ' lava-setting-toggle-input';
+		$class .= ' cinder-setting-toggle-input';
 		$attrs['class'] = $class;
 		return $attrs;
 	}

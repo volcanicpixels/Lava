@@ -1,8 +1,8 @@
-<div id="lava_actionbar" class="lava-actionbar fix-bleed lava-programme-aware {% if not show_actionbar %}hidden {{ show_actionbar }} {% endif %}">
-	<div class="lava-actionbar-title">{{ page_title }}</div>
-	<div class="lava-actionbar-cntr">
+<div id="cinder_actionbar" class="cinder-actionbar fix-bleed cinder-programme-aware {% if not show_actionbar %}hidden {{ show_actionbar }} {% endif %}">
+	<div class="cinder-actionbar-title">{{ page_title }}</div>
+	<div class="cinder-actionbar-cntr">
 		{% for scene in scenes %}
-				<div data-scene-id="{{ scene.get_scene_id }}" class="lava-actionbar-block js-lava-animation-slide-right{% if scene.is_selected %} active-descendant js-default-descendant{% else %} inactive-descendant{% endif %}">
+				<div data-scene-id="{{ scene.get_scene_id }}" class="cinder-actionbar-block js-cinder-animation-slide-right{% if scene.is_selected %} active-descendant js-default-descendant{% else %} inactive-descendant{% endif %}">
 					{% for action in scene.do_scene_actions %}
 						{{ action | raw }}
 					{% endfor %}
@@ -10,4 +10,4 @@
 		{% endfor %}
 	</div>
 </div>
-<!-- lava-actionbar -->
+<!-- cinder-actionbar -->

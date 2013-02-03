@@ -6,7 +6,7 @@
 	{% for setting in settings %}
 		{{ setting.do_setting( context ) }}
 	{% endfor %}
-	<div class="lava-tray lava-settings-tray js-nojs">
+	<div class="cinder-tray cinder-settings-tray js-nojs">
 
 		{{ macros.input( 'action', 'Save', 'submit', input_attrs ) }}
 		{{ macros.input( 'action', 'Preview', 'submit', input_attrs ) }}

@@ -5,18 +5,20 @@ Height adjust callbacks
 do ($ = jQuery, window, document) ->
 
 	methods = {}
-	namespace = 'lavaHeightAdjust'
-	selector = '.lava-scene.js-height-adjust'
+	namespace = 'cinderHeightAdjust'
+	selector = '.cinder-scene.js-height-adjust'
 
-	methods.init = (e, lava) ->
-		$(lava).each () ->
+	resizeTimeout = '';
+
+	methods.init = (e, cinder) ->
+		$(cinder).each () ->
 			$elems = $(this).find( selector )
 			$.merge $elems, $(this).filter( selector )
 
-			$elems.on "load.lava.#{namespace}", methods.load
+			$elems.on "load.cinder.#{namespace}", methods.load
 
 
-			$(window).on "resize.lava.#{namespace}", methods.resizeWindow
+			$(window).on "resize.cinder.#{namespace}", methods.resizeWindow
 
 
 	methods.load = (e) ->
@@ -24,7 +26,11 @@ do ($ = jQuery, window, document) ->
 		setTimeout methods.resizeWindow, 100
 
 	methods.resizeWindow = (e) ->
-		$( selector ).each methods.resize
+		clearTimeout resizeTimeout
+		resizeTimeout = setTimeout(() ->
+			$( selector ).each(methods.resize)
+		, 100)
+	
 
 	methods.resize = () ->
 		$this = $(@)
@@ -66,4 +72,4 @@ do ($ = jQuery, window, document) ->
 
 
 
-	lavaBindMethods methods, namespace
+	cinder methods, namespace

@@ -191,7 +191,7 @@ class Lava_Scene extends Lava_Base {
 
 	function _set_scene_form_id( $form_id = null ) {
 		if( is_null( $form_id ) ) {
-			$form_id = 'lava_save_form-' . $this->_get_scene_id();
+			$form_id = 'cinder_save_form-' . $this->_get_scene_id();
 		}
 		$this->_scene_form_id = $form_id;
 		return $this->_r();

@@ -1,19 +1,18 @@
 {% extends "default.twig" %}
 
-{% if scene_form_id == 'lava_save_form-global' %}
+{% if scene_form_id == 'cinder_save_form-global' %}
 	{% set scene_form_id = '' %}
 {% endif %}
 
 {% block scene %}
-	<form method="post" id="lava_save_form-{{ scene_id }}">
+	<form method="post" id="cinder_save_form-{{ scene_id }}">
 		{{ macros.input( "nonce[#{scene_context}]", scene_nonce, 'hidden', input_attrs ) }}
 	{% for setting in settings %}
 		{{ setting.do_setting( context ) }}
 	{% endfor %}
-	<div class="lava-tray lava-settings-tray js-nojs">
+	<div class="cinder-tray cinder-settings-tray js-nojs">
 
-		{{ macros.input( 'action', 'Save', 'submit' ) }}
-		{{ macros.input( 'action', 'Preview', 'submit' ) }}
+		{{ macros.input( 'action', 'save', 'submit', input_attrs ) }}
 
 	</div>
 	</form>

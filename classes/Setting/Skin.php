@@ -17,7 +17,7 @@ class Lava_Setting_Skin extends Lava_Setting_Radio {
 			if( !array_key_exists('class', $setting_options[$value]['setting_input_attrs'])) {
 				$setting_options[$value]['setting_input_attrs']['class'] = '';
 			}
-			$setting_options[$value]['setting_input_attrs']['class'] .= ' lava-setting-skin-radio';
+			$setting_options[$value]['setting_input_attrs']['class'] .= ' cinder-setting-skin-radio';
 
 			$thumbnail_url = $this->_skins()->_get_skin_url( $value, '/thumb.jpg' );
 			$thumbnail_path = $this->_skins()->_get_skin_path( $value, '/thumb.jpg' );

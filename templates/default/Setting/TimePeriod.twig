@@ -1,0 +1,8 @@
+{% extends 'Text.twig' %}
+
+{% block setting_value %}
+	{{ macros.input( setting_name, setting_value, 'text', setting_input_attrs ) }}
+	<input type="text" />
+	<select>
+	</select>
+{% endblock setting_value %}
