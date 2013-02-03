@@ -74,14 +74,15 @@ class Lava_Page extends Lava_Base
 	function _serialize() {
 		$old_vars = parent::_serialize();
 		$new_vars = array(
-			'menu_title'     => $this->_get_menu_title(),
-			'page_title'     => $this->_get_page_title(),
-			'page_id'        => $this->_get_page_id(),
-			'page_context'   => $this->_get_page_context(),
-			'page_nonce'     => $this->_get_page_nonce(),
-			'section_id'     => $this->_get_section_id(),
-			'url'            => $this->_get_page_url(),
-			'show_actionbar' => $this->_show_actionbar
+			'menu_title'		=> $this->_get_menu_title(),
+			'page_title'		=> $this->_get_page_title(),
+			'page_id'			=> $this->_get_page_id(),
+			'page_context'		=> $this->_get_page_context(),
+			'page_nonce'		=> $this->_get_page_nonce(),
+			'section_id'		=> $this->_get_section_id(),
+			'url'				=> $this->_get_page_url(),
+			'show_actionbar'	=> $this->_show_actionbar,
+			'ajaxurl'			=> admin_url('admin-ajax.php')
 		);
 		return array_merge( $old_vars, $new_vars );
 	}
@@ -334,7 +335,7 @@ class Lava_Page extends Lava_Base
 		$lava_vars = $this->_get_lava_vars();
 		?>
 		<script type="text/javascript">
-		var lavaVars = <?php echo json_encode( $lava_vars ) ?>;
+		var cinderVars = <?php echo json_encode( $lava_vars ) ?>;
 		</script>
 		<?php
 	}

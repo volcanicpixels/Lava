@@ -1,8 +1,9 @@
 {% extends 'Text.twig' %}
 
 {% block setting_value %}
-	{{ macros.input( setting_name, setting_value, 'text', setting_input_attrs ) }}
-	<input type="text" />
-	<select>
+	{{ macros.input( '', setting_value, 'hidden', setting_input_attrs ) }}
+	<input class="cinder-input-small" type="text" name="{{ setting_name }}" value="{{ formatted_value }}" {{ macros.attrs(input_attrs) }}/>
+	<select class="cinder-input-select" name="{{ setting_name_prefix }}-format]" {{ macros.attrs(input_attrs)}}>
+		{{ macros.select_options(formats) }}
 	</select>
 {% endblock setting_value %}

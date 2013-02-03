@@ -206,10 +206,6 @@ class Lava_Setting_Controller extends Lava_Base
 			foreach( $settings as $setting => $value ) {
 				if( $this->_setting_exists( $setting ) ) {
 					$this->_get_setting( $setting )->_set_setting_value_from_request( $settings );
-				} else {
-					// @todo queue error message
-					echo 'there be no setting with that name';
-					die( $setting );
 				}
 			}
 		}

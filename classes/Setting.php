@@ -44,6 +44,7 @@ class Lava_Setting extends Lava_Base
 			'setting_type'    => $this->_get_setting_type(),
 			'setting_value'   => $this->_get_setting_value(),
 			'setting_name'    => $this->_get_setting_name(),
+			'setting_name_prefix'    => $this->_get_setting_name_prefix(),
 			'input_attrs'     => $this->_get_input_attrs(),
 			'setting_input_attrs'   => $this->_get_setting_input_attrs(),
 			'setting_classes' => $this->_get_setting_classes(),
@@ -141,6 +142,10 @@ class Lava_Setting extends Lava_Base
 		return $this->_namespace( $this->_setting_controller->_get_setting_name_prefix( 'plural' ) . "[{$this->_get_setting_id()}]" );
 	}
 
+	function _get_setting_name_prefix() {
+		return $this->_namespace( $this->_setting_controller->_get_setting_name_prefix( 'plural' ) . "[{$this->_get_setting_id()}" );
+	}
+
 	function _get_setting_type() {
 		return $this->_setting_type;
 	}
@@ -183,10 +188,18 @@ class Lava_Setting extends Lava_Base
 		return $this->_setting_controller->_get_value_for( $this->_get_setting_id(), $this->_get_setting_default_value() );
 	}
 
+	function _get_formatted_value($settings) {
+		return $settings[$this->_get_setting_id()];
+	}
+
+	function _get_setting_meta($settings, $meta) {
+		return $settings[$this->_get_setting_id() . '-' . $meta];
+	}
+
 
 	// this allows settings like time-periods to process input first
 	function _set_setting_value_from_request( $settings ) {
-		$value = $settings[$this->_get_setting_id()];
+		$value = $this->_get_formatted_value( $settings );
 		$value = stripslashes( $value ); // http://snippi.com/s/9dl143f
 		$this->_set_setting_value( $value );
 	}

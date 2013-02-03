@@ -17,6 +17,12 @@ class Lava_Page_Settings extends Lava_Page
 		parent::_register_dependancies();
 	}
 
+	function _register_admin_ajax_handlers() {
+		$class = 'UploadImage';
+		$verb = "upload_image";
+		$this->_ajax()->_add_ajax_handler( $class, $verb );
+	}
+
 
 	function _load_defaults() {
 		$this->_set_page_title( $this->__( 'Plugin Settings' ) );

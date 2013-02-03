@@ -255,10 +255,47 @@
 		Textarea setting
 	*/
 
-	&.cinder-textarea-setting {
+	&.cinder-setting-textarea {
 		.actual-input {
 			min-width: 400px;
-			min-height: 150px;
+			min-height: 30px;
+			background: white;
+			.box-shadow( inset 1px 1px 3px rgba(0, 0, 0, 0.1));
+			.border-radius(0px);
+			padding: 20px;
+			font-size: 13px;
+			line-height: 16px;
+			color: #888;
+
+			&:hover {
+				border-color: #A4A4A4;
+				color: #5E6066;
+				.box-shadow( inset 1px 1px 3px rgba(0, 0, 0, 0.2) );
+			}
+
+			&:focus {
+				outline: none;
+				border: 1px solid @focus-color;
+			}
+		}
+	}
+
+	/*
+		Image setting
+	*/
+
+	&.cinder-setting-image {
+		.cinder-image-preview {
+			position: relative;
+			min-width: 200px;
+			min-height: 100px;
+			display: inline-block;
+
+			.display-box;
+			.box-align(center);
+			.box-pack(center);
+			.box-orient(horizontal);
+
 		}
 	}
 
@@ -273,6 +310,9 @@
 	padding-left: @bleed-left + @programme-width;
 }
 
+.cinder-inline-block {
+	display: inline-block;
+}
 /*
 	Ingredients > These are the building blocks for the UI
 */
@@ -344,6 +384,14 @@
 		}
 	}
 
+	.cinder-abs-message {
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		padding: 3px 0px;
+	}
+
 
 /*
 	HACKS
@@ -351,6 +399,22 @@
 
 .cinder-bleed-top-90 {
 	margin-top: -90px;
+}
+
+.cinder-html-fallback {
+
+}
+
+.js .cinder-html-fallback {
+	display: none;
+}
+
+.cinder-js-only {
+	display: none;
+}
+
+.js .cinder-js-only {
+	display: block;
 }
 
 

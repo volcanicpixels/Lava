@@ -1,9 +1,27 @@
 {% macro input(name, value, type, attrs) %}
-    <input type="{{ type }}" name="{{ name }}" value="{{ value | e }}" {% for attr, value in attrs %} {{ attr }}="{{ value }}"{% endfor %} />
+	<input type="{{ type }}" name="{{ name }}" value="{{ value | e }}" {% for attr, value in attrs %} {{ attr }}="{{ value }}"{% endfor %} />
 {% endmacro %}
 
 {% macro textarea(name, value, attrs) %}
-    <textarea name="{{ name }}" {% for attr, the_value in attrs %} {{ attr }}="{{ the_value }}"{% endfor %}>
-    	{{- value -}}
-    </textarea>
+	<textarea name="{{ name }}" {% for attr, the_value in attrs %} {{ attr }}="{{ the_value }}"{% endfor %}>
+		{{- value -}}
+	</textarea>
+{% endmacro %}
+
+{% macro select(name, options, attrs) %}
+	<select name="{{ name }}" {% for attr, the_value in attrs %} {{ attr }}="{{ the_value }}"{% endfor %}>
+		{% for option_id, option in options %}
+			<option {% if option.selected %}selected="selected"{% endif %} value="{{ option_id }}">{{ option.name }}</option>
+		{% endfor %}
+	</select>
+{% endmacro %}
+
+{% macro select_options(options) %}
+	{% for option_id, option in options %}
+		<option {% if option.selected %}selected="selected"{% endif %} value="{{ option_id }}">{{ option.name }}</option>
+	{% endfor %}
+{% endmacro %}
+
+{% macro attrs(input_attrs) %}
+	{% for attr, value in input_attrs %} {{ attr }}="{{ value }}"{% endfor %}
 {% endmacro %}

@@ -1,1 +1,22 @@
 {% extends 'Default.twig' %}
+
+{% block setting_value %}
+	<div class="cinder-file-upload-cntr">
+		<input class="cinder-file-upload-val" type="hidden" name="{{ setting_name }}" value="{{ setting_value }}" {{ macros.attrs(setting_input_attrs) }} />
+		<input id="{{ full_setting_id }}-upload" name="{{ upload_name }}" class="cinder-invisible cinder-file-upload" type="file" data-url="{{ ajaxurl }}" />
+		<div>
+			<div class="cinder-inline-block">
+				<div class="cinder-inline-note">To change the image drop a new one or click. You will still need to click Update Settings.</div>
+				<label class="cinder-file-upload-dropzone" for="{{ full_setting_id }}-upload" title="Click to change image">
+					<div class="cinder-image-preview">
+						<img class="cinder-file-upload-src" src="{{ setting_value }}" />
+						<div class="cinder-abs-message primary cinder-file-upload-message" style="display:none">Uploading ...</div>
+					</div>
+				</label>
+				<div class="cinder-tray">
+					<label for="{{ full_setting_id }}-upload"><button type="button" class="cinder-btn cinder-btn-primary">Upload Image</button></label>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

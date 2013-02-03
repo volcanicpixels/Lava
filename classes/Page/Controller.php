@@ -209,11 +209,13 @@ class Lava_Page_Controller extends Lava_Base {
 
 	function _add_dependancies() {
 		$this->_add_plugin_stylesheet( 'lava', 'lava.css' );
-		$this->_add_plugin_script( 'debug', 'ba-debug.min.js' );
 		$this->_add_plugin_script( 'history', 'history.js' );
 		$this->_add_plugin_script( 'modernizr', 'modernizr-2.6.1.js', array(), '2.6.1' );
-		$this->_add_plugin_script( 'selectivizr', 'selectivizr-min.js', array() );
-		$this->_add_plugin_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'debug' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'selectivizr' ), $this->_namespace( 'history' ) ) );
+		$this->_add_plugin_script( 'jquery-fileupload', 'jquery.fileupload.js', array('jquery', 'jquery-ui-widget', $this->_namespace('jquery-iframe-transport')) );
+		$this->_add_plugin_script( 'jquery-autoresize', 'jquery.autoresize.js', array('jquery') );
+		$this->_add_plugin_script( 'jquery-iframe-transport', 'jquery.iframe-transport.js', array('jquery') );
+		//$this->_add_plugin_script( 'selectivizr', 'selectivizr-min.js', array() );
+		$this->_add_plugin_script( 'lava', 'lava.js', array( 'jquery', $this->_namespace( 'jquery-autoresize' ), $this->_namespace( 'jquery-fileupload' ), $this->_namespace( 'modernizr' ), $this->_namespace( 'history' ) ) );
 		$this->_do_lava_action( '_add_dependancies' );
 	}
 

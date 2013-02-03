@@ -28,6 +28,14 @@
 	     -o-user-select: none;
 }
 
+.display-box {
+	display: -webkit-box;
+	display:    -moz-box;
+	display:     -ms-box;
+	display:      -o-box;
+	display:         box;
+}
+
 .animation( @animation ) {
 	-webkit-animation: @animation;
 	   -moz-animation: @animation;
@@ -38,4 +46,36 @@
 
 .text-shadow( @shadow ) {
 	text-shadow: @shadow;
+}
+
+.box-align(@value) {
+	-webkit-box-align: @value;
+	   -moz-box-align: @value;
+	    -ms-box-align: @value;
+	     -o-box-align: @value;
+	        box-align: @value;
+}
+
+.box-pack(@value) {
+	-webkit-box-pack: @value;
+	   -moz-box-pack: @value;
+	    -ms-box-pack: @value;
+	     -o-box-pack: @value;
+	        box-pack: @value;
+}
+
+.box-orient(@value) {
+	-webkit-box-orient: @value;
+	   -moz-box-orient: @value;
+	    -ms-box-orient: @value;
+	     -o-box-orient: @value;
+	        box-orient: @value;
+}
+
+.property(@value) {
+	-webkit-property: @value;
+	   -moz-property: @value;
+	    -ms-property: @value;
+	     -o-property: @value;
+	        property: @value;
 }
